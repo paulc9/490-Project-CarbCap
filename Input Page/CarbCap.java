@@ -1,10 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.Toolkit;
 import java.awt.Font;
 import javax.swing.BorderFactory; 
 import javax.swing.border.*;
 import javax.swing.UIManager;
+import javax.swing.text.*;
 import java.util.Date;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -20,10 +22,10 @@ import java.lang.ClassLoader;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-public class CarbCap extends JFrame{
+public class CarbCap extends JFrame implements ActionListener{
 
 	JLabel panel1_Text, beerLabel, bottleDate, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, psiLabel;
-	JTextField beerIn, psiIn, beerTypeIn;
+	JTextField beerLabelIn, psiIn, beerTypeIn;
 	JComboBox beerList;
 	JButton button1, button2;
 	JPanel mainPanel, panel1, panel2, panel3, panel4;
@@ -117,7 +119,7 @@ public class CarbCap extends JFrame{
 		panel1_Text = new JLabel("Please input beer information", SwingConstants.CENTER);
 		beerLabel = new JLabel("Beer Label", SwingConstants.CENTER);
 		bottleDate = new JLabel("Bottle Date", SwingConstants.CENTER);
-		beerIn = new JTextField(15);
+		beerLabelIn = new JTextField(15);
 		model = new UtilDateModel();
 		Properties p = new Properties();
         JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
@@ -129,13 +131,13 @@ public class CarbCap extends JFrame{
 		beerLabel.setFont(labelFont);
 		bottleDate.setFont(labelFont);
 		bottleDateIn.setMaximumSize(bottleDateIn.getPreferredSize());
-		beerIn.setMaximumSize(beerIn.getPreferredSize());
+		beerLabelIn.setMaximumSize(beerLabelIn.getPreferredSize());
 
 		panel1.add(panel1_Text);
 		box1.add(Box.createRigidArea(edgeSpace));
 		box1.add(beerLabel);
 		box1.add(Box.createRigidArea(space));
-		box1.add(beerIn);
+		box1.add(beerLabelIn);
 		box1.add(Box.createHorizontalGlue());
 		box1.add(bottleDate);
 		box1.add(Box.createRigidArea(space));
@@ -158,6 +160,7 @@ public class CarbCap extends JFrame{
 		beerListLabel.setFont(labelFont);
 		beerList.setMaximumSize(beerList.getPreferredSize());
 		button1.setPreferredSize(buttonSize);
+		button1.addActionListener(this);
 
 		panel2.add(panel2_Text);
 		box2.add(Box.createRigidArea(edgeSpace));
@@ -179,7 +182,7 @@ public class CarbCap extends JFrame{
 
 	public void makePanel4(){
 		panel4_Text = new JLabel("Type in the info for a custom beer", SwingConstants.CENTER);
-		psiLabel = new JLabel("PSI Level");
+		psiLabel = new JLabel("Desired Final PSI Level");
 		psiIn = new JTextField(7);
 		beerTypeLabel = new JLabel("Beer Type");
 		beerTypeIn = new JTextField(15);
@@ -192,6 +195,7 @@ public class CarbCap extends JFrame{
 		beerTypeIn.setMaximumSize(beerTypeIn.getPreferredSize());
 		psiIn.setMaximumSize(psiIn.getPreferredSize());
 		button2.setPreferredSize(buttonSize);
+		button2.addActionListener(this);
 
 		panel4.add(panel4_Text);
 		box4.add(Box.createRigidArea(edgeSpace));
@@ -207,6 +211,19 @@ public class CarbCap extends JFrame{
 		box4.add(Box.createRigidArea(edgeSpace));
 		panel4.add(Box.createRigidArea(boxSpace));
 		panel4.add(box4);
+	}
+
+	public void actionPerformed(ActionEvent e){
+		Boolean beerLabelEmpty, bottleDateEmpty, beerTypeEmpty, psiEmpty;
+		if (beerLabelIn.getText().isEmpty() == true)
+			JOptionPane.showMessageDialog(this, "Please input the beer label you would like for this beer.");
+		else{
+			Object action = e.getSource();
+			if ((JButton) action == button1)
+				JOptionPane.showMessageDialog(this, "Preselected beer OK!");
+			else if ((JButton) action == button2)
+				JOptionPane.showMessageDialog(this, "Custom beer OK!");
+		}
 	}
 
 	// needed for calendar date selection
