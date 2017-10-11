@@ -16,13 +16,52 @@ import java.util.Properties;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import java.text.*;
 import java.util.Calendar;
+import java.lang.ClassLoader;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 public class CarbCap extends JFrame{
 
+	JLabel panel1_Text, beerLabel, bottleDate, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, psiLabel;
+	JTextField beerIn, psiIn, beerTypeIn;
+	JComboBox beerList;
+	JButton button1, button2;
+	JPanel mainPanel, panel1, panel2, panel3, panel4;
+	Box box1, box2, box4;
+	Dimension space, boxSpace, edgeSpace, buttonSize;
+	Font titleFont, labelFont;
+	Border border, raised, padding;
+	org.jdatepicker.impl.UtilDateModel model;
+
 	@SuppressWarnings("unchecked")
 	public void setGUI(){
-		this.setTitle("CarbCap");
+		//URL[] url={new URL("../lib/jdatepicker-1.3.4.jar")};
+		//URLClassLoader loader = new URLClassLoader(url);
+		styling();
+		frameLayout();
+		makePanel1();
+		makePanel2();
+		makePanel3();
+		makePanel4();
+
+		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+	// creating colors, borders, fonts, etc.
+	public void styling(){
 		UIManager.put("Label.foreground", new Color(228, 125, 0));
+
+		border = BorderFactory.createLineBorder(Color.black);
+		raised = BorderFactory.createRaisedBevelBorder();
+		padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+
+		titleFont = new Font("Helvetica", Font.PLAIN, 26);
+		labelFont = new Font("Helvetica", Font.PLAIN, 22);
+	}
+
+	public void frameLayout(){
+		this.setTitle("CarbCap");
 
 		Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension dim = tk.getScreenSize();
@@ -43,12 +82,13 @@ public class CarbCap extends JFrame{
 		panel3 = new JPanel();
 		panel4 = new JPanel();
 
-		Box box1 = Box.createHorizontalBox();
-		Box box2 = Box.createHorizontalBox();
-		Box box4 = Box.createHorizontalBox();
-		Dimension space = new Dimension(15, 0);
-		Dimension boxSpace = new Dimension(0, 30);
-		Dimension edgeSpace = new Dimension(40, 0);
+		box1 = Box.createHorizontalBox();
+		box2 = Box.createHorizontalBox();
+		box4 = Box.createHorizontalBox();
+		space = new Dimension(15, 0);
+		boxSpace = new Dimension(0, 30);
+		edgeSpace = new Dimension(40, 0);
+		buttonSize = new Dimension(100, 40);
 
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		panel1.setLayout(new BoxLayout(panel1, BoxLayout.PAGE_AXIS));
@@ -56,9 +96,6 @@ public class CarbCap extends JFrame{
 		panel3.setLayout(new BoxLayout(panel3, BoxLayout.PAGE_AXIS));
 		panel4.setLayout(new BoxLayout(panel4, BoxLayout.PAGE_AXIS));
 
-		Border border = BorderFactory.createLineBorder(Color.black);
-		Border raised = BorderFactory.createRaisedBevelBorder();
-		Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 		mainPanel.setBorder(padding);
 		add(mainPanel);
 
@@ -74,10 +111,9 @@ public class CarbCap extends JFrame{
 		mainPanel.add(panel3);
 		mainPanel.add(Box.createVerticalGlue());
 		mainPanel.add(panel4);
+	}
 
-		Font titleFont = new Font("Helvetica", Font.PLAIN, 26);
-		Font labelFont = new Font("Helvetica", Font.PLAIN, 22);
-
+	public void makePanel1(){
 		panel1_Text = new JLabel("Please input beer information", SwingConstants.CENTER);
 		beerLabel = new JLabel("Beer Label", SwingConstants.CENTER);
 		bottleDate = new JLabel("Bottle Date", SwingConstants.CENTER);
@@ -86,13 +122,15 @@ public class CarbCap extends JFrame{
 		Properties p = new Properties();
         JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
         JDatePickerImpl bottleDateIn = new JDatePickerImpl(datePanel, new DateLabelFormatter());
-        bottleDateIn.setBounds(220, 350, 120, 30);
-		bottleDateIn.setMaximumSize(bottleDateIn.getPreferredSize());
-		beerIn.setMaximumSize(beerIn.getPreferredSize());
+
 		panel1_Text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-		panel1_Text.setFont(titleFont);
+        bottleDateIn.setBounds(220, 350, 120, 30);
+        panel1_Text.setFont(titleFont);
 		beerLabel.setFont(labelFont);
 		bottleDate.setFont(labelFont);
+		bottleDateIn.setMaximumSize(bottleDateIn.getPreferredSize());
+		beerIn.setMaximumSize(beerIn.getPreferredSize());
+
 		panel1.add(panel1_Text);
 		box1.add(Box.createRigidArea(edgeSpace));
 		box1.add(beerLabel);
@@ -105,18 +143,22 @@ public class CarbCap extends JFrame{
 		box1.add(Box.createRigidArea(edgeSpace));
 		panel1.add(Box.createRigidArea(boxSpace));
 		panel1.add(box1);
+	}
 
+	public void makePanel2(){
 		panel2_Text = new JLabel("Select a beer type from the drop-down menu below", SwingConstants.CENTER);
 		beerListLabel = new JLabel("Beer type", SwingConstants.CENTER);
+		String[] beerStrings = {"Beer 1", "Beer 2", "Beer 3", "Beer 4"};
+		beerList = new JComboBox(beerStrings);
+		button1 = new JButton("Ok");
+
 		panel2_Text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		beerListLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		panel2_Text.setFont(titleFont);
 		beerListLabel.setFont(labelFont);
-		String[] beerStrings = {"Beer 1", "Beer 2", "Beer 3", "Beer 4"};
-		beerList = new JComboBox(beerStrings);
 		beerList.setMaximumSize(beerList.getPreferredSize());
-		button1 = new JButton("Ok");
-		//button1.setMaximumSize(button1.getPreferredSize());
+		button1.setPreferredSize(buttonSize);
+
 		panel2.add(panel2_Text);
 		box2.add(Box.createRigidArea(edgeSpace));
 		box2.add(beerListLabel);
@@ -127,22 +169,36 @@ public class CarbCap extends JFrame{
 		box2.add(Box.createRigidArea(edgeSpace));
 		panel2.add(Box.createRigidArea(boxSpace));
 		panel2.add(box2);
+	}
 
+	public void makePanel3(){
 		panel3_Text = new JLabel("<html><b><i>OR</i></b></html>");
 		panel3_Text.setFont(labelFont);
 		panel3.add(panel3_Text);
+	}
 
-		panel4_Text = new JLabel("Type in the desired PSI level for a custom beer", SwingConstants.CENTER);
+	public void makePanel4(){
+		panel4_Text = new JLabel("Type in the info for a custom beer", SwingConstants.CENTER);
 		psiLabel = new JLabel("PSI Level");
 		psiIn = new JTextField(7);
-		psiIn.setMaximumSize(psiIn.getPreferredSize());
-		psiLabel.setFont(labelFont);
+		beerTypeLabel = new JLabel("Beer Type");
+		beerTypeIn = new JTextField(15);
+		button2 = new JButton("Ok");
+
 		panel4_Text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		panel4_Text.setFont(titleFont);
-		button2 = new JButton("Ok");
-		//button2.setMaximumSize(button2.getPreferredSize());
+		beerTypeLabel.setFont(labelFont);
+		psiLabel.setFont(labelFont);
+		beerTypeIn.setMaximumSize(beerTypeIn.getPreferredSize());
+		psiIn.setMaximumSize(psiIn.getPreferredSize());
+		button2.setPreferredSize(buttonSize);
+
 		panel4.add(panel4_Text);
 		box4.add(Box.createRigidArea(edgeSpace));
+		box4.add(beerTypeLabel);
+		box4.add(Box.createRigidArea(space));
+		box4.add(beerTypeIn);
+		box4.add(Box.createHorizontalGlue());
 		box4.add(psiLabel);
 		box4.add(Box.createRigidArea(space));
 		box4.add(psiIn);
@@ -151,31 +207,9 @@ public class CarbCap extends JFrame{
 		box4.add(Box.createRigidArea(edgeSpace));
 		panel4.add(Box.createRigidArea(boxSpace));
 		panel4.add(box4);
+	}
 
-		this.setVisible(true);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-/*
-	public void mainLayout(){
-		this.setTitle("Test Window");
-		mainPanel = new JPanel();
-		panel1 = new JPanel();
-		panel2 = new JPanel();
-		panel3 = new JPanel();
-		panel4 = new JPanel();
-		Box box1 = Box.createHorizontalBox();
-		Box box2 = Box.createHorizontalBox();
-		Box box4 = Box.createHorizontalBox();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-		panel1.setLayout(new BoxLayout(panel1, BoxLayout.PAGE_AXIS));
-		panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
-		panel4.setLayout(new BoxLayout(panel4, BoxLayout.PAGE_AXIS));
-		Border border = BorderFactory.createLineBorder(Color.black);
-		Border raised = BorderFactory.createRaisedBevelBorder();
-		Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-		mainPanel.setBorder(padding);
-	}
-*/
+	// needed for calendar date selection
 	public class DateLabelFormatter extends AbstractFormatter {
 
         private String datePattern = "yyyy-MM-dd";
@@ -206,11 +240,4 @@ public class CarbCap extends JFrame{
             }
         });
 	}
-
-	JLabel panel1_Text, beerLabel, bottleDate, panel2_Text, beerListLabel, panel3_Text, panel4_Text, psiLabel;
-	JTextField beerIn, psiIn;
-	JComboBox beerList;
-	JButton button1, button2;
-	JPanel mainPanel, panel1, panel2, panel3, panel4;
-	org.jdatepicker.impl.UtilDateModel model;
 }
