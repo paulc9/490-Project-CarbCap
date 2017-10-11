@@ -16,9 +16,10 @@ import java.awt.Insets;
 
 public class GUIResults extends JFrame {
 
-    JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, graphImgLabel;
-    JButton buttonDelBeer;
+    JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, graphImgLabel, labelManualPSI, labelBeerType, labelBottleDate;
+    JButton buttonDelBeer, buttonEnter;
     ImageIcon graphImg;
+    JTextField psiInput;
 
 
     public static void main(String[] args) {
@@ -27,13 +28,15 @@ public class GUIResults extends JFrame {
 
     public GUIResults() {
 
+        UIManager.put("Label.foreground", new Color(228, 125, 0));
+
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension dim = tk.getScreenSize();
 
-        int width = (dim.width / 2);
-        int height = (dim.height / 2);
+        int width = (dim.width / 2) + (dim.width / 20);
+        int height = (dim.height / 2) + (dim.height / 10);
 
-        this.setSize(width, height); //sets to 1/4 screen size
+        this.setSize(width, height);
 
         int xPos = (dim.width / 2) - (this.getWidth() / 2);
         int yPos = (dim.height / 2) - (this.getHeight() / 2);
@@ -49,27 +52,25 @@ public class GUIResults extends JFrame {
         JPanel thePanel3 = new JPanel();
         JPanel thePanel4 = new JPanel();
 
+        Box theBox = Box.createHorizontalBox();
+
+
         thePanel.setLayout(new GridLayout(0, 1));
         thePanel2.setLayout(new GridLayout(0, 1));
-        //thePanel3.setLayout(new GridLayout(0, 1));
 
-
-
-      /*  GridBagConstraints gridConstraints = new GridBagConstraints();
-
-        gridConstraints.anchor = GridBagConstraints.CENTER;
-        gridConstraints.fill = GridBagConstraints.NONE;
-       gridConstraints.gridheight = 1;
-       gridConstraints.gridwidth = 1;
-       */
-
-        Font font = new Font("Helvetica", Font.PLAIN, 18);
+        Font font = new Font("Helvetica", Font.PLAIN, 22);
 
 
         labelName = new JLabel("Name: +BEERNAME", SwingConstants.CENTER);
         labelCurrentPSI = new JLabel("Current PSI: +PSI", SwingConstants.CENTER);
         labelReadyDate = new JLabel("Estimated Ready Date: +DATE", SwingConstants.CENTER);
         labelGraph = new JLabel("Graph: ", SwingConstants.CENTER);
+        labelManualPSI = new JLabel("Manual PSI Input:", SwingConstants.CENTER);
+        labelBeerType = new JLabel("Beer Type: +BEERTYPE", SwingConstants.CENTER);
+        labelBottleDate = new JLabel("Bottled on: +BOTTLEDATE", SwingConstants.CENTER);
+
+        psiInput = new JTextField(10);
+        psiInput.setMaximumSize( psiInput.getPreferredSize() );
 
         graphImg = new ImageIcon(getClass().getResource("graph.jpg"));
         Image image = graphImg.getImage(); // transform it
@@ -77,50 +78,47 @@ public class GUIResults extends JFrame {
         graphImg = new ImageIcon(newimg);  // transform it back*/
         graphImgLabel = new JLabel(graphImg);
 
-
-        /*ImageIcon imageIcon = new ImageIcon(getClass().getResource("graph.jpg")); // load the image to a imageIcon
-        Image image = imageIcon.getImage(); // transform it
-        Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-        imageIcon = new ImageIcon(newimg);  // transform it back*/
-
-
         buttonDelBeer = new JButton("Delete Beer");
         buttonDelBeer.setToolTipText("Delete Current Beer Data");
+
+        buttonEnter = new JButton("Confirm");
+        buttonDelBeer.setToolTipText("Enter Current PSI");
+
 
         labelName.setFont(font);
         labelCurrentPSI.setFont(font);
         labelReadyDate.setFont(font);
         labelGraph.setFont(font);
         buttonDelBeer.setFont(font);
-         //Box theBox = Box.createVerticalBox();
-
+        labelBeerType.setFont(font);
+        labelManualPSI.setFont(font);
+        labelBottleDate.setFont(font);
+        buttonEnter.setFont(font);
 
 
         addComp(thePanel2, labelName, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(thePanel2, labelBeerType, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(thePanel2, labelBottleDate, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelCurrentPSI, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelReadyDate, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelGraph, 0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        //addComp(thePanel2, graphImg, 0, 4, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        //addComp(thePanel, buttonDelBeer,0,4,1,1,GridBagConstraints.SOUTH, GridBagConstraints.NONE);
-        //thePanel3.add(buttonDelBeer);
 
-        //theBox.add(Box.createHorizontalGlue());
-       // theBox.setAlignmentX(Component.CENTER_ALIGNMENT);
         thePanel4.add(graphImgLabel);
-        thePanel3.add(buttonDelBeer);
+
+        theBox.add(Box.createRigidArea(new Dimension(100,0)));
+        theBox.add(labelManualPSI);
+        theBox.add(psiInput);
+        theBox.add(buttonEnter);
+
+        theBox.add(Box.createRigidArea(new Dimension(150,0)));
+        theBox.add(buttonDelBeer);
 
 
 
-       /* thePanel.add(labelName,);
-        thePanel.add(labelCurrentPSI, gridConstraints);
-        thePanel.add(labelReadyDate, gridConstraints);
-        thePanel.add(labelGraph, gridConstraints);
-        thePanel.add(buttonDelBeer, gridConstraints);*/
 
         thePanel.add(thePanel2);
         thePanel.add(thePanel4);
-        thePanel.add(thePanel3);
-       // thePanel2.add(theBox);
+        thePanel.add(theBox);
 
         this.add(thePanel);
         this.setVisible(true);
