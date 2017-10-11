@@ -1,2 +1,5 @@
 /CarbCapUI/nbproject/private/
 /CarbCapUI/build/
+*.xml
+*.iml
+*.xml
