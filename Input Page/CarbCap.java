@@ -21,6 +21,8 @@ import java.util.Calendar;
 import java.lang.ClassLoader;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.lang.StringBuilder;
+import java.lang.String;
 //Hey!
 
 public class CarbCap extends JFrame implements ActionListener{
@@ -35,6 +37,9 @@ public class CarbCap extends JFrame implements ActionListener{
 	Font titleFont, labelFont;
 	Border border, raised, padding;
 	org.jdatepicker.impl.UtilDateModel model;
+	Properties p;
+	JDatePanelImpl datePanel;
+	JDatePickerImpl bottleDateIn;
 
 	@SuppressWarnings("unchecked")
 	public void setGUI(){
@@ -122,9 +127,9 @@ public class CarbCap extends JFrame implements ActionListener{
 		bottleDate = new JLabel("Bottle Date", SwingConstants.CENTER);
 		beerLabelIn = new JTextField(15);
 		model = new UtilDateModel();
-		Properties p = new Properties();
-        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-        JDatePickerImpl bottleDateIn = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+		p = new Properties();
+        datePanel = new JDatePanelImpl(model, p);
+        bottleDateIn = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
 		panel1_Text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         bottleDateIn.setBounds(220, 350, 120, 30);
@@ -215,16 +220,50 @@ public class CarbCap extends JFrame implements ActionListener{
 	}
 
 	public void actionPerformed(ActionEvent e){
-		Boolean beerLabelEmpty, bottleDateEmpty, beerTypeEmpty, psiEmpty;
-		if (beerLabelIn.getText().isEmpty() == true)
-			JOptionPane.showMessageDialog(this, "Please input the beer label you would like for this beer.");
-		else{
-			Object action = e.getSource();
-			if ((JButton) action == button1)
+		Object action = e.getSource();
+		errorCheck(action);
+	}
+
+	public Boolean errorCheck(Object action){
+		Boolean beerLabelEmpty, bottleDateEmpty, beerTypeEmpty, psiEmpty, error;
+		beerLabelEmpty = bottleDateEmpty = beerTypeEmpty = psiEmpty = error = false;
+		StringBuilder message = new StringBuilder("Please input the following missing information to select this option:\n");
+		if (beerLabelIn.getText().isEmpty() == true){
+			beerLabelEmpty = true;
+			error = true;
+		}
+		if (bottleDateIn.getJFormattedTextField().getText().isEmpty() == true){
+			bottleDateEmpty = true;
+			error = true;
+		}
+		if (beerTypeIn.getText().isEmpty() == true)			// No error, since empty beer type means "Custom" will be used instead
+			beerTypeEmpty = true;
+		if (psiIn.getText().isEmpty() == true)
+			psiEmpty = true;
+		if (beerLabelEmpty)
+			message.append("- Beer label\n");
+		if (bottleDateEmpty)
+			message.append("- Bottle date\n");
+		if ((JButton) action == button1){
+			if (error)
+				JOptionPane.showMessageDialog(this, message);
+			else
 				JOptionPane.showMessageDialog(this, "Preselected beer OK!");
-			else if ((JButton) action == button2)
+		}
+		else if ((JButton) action == button2){
+			if (psiEmpty){
+				message.append("- Desired Final PSI");
+				error = true;
+			}
+			if (error)
+				JOptionPane.showMessageDialog(this, message);
+			else
 				JOptionPane.showMessageDialog(this, "Custom beer OK!");
 		}
+		if (error)
+			return true;
+		else
+			return false;
 	}
 
 	// needed for calendar date selection
