@@ -6,15 +6,17 @@
 //package nwepage;
 import java.awt.*;
 import javax.swing.*;
+import java.awt.event.*;
 /**
  *
  * @author Administrator
  */
-public class Newpage extends JFrame{
+public class Newpage extends JFrame implements ActionListener{
     private ImageIcon img;
     private JLabel showImg;
     private final static int width=400;
     private final static int height=320;
+    JButton back, next;
     /**
      * @param args the command line arguments
      */
@@ -24,10 +26,12 @@ public class Newpage extends JFrame{
     public Newpage()
     {
      Toolkit tk=Toolkit.getDefaultToolkit();
-     Dimension Dim=tk.getScreenSize();
-     this.setSize(Dim.width/2,Dim.height/2);
+     Dimension dim=tk.getScreenSize();
+     int width = (dim.width / 2) + (dim.width / 20);
+     int height = (dim.height / 2) + (dim.height / 10);
+     this.setSize(width, height);
      this.setLocationRelativeTo(null);
-     this.setTitle("The second page");
+     this.setTitle("Confirmation");
      this.setResizable(false);
      JPanel mainPanel=new JPanel();
      JPanel p1=new JPanel();
@@ -35,7 +39,7 @@ public class Newpage extends JFrame{
      JPanel p3=new JPanel();
      Box theBox=Box.createVerticalBox();
      
-     img=new ImageIcon("./src/Image/beer_10.jpg");
+     img=new ImageIcon("beer_10.jpg");
      img.setImage(img.getImage().getScaledInstance(Newpage.width, Newpage.height, Image.SCALE_DEFAULT));
      showImg=new JLabel(img);
      theBox.add(showImg);
@@ -48,47 +52,49 @@ public class Newpage extends JFrame{
      p1.add(ask);
      mainPanel.add(p1,BorderLayout.NORTH);
      
-     JButton back=new JButton("No,go back to last page");
+     back=new JButton("No,go back to last page");
      back.setFont(new java.awt.Font("黑体", 0, 22));
      back.setForeground(new java.awt.Color(228, 125, 0));
+     back.addActionListener(this);
      p2.add(back);
      
      
-     JButton next=new JButton("Yes,next pgae");
+     next=new JButton("Yes,next pgae");
      next.setFont(new java.awt.Font("黑体", 0, 22));
      next.setForeground(new java.awt.Color(228, 125, 0));
+     next.addActionListener(this);
      p2.add(next);
      
-     JTextField PSI=new JTextField("PSL: XXX");
-     PSI.setColumns(10);
-     PSI.setFont(new java.awt.Font("黑体", 0, 17));
-     PSI.setForeground(new java.awt.Color(228, 125, 0));
-     PSI.setBackground(new java.awt.Color(240, 240, 240));
-     PSI.setBorder(null);
-     theBox.add(PSI);
+     JLabel psi=new JLabel("Desired PSI: " + CarbCap.psiIn.getText());
+     //psi.setColumns(10);
+     psi.setFont(new java.awt.Font("黑体", 0, 17));
+     psi.setForeground(new java.awt.Color(228, 125, 0));
+     psi.setBackground(new java.awt.Color(240, 240, 240));
+     psi.setBorder(null);
+     theBox.add(psi);
      theBox.add(Box.createVerticalStrut(5));
      
-     JTextField name=new JTextField("The beer name:XXX");
+     JLabel name=new JLabel("The beer name: " + CarbCap.beerLabelIn.getText());
      name.setFont(new java.awt.Font("黑体", 0, 17));
      name.setForeground(new java.awt.Color(228, 125, 0));
-     name.setColumns(10);
+     //name.setColumns(10);
      name.setBorder(null);
      name.setBackground(new java.awt.Color(240, 240, 240));
      theBox.add(name);
      theBox.add(Box.createVerticalStrut(5));
      
      JLabel type=new JLabel();
-     type.setText("the beer type:XXX");
+     type.setText("The beer type: " + CarbCap.beerTypeIn.getText());
      type.setFont(new java.awt.Font("黑体", 0, 17));
      type.setForeground(new java.awt.Color(228, 125, 0));
      theBox.add(type);
      theBox.add(Box.createVerticalStrut(5));
      
-     JLabel Date=new JLabel();
-     Date.setText("the bottle date:XXX");
-     Date.setFont(new java.awt.Font("黑体", 0, 17));
-     Date.setForeground(new java.awt.Color(228, 125, 0));
-     theBox.add(Date);
+     JLabel date=new JLabel();
+     date.setText("The bottle date: " + CarbCap.bottleDateIn.getJFormattedTextField().getText());
+     date.setFont(new java.awt.Font("黑体", 0, 17));
+     date.setForeground(new java.awt.Color(228, 125, 0));
+     theBox.add(date);
      
      p3.add(theBox);    
      mainPanel.add(p3,BorderLayout.CENTER);
@@ -99,4 +105,17 @@ public class Newpage extends JFrame{
      this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }        
     
+    public void actionPerformed(ActionEvent e){
+        Object action = e.getSource();
+        if ((JButton) action == back){
+            this.setVisible(false);
+            CarbCap previous = new CarbCap();
+            previous.setVisible(true);
+        }
+        else if((JButton) action == next){
+            this.setVisible(false);
+            GUIResults next = new GUIResults();
+            next.setVisible(true);
+        }
+    }
 }
