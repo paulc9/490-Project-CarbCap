@@ -59,7 +59,7 @@ public class Newpage extends JFrame implements ActionListener{
      p2.add(back);
      
      
-     next=new JButton("Yes,next pgae");
+     next=new JButton("Yes,next page");
      next.setFont(new java.awt.Font("黑体", 0, 22));
      next.setForeground(new java.awt.Color(228, 125, 0));
      next.addActionListener(this);
