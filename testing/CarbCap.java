@@ -28,7 +28,7 @@ import java.lang.String;
 public class CarbCap extends JFrame implements ActionListener{
 
 	JLabel panel1_Text, beerLabel, bottleDate, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, psiLabel;
-	JTextField beerLabelIn, psiIn, beerTypeIn;
+	static JTextField beerLabelIn, psiIn, beerTypeIn;
 	JComboBox beerList;
 	JButton button1, button2;
 	JPanel mainPanel, panel1, panel2, panel3, panel4;
@@ -39,7 +39,11 @@ public class CarbCap extends JFrame implements ActionListener{
 	org.jdatepicker.impl.UtilDateModel model;
 	Properties p;
 	JDatePanelImpl datePanel;
-	JDatePickerImpl bottleDateIn;
+	static JDatePickerImpl bottleDateIn;
+
+	public CarbCap(){
+		setGUI();
+	}
 
 	@SuppressWarnings("unchecked")
 	public void setGUI(){
@@ -69,7 +73,7 @@ public class CarbCap extends JFrame implements ActionListener{
 	}
 
 	public void frameLayout(){
-		this.setTitle("CarbCap");
+		this.setTitle("Input Beer Information");
 
 		Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension dim = tk.getScreenSize();
@@ -154,7 +158,7 @@ public class CarbCap extends JFrame implements ActionListener{
 	}
 
 	public void makePanel2(){
-		panel2_Text = new JLabel("Select a beer type from the drop-down menu below", SwingConstants.CENTER);
+		panel2_Text = new JLabel("Select a beer type from the drop-down menu below for an existing beer", SwingConstants.CENTER);
 		beerListLabel = new JLabel("Beer type", SwingConstants.CENTER);
 		String[] beerStrings = {"Beer 1", "Beer 2", "Beer 3", "Beer 4"};
 		beerList = new JComboBox(beerStrings);
@@ -187,7 +191,7 @@ public class CarbCap extends JFrame implements ActionListener{
 	}
 
 	public void makePanel4(){
-		panel4_Text = new JLabel("Type in the info for a custom beer", SwingConstants.CENTER);
+		panel4_Text = new JLabel("Type in the following info for a custom beer", SwingConstants.CENTER);
 		psiLabel = new JLabel("Desired Final PSI Level");
 		psiIn = new JTextField(7);
 		beerTypeLabel = new JLabel("Beer Type");
@@ -221,7 +225,19 @@ public class CarbCap extends JFrame implements ActionListener{
 
 	public void actionPerformed(ActionEvent e){
 		Object action = e.getSource();
-		errorCheck(action);
+		if (!errorCheck(action)){
+			if ((JButton) action == button1){
+				beerTypeIn.setText((String) beerList.getSelectedItem());
+				psiIn.setText(beerTypeIn.getText() + " PSI");
+			}
+			else{
+				if (beerTypeIn.getText().isEmpty())
+					beerTypeIn.setText("Custom");
+			}
+			this.setVisible(false);
+			Newpage next = new Newpage();
+			next.setVisible(true);
+		}
 	}
 
 	public Boolean errorCheck(Object action){
@@ -247,8 +263,6 @@ public class CarbCap extends JFrame implements ActionListener{
 		if ((JButton) action == button1){
 			if (error)
 				JOptionPane.showMessageDialog(this, message);
-			else
-				JOptionPane.showMessageDialog(this, "Preselected beer OK!");
 		}
 		else if ((JButton) action == button2){
 			if (psiEmpty){
@@ -257,8 +271,6 @@ public class CarbCap extends JFrame implements ActionListener{
 			}
 			if (error)
 				JOptionPane.showMessageDialog(this, message);
-			else
-				JOptionPane.showMessageDialog(this, "Custom beer OK!");
 		}
 		if (error)
 			return true;
@@ -290,11 +302,6 @@ public class CarbCap extends JFrame implements ActionListener{
     }
 
 	public static void main(String[] args){
-		CarbCap frame = new CarbCap();
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                frame.setGUI();
-            }
-        });
+		new CarbCap();
 	}
 }
