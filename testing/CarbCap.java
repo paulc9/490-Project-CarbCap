@@ -127,7 +127,7 @@ public class CarbCap extends JFrame implements ActionListener{
 
 	public void makePanel1(){
 		panel1_Text = new JLabel("Please input beer information", SwingConstants.CENTER);
-		beerLabel = new JLabel("Beer Label", SwingConstants.CENTER);
+		beerLabel = new JLabel("Beer Name", SwingConstants.CENTER);
 		bottleDate = new JLabel("Bottle Date", SwingConstants.CENTER);
 		beerLabelIn = new JTextField(15);
 		model = new UtilDateModel();
@@ -281,7 +281,7 @@ public class CarbCap extends JFrame implements ActionListener{
 	// needed for calendar date selection
 	public class DateLabelFormatter extends AbstractFormatter {
 
-        private String datePattern = "yyyy-MM-dd";
+        private String datePattern = "MM-dd-yyyy";
         private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
 
         @Override
