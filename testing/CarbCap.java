@@ -28,6 +28,7 @@ import java.lang.String;
 public class CarbCap extends JFrame implements ActionListener{
 
 	JLabel panel1_Text, beerLabel, bottleDate, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, psiLabel;
+	static CardLayout pages;
 	static JTextField beerLabelIn, psiIn, beerTypeIn;
 	JComboBox beerList;
 	JButton button1, button2;
@@ -85,6 +86,8 @@ public class CarbCap extends JFrame implements ActionListener{
 		int xPos = (dim.width / 2) - (this.getWidth() / 2);
 		int yPos = (dim.height / 2) - (this.getHeight() / 2);
 		this.setLocation(xPos, yPos);
+
+		pages = new CardLayout();
 
 		//this.setResizable(false);
 
@@ -302,6 +305,9 @@ public class CarbCap extends JFrame implements ActionListener{
     }
 
 	public static void main(String[] args){
-		new CarbCap();
+		CarbCap frame = new CarbCap();
 	}
 }
+
+//JDatePicker Calendar library
+//Github link: https://github.com/JDatePicker/JDatePicker
