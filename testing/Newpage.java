@@ -25,14 +25,6 @@ public class Newpage extends JFrame implements ActionListener{
     }
     public Newpage()
     {
-     Toolkit tk=Toolkit.getDefaultToolkit();
-     Dimension dim=tk.getScreenSize();
-     int width = (dim.width / 2) + (dim.width / 20);
-     int height = (dim.height / 2) + (dim.height / 10);
-     this.setSize(width, height);
-     this.setLocationRelativeTo(null);
-     this.setTitle("Confirmation");
-     this.setResizable(false);
      JPanel mainPanel=new JPanel();
      JPanel p1=new JPanel();
      JPanel p2=new JPanel();

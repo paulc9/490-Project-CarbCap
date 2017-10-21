@@ -88,10 +88,14 @@ public class CarbCap extends JFrame{
 		container.setLayout(pages);
 
 		input = new InputPage();
+		confirm = new Newpage();
+		results = new GUIResults();
 
 		container.add(input, "Input");
-		pages.show(container, "Input");
+		container.add(confirm, "Confirm");
+		container.add(results, "Results");
 
+		pages.show(container, "Input");
 		add(container);
 		//this.setResizable(false);
 	}
