@@ -24,18 +24,20 @@ import java.net.URLClassLoader;
 import java.lang.StringBuilder;
 import java.lang.String;
 
-public class InputPage extends JPanel /*implements ActionListener*/{
+public class InputPage extends JPanel implements ActionListener{
 
 	JLabel panel1_Text, beerLabel, bottleDate, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, psiLabel;
 	static JTextField beerLabelIn, psiIn, beerTypeIn;
 	JComboBox beerList;
 	JButton button1, button2;
-	JPanel mainPanel, panel1, panel2, panel3, panel4;
+	JPanel mainPanel, panel1, panel2, panel3, panel4, container;
 	Box box1, box2, box4;
 	org.jdatepicker.impl.UtilDateModel model;
 	Properties p;
 	JDatePanelImpl datePanel;
 	static JDatePickerImpl bottleDateIn;
+	Newpage confirm;
+	CardLayout pages;
 
 	public InputPage(){
 		mainPanel = new JPanel();
@@ -123,7 +125,7 @@ public class InputPage extends JPanel /*implements ActionListener*/{
 		beerListLabel.setFont(CarbCap.labelFont);
 		beerList.setMaximumSize(beerList.getPreferredSize());
 		button1.setPreferredSize(CarbCap.buttonSize);
-		//button1.addActionListener(this);
+		button1.addActionListener(this);
 
 		panel2.add(panel2_Text);
 		box2.add(Box.createRigidArea(CarbCap.edgeSpace));
@@ -158,7 +160,7 @@ public class InputPage extends JPanel /*implements ActionListener*/{
 		beerTypeIn.setMaximumSize(beerTypeIn.getPreferredSize());
 		psiIn.setMaximumSize(psiIn.getPreferredSize());
 		button2.setPreferredSize(CarbCap.buttonSize);
-		//button2.addActionListener(this);
+		button2.addActionListener(this);
 
 		panel4.add(panel4_Text);
 		box4.add(Box.createRigidArea(CarbCap.edgeSpace));
@@ -175,7 +177,13 @@ public class InputPage extends JPanel /*implements ActionListener*/{
 		panel4.add(Box.createRigidArea(CarbCap.boxSpace));
 		panel4.add(box4);
 	}
-/*
+
+	public void linkPages(Newpage next, CardLayout change, JPanel main){
+		confirm = next;
+		pages = change;
+		container = main;
+	}
+
 	public void actionPerformed(ActionEvent e){
 		Object action = e.getSource();
 		if (!errorCheck(action)){
@@ -187,9 +195,8 @@ public class InputPage extends JPanel /*implements ActionListener*/{
 				if (beerTypeIn.getText().isEmpty())
 					beerTypeIn.setText("Custom");
 			}
-			this.setVisible(false);
-			Newpage next = new Newpage();
-			next.setVisible(true);
+			confirm.setPage();
+			pages.show(container, "Confirm");
 		}
 	}
 
@@ -230,7 +237,7 @@ public class InputPage extends JPanel /*implements ActionListener*/{
 		else
 			return false;
 	}
-*/
+
 	// needed for calendar date selection
 	public class DateLabelFormatter extends AbstractFormatter {
 

@@ -91,6 +91,10 @@ public class CarbCap extends JFrame{
 		confirm = new Newpage();
 		results = new GUIResults();
 
+		input.linkPages(confirm, pages, container);
+		confirm.linkPages(input, results, pages, container);
+		results.linkPages(input, pages, container);
+
 		container.add(input, "Input");
 		container.add(confirm, "Confirm");
 		container.add(results, "Results");

@@ -15,12 +15,17 @@ import java.awt.event.*;
 
 
 
-public class GUIResults extends JFrame implements ActionListener{
+public class GUIResults extends JPanel implements ActionListener{
 
+    JPanel thePanel, thePanel2, thePanel3, thePanel4, container;
     JLabel labelName, labelCurrentPSI, labelDesiredPSI, labelReadyDate, labelGraph, graphImgLabel, labelManualPSI, labelBeerType, labelBottleDate;
     JButton buttonDelBeer, buttonEnter;
     ImageIcon graphImg;
     JTextField psiInput;
+    Font font;
+    InputPage input;
+    CardLayout pages;
+    Box theBox;
 
 
     public static void main(String[] args) {
@@ -28,48 +33,28 @@ public class GUIResults extends JFrame implements ActionListener{
     }
 
     public GUIResults() {
+        thePanel = new JPanel();
+        thePanel2 = new JPanel();
+        thePanel3 = new JPanel();
+        thePanel4 = new JPanel();
 
-        UIManager.put("Label.foreground", new Color(228, 125, 0));
-
-        Toolkit tk = Toolkit.getDefaultToolkit();
-        Dimension dim = tk.getScreenSize();
-
-        int width = (dim.width / 2) + (dim.width / 20);
-        int height = (dim.height / 2) + (dim.height / 10);
-
-        this.setSize(width, height);
-
-        int xPos = (dim.width / 2) - (this.getWidth() / 2);
-        int yPos = (dim.height / 2) - (this.getHeight() / 2);
-        this.setLocation(xPos, yPos);
-
-
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        this.setTitle("Beer Details");
-
-        JPanel thePanel = new JPanel();
-        JPanel thePanel2 = new JPanel();
-        JPanel thePanel3 = new JPanel();
-        JPanel thePanel4 = new JPanel();
-
-        Box theBox = Box.createHorizontalBox();
+        theBox = Box.createHorizontalBox();
 
 
         thePanel.setLayout(new GridLayout(0, 1));
         thePanel2.setLayout(new GridLayout(0, 1));
 
-        Font font = new Font("Helvetica", Font.PLAIN, 22);
+        font = new Font("Helvetica", Font.PLAIN, 22);
 
 
-        labelName = new JLabel("Name: " + CarbCap.beerLabelIn.getText(), SwingConstants.CENTER);
-        labelCurrentPSI = new JLabel("Current PSI: +PSI", SwingConstants.CENTER);
-        labelDesiredPSI = new JLabel("Desired PSI: " + CarbCap.psiIn.getText(), SwingConstants.CENTER);
-        labelReadyDate = new JLabel("Estimated Ready Date: +DATE", SwingConstants.CENTER);
-        labelGraph = new JLabel("Graph: ", SwingConstants.CENTER);
+        labelName = new JLabel("", SwingConstants.CENTER);
+        labelCurrentPSI = new JLabel("", SwingConstants.CENTER);
+        labelDesiredPSI = new JLabel("", SwingConstants.CENTER);
+        labelReadyDate = new JLabel("", SwingConstants.CENTER);
+        labelGraph = new JLabel("", SwingConstants.CENTER);
+        labelBeerType = new JLabel("", SwingConstants.CENTER);
+        labelBottleDate = new JLabel("", SwingConstants.CENTER);
         labelManualPSI = new JLabel("Manual PSI Input:", SwingConstants.CENTER);
-        labelBeerType = new JLabel("Beer Type: " + CarbCap.beerTypeIn.getText(), SwingConstants.CENTER);
-        labelBottleDate = new JLabel("Bottled on: " + CarbCap.bottleDateIn.getJFormattedTextField().getText(), SwingConstants.CENTER);
 
         psiInput = new JTextField(10);
         psiInput.setMaximumSize( psiInput.getPreferredSize() );
@@ -120,24 +105,34 @@ public class GUIResults extends JFrame implements ActionListener{
         theBox.add(buttonDelBeer);
 
 
-
-
         thePanel.add(thePanel2);
         thePanel.add(thePanel4);
         thePanel.add(theBox);
 
         this.add(thePanel);
-        this.setVisible(true);
+    }
+
+    public void setPage(){
+        labelName.setText("Name: " + InputPage.beerLabelIn.getText());
+        labelCurrentPSI.setText("Current PSI: +PSI");
+        labelDesiredPSI.setText("Desired PSI: " + InputPage.psiIn.getText());
+        labelReadyDate.setText("Estimated Ready Date: +DATE");
+        labelGraph.setText("Graph: ");
+        labelBeerType.setText("Beer Type: " + InputPage.beerTypeIn.getText());
+        labelBottleDate.setText("Bottled on: " + InputPage.bottleDateIn.getJFormattedTextField().getText());
     }
 
     public void actionPerformed(ActionEvent e){
         Object action = e.getSource();
-        if ((JButton) action == buttonDelBeer){
-            this.setVisible(false);
-            CarbCap previous = new CarbCap();
-            previous.setVisible(true);
-        }
+        if ((JButton) action == buttonDelBeer)
+            pages.show(container, "Input");
     }
+
+    public void linkPages(InputPage next, CardLayout change, JPanel main){
+        input = next;
+        pages = change;
+        container = main;
+    } 
 
         // Sets the rules for a component destined for a GridBagLayout
         // and then adds it
