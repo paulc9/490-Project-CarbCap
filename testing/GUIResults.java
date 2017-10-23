@@ -1,6 +1,9 @@
 /**
  * Created by Bhawley on 9/27/2017.
  */
+
+//package start;
+
 import java.awt.*;
 import java.awt.Toolkit;
 import javax.swing.*;
@@ -12,6 +15,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.*;
+import java.net.URL;
 
 
 
@@ -59,7 +63,8 @@ public class GUIResults extends JPanel implements ActionListener{
         psiInput = new JTextField(10);
         psiInput.setMaximumSize( psiInput.getPreferredSize() );
 
-        graphImg = new ImageIcon(getClass().getResource("graph.jpg"));
+        URL url = this.getClass().getClassLoader().getResource("images/graph.jpg");
+        graphImg = new ImageIcon(url);
         Image image = graphImg.getImage(); // transform it
         Image newimg = image.getScaledInstance(320, 165,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
         graphImg = new ImageIcon(newimg);  // transform it back*/

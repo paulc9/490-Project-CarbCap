@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-//package nwepage;
+//package start;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.net.URL;
 /**
  *
  * @author Administrator
@@ -69,7 +71,8 @@ public class Newpage extends JPanel implements ActionListener{
         theBox.removeAll();
         p3.removeAll();
 
-        img=new ImageIcon("beer_10.jpg");
+        URL url = this.getClass().getClassLoader().getResource("images/beer_10.jpg");
+        img=new ImageIcon(url);
         img.setImage(img.getImage().getScaledInstance(Newpage.width, Newpage.height, Image.SCALE_DEFAULT));
         showImg=new JLabel(img);
         theBox.add(showImg);
