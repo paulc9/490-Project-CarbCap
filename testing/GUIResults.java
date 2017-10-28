@@ -118,13 +118,13 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
     public void setPage(){
-        labelName.setText("Name: " + InputPage.beerLabelIn.getText());
+        labelName.setText("Name: " + InputPage.currentBeer.getName());
         labelCurrentPSI.setText("Current PSI: +PSI");
-        labelDesiredPSI.setText("Desired PSI: " + currentBeer.getDesiredPSI());
+        labelDesiredPSI.setText("Desired PSI: " + InputPage.currentBeer.getDesiredPSI());
         labelReadyDate.setText("Estimated Ready Date: +DATE" );
         labelGraph.setText("Graph: ");
-        labelBeerType.setText("Beer Type: " + currentBeer.getType());
-        labelBottleDate.setText("Bottled on: " + currentBeer.getBottleDate());
+        labelBeerType.setText("Beer Type: " + InputPage.currentBeer.getType());
+        labelBottleDate.setText("Bottled on: " + InputPage.currentBeer.getBottleDate());
     }
 
     public void actionPerformed(ActionEvent e){

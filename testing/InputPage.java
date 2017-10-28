@@ -29,7 +29,7 @@ import java.lang.String;
 public class InputPage extends JPanel implements ActionListener{
 
 	JLabel panel1_Text, beerLabel, bottleDate, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, psiLabel;
-	static JTextField beerLabelIn, psiIn, beerTypeIn;
+	JTextField beerLabelIn, psiIn, beerTypeIn;
 	JComboBox beerList;
 	JButton button1, button2;
 	JPanel mainPanel, panel1, panel2, panel3, panel4, container;
@@ -37,9 +37,10 @@ public class InputPage extends JPanel implements ActionListener{
 	org.jdatepicker.impl.UtilDateModel model;
 	Properties p;
 	JDatePanelImpl datePanel;
-	static JDatePickerImpl bottleDateIn;
+	JDatePickerImpl bottleDateIn;
 	Newpage confirm;
 	CardLayout pages;
+	static Beer currentBeer;
 
 	public InputPage(){
 		mainPanel = new JPanel();
@@ -189,14 +190,17 @@ public class InputPage extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e){
 		Object action = e.getSource();
 		if (!errorCheck(action)){
+			currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText(), "", 0);
 			if ((JButton) action == button1){
-				beerTypeIn.setText((String) beerList.getSelectedItem());
-				psiIn.setText(beerTypeIn.getText() + " PSI");
+				currentBeer.setType((String) beerList.getSelectedItem());
+				currentBeer.setDesiredPSI(-1);
 			}
 			else{
 				if (beerTypeIn.getText().isEmpty())
-					beerTypeIn.setText("Custom");
-				Beer currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText(), beerTypeIn.getText(), psiIn.getText());
+					currentBeer.setType("Custom");
+				else
+					currentBeer.setType(beerTypeIn.getText());
+				currentBeer.setDesiredPSI(Integer.parseInt(psiIn.getText()));
 			}
 			confirm.setPage();
 			pages.show(container, "Confirm");
