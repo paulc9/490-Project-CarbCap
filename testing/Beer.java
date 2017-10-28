@@ -6,26 +6,24 @@ public class Beer{
     //color
     //estimatedFinishDate
 
-    public Beer(String name, String bDate, String type, int dPSI){
+    public Beer(String name, String bDate){
         this.beerName = name;
         this.bottleDate = bDate;
-        this.beerType = type;
-        this.desiredPSI = dPSI;
     }
 
 
     public void setDesiredPSI(int dPSI){this.desiredPSI = dPSI;}
-    public int getDesiredPSI(){return desiredPSI;}
+    public int getDesiredPSI(){return this.desiredPSI;}
     public void setDesiredTemp(int temp){this.desiredTemp = temp;}
-    public int getDesiredTemp(){return desiredTemp;}
+    public int getDesiredTemp(){return this.desiredTemp;}
     public void setBeerID(int id){this.beerID = id;}
-    public int getBeerID(){return beerID;}
+    public int getBeerID(){return this.beerID;}
     public void setCurrentPSI(int psi){this.currentPSI = psi;}
-    public int getCurrentPSI(){return currentPSI;}
+    public int getCurrentPSI(){return this.currentPSI;}
     public void setType(String type){this.beerType = type;}
-    public String getType(){return beerType;}
+    public String getType(){return this.beerType;}
     public void setName(String name){this.beerName = name;}
-    public String getName(){return beerName;}
+    public String getName(){return this.beerName;}
     public void setBottleDate(String bDate){this.bottleDate = bDate;}
-    public String getBottleDate(){return bottleDate;}
+    public String getBottleDate(){return this.bottleDate;}
 }

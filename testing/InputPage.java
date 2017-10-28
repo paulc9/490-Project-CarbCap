@@ -190,7 +190,7 @@ public class InputPage extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e){
 		Object action = e.getSource();
 		if (!errorCheck(action)){
-			currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText(), "", 0);
+			currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText());
 			if ((JButton) action == button1){
 				currentBeer.setType((String) beerList.getSelectedItem());
 				currentBeer.setDesiredPSI(-1);
