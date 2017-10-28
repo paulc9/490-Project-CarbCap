@@ -77,7 +77,7 @@ public class Newpage extends JPanel implements ActionListener{
         showImg=new JLabel(img);
         theBox.add(showImg);
 
-        psi.setText("Desired PSI: " + InputPage.psiIn.getText());
+        psi.setText("Desired PSI: " + currentBeer.getDesiredPSI());
         //psi.setColumns(10);
         psi.setFont(new java.awt.Font("黑体", 0, 17));
         psi.setForeground(new java.awt.Color(228, 125, 0));
@@ -86,7 +86,7 @@ public class Newpage extends JPanel implements ActionListener{
         theBox.add(psi);
         theBox.add(Box.createVerticalStrut(5));
      
-        name.setText("The beer name: " + InputPage.beerLabelIn.getText());
+        name.setText("The beer name: " + currentBeer.getName() );
         name.setFont(new java.awt.Font("黑体", 0, 17));
         name.setForeground(new java.awt.Color(228, 125, 0));
         //name.setColumns(10);
@@ -95,13 +95,13 @@ public class Newpage extends JPanel implements ActionListener{
         theBox.add(name);
         theBox.add(Box.createVerticalStrut(5));
 
-        type.setText("The beer type: " + InputPage.beerTypeIn.getText());
+        type.setText("The beer type: " + currentBeer.getType());
         type.setFont(new java.awt.Font("黑体", 0, 17));
         type.setForeground(new java.awt.Color(228, 125, 0));
         theBox.add(type);
         theBox.add(Box.createVerticalStrut(5));
      
-        date.setText("The bottle date: " + InputPage.bottleDateIn.getJFormattedTextField().getText());
+        date.setText("The bottle date: " + currentBeer.getDate());
         date.setFont(new java.awt.Font("黑体", 0, 17));
         date.setForeground(new java.awt.Color(228, 125, 0));
         theBox.add(date);

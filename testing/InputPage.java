@@ -196,9 +196,11 @@ public class InputPage extends JPanel implements ActionListener{
 			else{
 				if (beerTypeIn.getText().isEmpty())
 					beerTypeIn.setText("Custom");
+				Beer currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText(), beerTypeIn.getText(), psiIn.getText());
 			}
 			confirm.setPage();
 			pages.show(container, "Confirm");
+
 		}
 	}
 
