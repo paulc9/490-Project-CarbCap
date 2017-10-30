@@ -121,10 +121,15 @@ public class GUIResults extends JPanel implements ActionListener{
         this.add(thePanel);
     }
 
-    public void setPage() throws ParseException{
+    public void setPage(){
         SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy"); 
-        String bd = InputPage.currentBeer.getBottleDate();
-        Date bottleDate = sdf.parse(bd);
+        String bd;
+        Date bottleDate = new Date();
+        try{
+            bd = InputPage.currentBeer.getBottleDate();
+            bottleDate = sdf.parse(bd);
+        } catch (Exception e){
+        }
         Calendar readyDate = Calendar.getInstance();
         readyDate.setTime(bottleDate);
         readyDate.add(Calendar.DATE, 21); // Add 21 days to ready date

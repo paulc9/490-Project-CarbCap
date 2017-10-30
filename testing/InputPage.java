@@ -25,6 +25,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.lang.StringBuilder;
 import java.lang.String;
+import java.util.*;
 
 public class InputPage extends JPanel implements ActionListener{
 
@@ -41,6 +42,8 @@ public class InputPage extends JPanel implements ActionListener{
 	Newpage confirm;
 	CardLayout pages;
 	static Beer currentBeer;
+	int beerIndex;
+	BeerArray premadeBeers;
 
 	public InputPage(){
 		mainPanel = new JPanel();
@@ -116,10 +119,14 @@ public class InputPage extends JPanel implements ActionListener{
 	}
 
 	public void makePanel2(){
+		int count = 0;
 		panel2_Text = new JLabel("Select a beer type from the drop-down menu below for an existing beer", SwingConstants.CENTER);
 		beerListLabel = new JLabel("Beer type", SwingConstants.CENTER);
-		String[] beerStrings = {"Beer 1", "Beer 2", "Beer 3", "Beer 4"};
-		beerList = new JComboBox(beerStrings);
+		premadeBeers = new BeerArray();
+		beerList = new JComboBox();
+		for(Beer beer: premadeBeers.beerArray)
+			beerList.addItem(beer.getType());
+		//String[] beerStrings = {"Beer 1", "Beer 2", "Beer 3", "Beer 4"};
 		button1 = new JButton("Ok");
 
 		panel2_Text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
@@ -193,7 +200,8 @@ public class InputPage extends JPanel implements ActionListener{
 			currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText());
 			if ((JButton) action == button1){
 				currentBeer.setType((String) beerList.getSelectedItem());
-				currentBeer.setDesiredPSI(-1);
+				beerIndex = beerList.getSelectedIndex();
+				currentBeer.setDesiredPSI(premadeBeers.beerArray.get(beerIndex).getDesiredPSI());
 			}
 			else{
 				if (beerTypeIn.getText().isEmpty())

@@ -11,6 +11,7 @@ public class Beer{
         this.bottleDate = bDate;
     }
 
+    public Beer(){};
 
     public void setDesiredPSI(int dPSI){this.desiredPSI = dPSI;}
     public int getDesiredPSI(){return this.desiredPSI;}
