@@ -16,7 +16,11 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.*;
 import java.net.URL;
-
+import java.text.ParseException;
+import org.jdatepicker.impl.JDatePickerImpl;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Calendar;
 
 
 public class GUIResults extends JPanel implements ActionListener{
@@ -117,11 +121,18 @@ public class GUIResults extends JPanel implements ActionListener{
         this.add(thePanel);
     }
 
-    public void setPage(){
+    public void setPage() throws ParseException{
+        SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy"); 
+        String bd = InputPage.currentBeer.getBottleDate();
+        Date bottleDate = sdf.parse(bd);
+        Calendar readyDate = Calendar.getInstance();
+        readyDate.setTime(bottleDate);
+        readyDate.add(Calendar.DATE, 21); // Add 21 days to ready date
+
         labelName.setText("Name: " + InputPage.currentBeer.getName());
         labelCurrentPSI.setText("Current PSI: +PSI");
         labelDesiredPSI.setText("Desired PSI: " + InputPage.currentBeer.getDesiredPSI());
-        labelReadyDate.setText("Estimated Ready Date: +DATE" );
+        labelReadyDate.setText("Estimated Ready Date: " + sdf.format(readyDate.getTime()) );
         labelGraph.setText("Graph: ");
         labelBeerType.setText("Beer Type: " + InputPage.currentBeer.getType());
         labelBottleDate.setText("Bottled on: " + InputPage.currentBeer.getBottleDate());
