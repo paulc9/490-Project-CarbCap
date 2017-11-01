@@ -210,6 +210,7 @@ public class InputPage extends JPanel implements ActionListener{
 					currentBeer.setType(beerTypeIn.getText());
 				currentBeer.setDesiredPSI(Integer.parseInt(psiIn.getText()));
 			}
+			currentBeer.setReadyDate(21);
 			confirm.setPage();
 			pages.show(container, "Confirm");
 
