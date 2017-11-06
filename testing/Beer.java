@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 public class Beer{
     private int desiredPSI, beerID, currentPSI, desiredTemp; //currentPSI may be ArrayList
     private String beerType, beerName, beerImage;
-    private Calendar bottleDate, readyDate;
+    private Calendar bottleDate, trackingDate, readyDate;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy"); 
     //color
     //estimatedFinishDate
@@ -41,6 +41,18 @@ public class Beer{
     }
 
     public String getBottleDateString(){return sdf.format(bottleDate.getTime());}
+
+    public void setTrackingDate(String bDate){
+        Date bDate = bottleDate.getTime();
+        trackingDate = Calendar.getInstance();
+        trackingDate.setTime(bDate);
+    }
+
+    public void addToTrackingDate(int days){
+        trackingDate.add(Calendar.DATE, days);
+    }
+
+    public String getTrackingDateString(){return sdf.format(trackingDate.getTime());}
 
     public void setReadyDate(int days){
         Date bDate = bottleDate.getTime();
