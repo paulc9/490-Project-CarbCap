@@ -1,4 +1,5 @@
 import java.util.Calendar;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 
 public class Beer{
@@ -32,15 +33,17 @@ public class Beer{
     public void setBottleDate(String bDate){
         bottleDate = Calendar.getInstance();
         try{
-            bottleDate = sdf.parse(bDate);
+            bottleDate.setTime(sdf.parse(bDate));
         } catch (Exception e){
         }
     }
-    public String getBottleDateString(){return sdf.format(bottleDate.getTime())}
+
+    public String getBottleDateString(){return sdf.format(bottleDate.getTime());}
 
     public void setReadyDate(int days){
+        Date bDate = bottleDate.getTime();
     	readyDate = Calendar.getInstance();
-    	readyDate.setTime(bottleDate);
+    	readyDate.setTime(bDate);
     	readyDate.add(Calendar.DATE, days);
     }
 
