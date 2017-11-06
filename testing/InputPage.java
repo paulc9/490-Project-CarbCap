@@ -202,6 +202,7 @@ public class InputPage extends JPanel implements ActionListener{
 				currentBeer.setType((String) beerList.getSelectedItem());
 				beerIndex = beerList.getSelectedIndex();
 				currentBeer.setDesiredPSI(premadeBeers.beerArray.get(beerIndex).getDesiredPSI());
+				currentBeer.setBeerImage(premadeBeers.beerArray.get(beerIndex).getBeerImage());
 			}
 			else{
 				if (beerTypeIn.getText().isEmpty())
@@ -209,6 +210,7 @@ public class InputPage extends JPanel implements ActionListener{
 				else
 					currentBeer.setType(beerTypeIn.getText());
 				currentBeer.setDesiredPSI(Integer.parseInt(psiIn.getText()));
+				currentBeer.setBeerImage("beer_10");
 			}
 			currentBeer.setReadyDate(21);
 			confirm.setPage();

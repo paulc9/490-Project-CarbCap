@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 
 public class Beer{
     private int desiredPSI, beerID, currentPSI, desiredTemp; //currentPSI may be ArrayList
-    private String beerType, beerName;
+    private String beerType, beerName, beerImage;
     private Calendar bottleDate, readyDate;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy"); 
     //color
@@ -17,6 +17,8 @@ public class Beer{
 
     public Beer(){};
 
+    public void setBeerImage(String i){this.beerImage=i;}
+    public String getBeerImage(){return this.beerImage;}
     public void setDesiredPSI(int dPSI){this.desiredPSI = dPSI;}
     public int getDesiredPSI(){return this.desiredPSI;}
     public void setDesiredTemp(int temp){this.desiredTemp = temp;}
