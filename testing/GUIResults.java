@@ -122,25 +122,13 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
     public void setPage(){
-        SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy"); 
-        String bd;
-        Date bottleDate = new Date();
-        try{
-            bd = InputPage.currentBeer.getBottleDate();
-            bottleDate = sdf.parse(bd);
-        } catch (Exception e){
-        }
-        Calendar readyDate = Calendar.getInstance();
-        readyDate.setTime(bottleDate);
-        readyDate.add(Calendar.DATE, 21); // Add 21 days to ready date
-
         labelName.setText("Name: " + InputPage.currentBeer.getName());
         labelCurrentPSI.setText("Current PSI: +PSI");
         labelDesiredPSI.setText("Desired PSI: " + InputPage.currentBeer.getDesiredPSI());
-        labelReadyDate.setText("Estimated Ready Date: " + sdf.format(readyDate.getTime()) );
+        labelReadyDate.setText("Estimated Ready Date: " + InputPage.currentBeer.getReadyDateString() );
         labelGraph.setText("Graph: ");
         labelBeerType.setText("Beer Type: " + InputPage.currentBeer.getType());
-        labelBottleDate.setText("Bottled on: " + InputPage.currentBeer.getBottleDate());
+        labelBottleDate.setText("Bottled on: " + InputPage.currentBeer.getBottleDateString());
     }
 
     public void actionPerformed(ActionEvent e){

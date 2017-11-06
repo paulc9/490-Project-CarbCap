@@ -1,14 +1,18 @@
 import java.util.Calendar;
 import java.util.Date;
+import java.text.SimpleDateFormat;
+
 public class Beer{
     private int desiredPSI, beerID, currentPSI, desiredTemp; //currentPSI may be ArrayList
-    private String beerType, beerName, bottleDate;
+    private String beerType, beerName;
+    private Calendar bottleDate, readyDate;
+    SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy"); 
     //color
     //estimatedFinishDate
 
     public Beer(String name, String bDate){
         this.beerName = name;
-        this.bottleDate = bDate;
+        setBottleDate(bDate);
     }
 
     public Beer(){};
@@ -25,6 +29,23 @@ public class Beer{
     public String getType(){return this.beerType;}
     public void setName(String name){this.beerName = name;}
     public String getName(){return this.beerName;}
-    public void setBottleDate(String bDate){this.bottleDate = bDate;}
-    public String getBottleDate(){return this.bottleDate;}
+
+    public void setBottleDate(String bDate){
+        bottleDate = Calendar.getInstance();
+        try{
+            bottleDate.setTime(sdf.parse(bDate));
+        } catch (Exception e){
+        }
+    }
+
+    public String getBottleDateString(){return sdf.format(bottleDate.getTime());}
+
+    public void setReadyDate(int days){
+        Date bDate = bottleDate.getTime();
+    	readyDate = Calendar.getInstance();
+    	readyDate.setTime(bDate);
+    	readyDate.add(Calendar.DATE, days);
+    }
+
+    public String getReadyDateString(){return sdf.format(readyDate.getTime());}
 }

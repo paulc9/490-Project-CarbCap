@@ -101,7 +101,7 @@ public class Newpage extends JPanel implements ActionListener{
         theBox.add(type);
         theBox.add(Box.createVerticalStrut(5));
      
-        date.setText("The bottle date: " + InputPage.currentBeer.getBottleDate());
+        date.setText("The bottle date: " + InputPage.currentBeer.getBottleDateString());
         date.setFont(new java.awt.Font("黑体", 0, 17));
         date.setForeground(new java.awt.Color(228, 125, 0));
         theBox.add(date);
