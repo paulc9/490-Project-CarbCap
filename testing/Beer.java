@@ -6,7 +6,8 @@ public class Beer{
     private int desiredPSI, beerID, currentPSI, desiredTemp; //currentPSI may be ArrayList
     private String beerType, beerName, beerImage;
     private Calendar bottleDate, trackingDate, readyDate;
-    SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy"); 
+    SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
+    ArrayList<PSItrackingObject>  trackingArray = new ArrayList<PSItrackingObject>();
     //color
     //estimatedFinishDate
 
@@ -25,12 +26,15 @@ public class Beer{
     public int getDesiredTemp(){return this.desiredTemp;}
     public void setBeerID(int id){this.beerID = id;}
     public int getBeerID(){return this.beerID;}
-    public void setCurrentPSI(int psi){this.currentPSI = psi;}
+    public void setCurrentPSI(int psi){
+        this.currentPSI = psi;
+        trackingArray.add(new PSItrackingObject());}            //sets psi, then creats tracking object and adds it to the tracking array
     public int getCurrentPSI(){return this.currentPSI;}
     public void setType(String type){this.beerType = type;}
     public String getType(){return this.beerType;}
     public void setName(String name){this.beerName = name;}
     public String getName(){return this.beerName;}
+    public ArrayList<PSItrackingObject> getTrackingArrayList(){return this.trackingArray;}
 
     public void setBottleDate(String bDate){
         bottleDate = Calendar.getInstance();
@@ -62,4 +66,21 @@ public class Beer{
     }
 
     public String getReadyDateString(){return sdf.format(readyDate.getTime());}
-}
+
+
+
+    public class PSItrackingObject{
+        private int trackedPSI;
+        private Calendar trackedDate;
+
+        public PSItrackingObject(){
+            trackedPSI = getCurrentPSI()
+            trackedDate = Calendar.getInstance();
+        }
+    }
+
+    }
+
+
+
+
