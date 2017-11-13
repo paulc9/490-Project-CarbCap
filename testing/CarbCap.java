@@ -26,6 +26,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.lang.StringBuilder;
 import java.lang.String;
+import java.io.*;
 //Hey!
 
 public class CarbCap extends JFrame implements Serializable{
@@ -105,11 +106,12 @@ public class CarbCap extends JFrame implements Serializable{
 
 		File tmpFile = new File("savedCurrentBeer.ser");
 		if(tmpFile.exists()){
+			results.setPage();
 			pages.show(container, "Results");
 			add(container);
 		}else{
-		pages.show(container, "Input");
-		add(container);
+			pages.show(container, "Input");
+			add(container);
 		//this.setResizable(false);
 		}
 	}

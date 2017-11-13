@@ -81,14 +81,13 @@ public class Beer implements Serializable{
 
 
 
-    public class PSItrackingObject{
+    public class PSItrackingObject implements Serializable{
         private int trackedPSI;
         private Calendar trackedDate;
 
         public PSItrackingObject(){
             trackedPSI = getCurrentPSI();
             trackedDate = Calendar.getInstance();
-            saveCurrentBeerStateToFile();
         }
 
         public PSItrackingObject(Calendar date){
@@ -96,7 +95,6 @@ public class Beer implements Serializable{
             trackedPSI = getCurrentPSI();
             trackedDate = Calendar.getInstance();
             trackedDate.setTime(trackDate);
-            saveCurrentBeerStateToFile();
         }
 
         public int getPSI(){return trackedPSI;}
