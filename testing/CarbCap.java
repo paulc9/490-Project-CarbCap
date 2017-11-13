@@ -28,7 +28,7 @@ import java.lang.StringBuilder;
 import java.lang.String;
 //Hey!
 
-public class CarbCap extends JFrame{
+public class CarbCap extends JFrame implements Serializable{
 
 	CardLayout pages;
 	static Font titleFont, labelFont;
@@ -38,6 +38,7 @@ public class CarbCap extends JFrame{
 	InputPage input;
 	Newpage confirm;
 	GUIResults results;
+
 
 	public CarbCap(){
 		setGUI();
@@ -101,9 +102,16 @@ public class CarbCap extends JFrame{
 		container.add(confirm, "Confirm");
 		container.add(results, "Results");
 
+
+		File tmpFile = new File("savedCurrentBeer.ser");
+		if(tmpFile.exists()){
+			pages.show(container, "Results");
+			add(container);
+		}else{
 		pages.show(container, "Input");
 		add(container);
 		//this.setResizable(false);
+		}
 	}
 
 	public static void main(String[] args){
