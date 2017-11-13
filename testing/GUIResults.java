@@ -183,6 +183,16 @@ public class GUIResults extends JPanel implements ActionListener{
     public void actionPerformed(ActionEvent e){
         Object action = e.getSource();
         if ((JButton) action == buttonDelBeer)
+            try {
+                Files.delete("savedCurrentBeer.ser");
+            } catch (NoSuchFileException x) {
+                System.err.format("%s: no such" + " file or directory%n", path);
+            } catch (DirectoryNotEmptyException x) {
+                System.err.format("%s not empty%n", path);
+            } catch (IOException x) {
+                // File permission problems are caught here.
+                System.err.println(x);
+            }
             pages.show(container, "Input");
         else if ((JButton) action == buttonEnter && psiInput.getText().isEmpty() )
             JOptionPane.showMessageDialog(this, "Please enter PSI");
