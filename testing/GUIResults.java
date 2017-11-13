@@ -197,6 +197,7 @@ public class GUIResults extends JPanel implements ActionListener{
                 // File permission problems are caught here.
                 System.err.println(x);
             }
+            input.clearFields();
             pages.show(container, "Input");
         }
         else if ((JButton) action == buttonEnter && psiInput.getText().isEmpty() )
