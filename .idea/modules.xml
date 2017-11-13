@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/490-Project-CarbCap.iml" filepath="$PROJECT_DIR$/490-Project-CarbCap.iml" />
-      <module fileurl="file://$PROJECT_DIR$/CarbCapUI(outdated)/CarbCapUI(outdated).iml" filepath="$PROJECT_DIR$/CarbCapUI(outdated)/CarbCapUI(outdated).iml" />
     </modules>
   </component>
 </project>
