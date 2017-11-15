@@ -5,7 +5,7 @@ import java.util.*;
 import java.io.*;
 
 public class Beer implements Serializable{
-    private int desiredPSI, beerID, currentPSI, desiredTemp; //currentPSI may be ArrayList
+    private int desiredPSI, beerID, currentPSI, desiredTemp, currentTemp; //currentPSI may be ArrayList
     private String beerType, beerName, beerImage;
     private Calendar bottleDate, trackingDate, readyDate;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
