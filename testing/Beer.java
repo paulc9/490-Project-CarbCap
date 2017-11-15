@@ -39,6 +39,9 @@ public class Beer implements Serializable{
     }
     public int getCurrentPSI(){return this.currentPSI;}
 
+    public void setCurrentTemp(int temp){this.currentTemp = temp;}
+    public int getCurrentTemp(){return this.currentTemp;}
+
     public void setType(String type){this.beerType = type;}
     public String getType(){return this.beerType;}
 
@@ -82,12 +85,13 @@ public class Beer implements Serializable{
 
 
     public class PSItrackingObject implements Serializable{
-        private int trackedPSI;
+        private int trackedPSI, trackedTemp;
         private Calendar trackedDate;
 
         public PSItrackingObject(){
             trackedPSI = getCurrentPSI();
             trackedDate = Calendar.getInstance();
+	    trackedTemp = getCurrentTemp();
         }
 
         public PSItrackingObject(Calendar date){
@@ -95,10 +99,12 @@ public class Beer implements Serializable{
             trackedPSI = getCurrentPSI();
             trackedDate = Calendar.getInstance();
             trackedDate.setTime(trackDate);
+	    trackedTemp = getCurrentTemp();
         }
 
         public int getPSI(){return trackedPSI;}
         public String getDateString(){return sdf.format(trackedDate.getTime());}
+	public int getTemp(){return trackedTemp;}
     }
 
     public void saveCurrentBeerStateToFile(){
