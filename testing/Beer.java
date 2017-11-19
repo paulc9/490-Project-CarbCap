@@ -6,16 +6,17 @@ import java.io.*;
 
 public class Beer implements Serializable{
     private int desiredPSI, beerID, currentPSI, desiredTemp, currentTemp; //currentPSI may be ArrayList
-    private String beerType, beerName, beerImage;
+    private String beerType, beerName, beerImage, email;
     private Calendar bottleDate, trackingDate, readyDate;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
     private ArrayList<PSItrackingObject>  trackingArray = new ArrayList<PSItrackingObject>();
     //color
     //estimatedFinishDate
 
-    public Beer(String name, String bDate){
+    public Beer(String name, String bDate, String mail){
         this.beerName = name;
         setBottleDate(bDate);
+        this.email = mail;
     }
 
     public Beer(){};
@@ -47,6 +48,9 @@ public class Beer implements Serializable{
 
     public void setName(String name){this.beerName = name;}
     public String getName(){return this.beerName;}
+
+    public void setEmail(String mail){this.email = mail;}
+    public String getEmail(){return this.email;}
 
     public ArrayList<PSItrackingObject> getTrackingArrayList(){return this.trackingArray;}
 

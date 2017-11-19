@@ -29,12 +29,12 @@ import java.util.*;
 
 public class InputPage extends JPanel implements ActionListener{
 
-	JLabel panel1_Text, beerLabel, bottleDate, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, psiLabel;
-	JTextField beerLabelIn, psiIn, beerTypeIn;
+	JLabel panel1_Text, beerLabel, bottleDate, emailLabel, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, psiLabel;
+	JTextField beerLabelIn, psiIn, beerTypeIn, emailIn;
 	JComboBox beerList;
 	JButton button1, button2;
 	JPanel mainPanel, panel1, panel2, panel3, panel4, container;
-	Box box1, box2, box4;
+	Box box1, box1_2, box2, box4;
 	org.jdatepicker.impl.UtilDateModel model;
 	Properties p;
 	JDatePanelImpl datePanel;
@@ -53,6 +53,7 @@ public class InputPage extends JPanel implements ActionListener{
 		panel4 = new JPanel();
 
 		box1 = Box.createHorizontalBox();
+		box1_2 = Box.createHorizontalBox();
 		box2 = Box.createHorizontalBox();
 		box4 = Box.createHorizontalBox();
 
@@ -91,19 +92,23 @@ public class InputPage extends JPanel implements ActionListener{
 		panel1_Text = new JLabel("Please input beer information", SwingConstants.CENTER);
 		beerLabel = new JLabel("Beer Name", SwingConstants.CENTER);
 		bottleDate = new JLabel("Bottle Date", SwingConstants.CENTER);
+		emailLabel = new JLabel("E-mail for notification", SwingConstants.CENTER);
 		beerLabelIn = new JTextField(15);
 		model = new UtilDateModel();
 		p = new Properties();
         datePanel = new JDatePanelImpl(model, p);
         bottleDateIn = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+       	emailIn = new JTextField(15);
 
 		panel1_Text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         bottleDateIn.setBounds(220, 350, 120, 30);
         panel1_Text.setFont(CarbCap.titleFont);
 		beerLabel.setFont(CarbCap.labelFont);
 		bottleDate.setFont(CarbCap.labelFont);
+		emailLabel.setFont(CarbCap.labelFont);
 		bottleDateIn.setMaximumSize(bottleDateIn.getPreferredSize());
 		beerLabelIn.setMaximumSize(beerLabelIn.getPreferredSize());
+		emailIn.setMaximumSize(emailIn.getPreferredSize());
 
 		panel1.add(panel1_Text);
 		box1.add(Box.createRigidArea(CarbCap.edgeSpace));
@@ -117,6 +122,11 @@ public class InputPage extends JPanel implements ActionListener{
 		box1.add(Box.createRigidArea(CarbCap.edgeSpace));
 		panel1.add(Box.createRigidArea(CarbCap.boxSpace));
 		panel1.add(box1);
+
+		box1_2.add(emailLabel);
+		box1_2.add(Box.createRigidArea(CarbCap.space));
+		box1_2.add(emailIn);
+		panel1.add(box1_2);
 	}
 
 	public void makePanel2(){
@@ -198,7 +208,7 @@ public class InputPage extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e){
 		Object action = e.getSource();
 		if (!errorCheck(action)){
-			currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText());
+			currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText(), emailIn.getText());
 			if ((JButton) action == button1){
 				currentBeer.setType((String) beerList.getSelectedItem());
 				beerIndex = beerList.getSelectedIndex();
@@ -221,8 +231,8 @@ public class InputPage extends JPanel implements ActionListener{
 	}
 
 	public Boolean errorCheck(Object action){
-		Boolean beerLabelEmpty, bottleDateEmpty, beerTypeEmpty, psiEmpty, error;
-		beerLabelEmpty = bottleDateEmpty = beerTypeEmpty = psiEmpty = error = false;
+		Boolean beerLabelEmpty, bottleDateEmpty, emailEmpty, beerTypeEmpty, psiEmpty, error;
+		beerLabelEmpty = bottleDateEmpty = emailEmpty = beerTypeEmpty = psiEmpty = error = false;
 		StringBuilder message = new StringBuilder("Please input the following missing information to select this option:\n");
 		if (beerLabelIn.getText().isEmpty() == true){
 			beerLabelEmpty = true;
@@ -230,6 +240,10 @@ public class InputPage extends JPanel implements ActionListener{
 		}
 		if (bottleDateIn.getJFormattedTextField().getText().isEmpty() == true){
 			bottleDateEmpty = true;
+			error = true;
+		}
+		if (emailIn.getText().isEmpty() == true){
+			emailEmpty = true;
 			error = true;
 		}
 		if (beerTypeIn.getText().isEmpty() == true)			// No error, since empty beer type means "Custom" will be used instead
@@ -240,6 +254,8 @@ public class InputPage extends JPanel implements ActionListener{
 			message.append("- Beer label\n");
 		if (bottleDateEmpty)
 			message.append("- Bottle date\n");
+		if (emailEmpty)
+			message.append("- E-mail for notification\n");
 		if ((JButton) action == button1){
 			if (error)
 				JOptionPane.showMessageDialog(this, message);
@@ -263,6 +279,7 @@ public class InputPage extends JPanel implements ActionListener{
 		psiIn.setText("");
 		beerTypeIn.setText("");
 		bottleDateIn.getJFormattedTextField().setText("");
+		emailIn.setText("");
 	}
 
 	// needed for calendar date selection
