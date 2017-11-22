@@ -11,7 +11,7 @@ public class Beer implements Serializable{
     private String beerType, beerName, beerImage, email;
     private Calendar bottleDate, trackingDate, readyDate;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
-    private ArrayList<PSItrackingObject>  trackingArray = new ArrayList<PSItrackingObject>();
+    private ArrayList<TrackingObject>  trackingArray = new ArrayList<TrackingObject>();
     //color
 
     public Beer(String name, String bDate, String mail){
@@ -90,7 +90,7 @@ public class Beer implements Serializable{
         return result;
     }
 
-    public ArrayList<PSItrackingObject> getTrackingArrayList(){return this.trackingArray;}
+    public ArrayList<TrackingObject> getTrackingArrayList(){return this.trackingArray;}
 
     public void setBottleDate(String bDate){
         bottleDate = Calendar.getInstance();
