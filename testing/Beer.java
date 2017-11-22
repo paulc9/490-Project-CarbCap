@@ -3,15 +3,16 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.io.*;
+import java.lang.Math;
 
 public class Beer implements Serializable{
-    private int desiredPSI, beerID, currentPSI, desiredTemp, currentTemp; //currentPSI may be ArrayList
+    private int desiredPSI, beerID, currentPSI, desiredTemp, currentTemp;
+    private double desiredVolume, currentVolume;
     private String beerType, beerName, beerImage, email;
     private Calendar bottleDate, trackingDate, readyDate;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
     private ArrayList<PSItrackingObject>  trackingArray = new ArrayList<PSItrackingObject>();
     //color
-    //estimatedFinishDate
 
     public Beer(String name, String bDate, String mail){
         this.beerName = name;
@@ -33,9 +34,11 @@ public class Beer implements Serializable{
     public void setBeerID(int id){this.beerID = id;}
     public int getBeerID(){return this.beerID;}
 
-    public void setCurrentPSI(int psi){
+    public void setCurrentTracking(int psi){
         this.currentPSI = psi;
-        trackingArray.add(new PSItrackingObject(trackingDate));            //sets psi, then creats tracking object and adds it to the tracking array
+        this.currentTemp = 50;                                             //In Fahrenheit, assuming at 50 degrees for now
+        setCurrentVolume(currentPSI, currentTemp);
+        trackingArray.add(new TrackingObject(trackingDate));            //sets psi, then creats tracking object and adds it to the tracking array
         addToTrackingDate(1);                                              //this is used to simulate a day's passage after every manual psi input
     }
     public int getCurrentPSI(){return this.currentPSI;}
@@ -52,6 +55,41 @@ public class Beer implements Serializable{
     public void setEmail(String mail){this.email = mail;}
     public String getEmail(){return this.email;}
 
+    public void setDesiredVolume(double vol){this.desiredVolume = vol;}
+    public double getDesiredVolume(){return this.desiredVolume;}
+
+    //Converts psi and Fahrenheit temp to the CO2 carbonation in beer
+    //Formula requires that temp be in Celsius and pressure be in bar
+    //May not be the correct formula just yet???
+    public void setCurrentVolume(int psi, int Ftemp){
+        double Ctemp = fToC(Ftemp);
+        double barPressure = psiToBar(psi);
+        double carbInGperL = (barPressure + 1.013) * 10 * Math.pow(2.71828182845904, (-10.73797 + (2617.25 / (Ctemp + 273.15))));
+        this.currentVolume = volConvert(carbInGperL, Ctemp);
+    }
+    public double getCurrentVolume(){return this.currentVolume;}
+
+    public double fToC(int Ftemp){
+        double result = ((double)Ftemp - 32) / 1.8;
+        return result;
+    }
+
+    public double psiToBar(int psi){
+        double result = (double)psi * 0.0689475729;
+        return result;
+    }
+
+    public double volConvert(double unitVol, double Ctemp){
+        double Ktemp = cToK(Ctemp);
+        double result = unitVol * 0.0821 * Ktemp / 44;
+        return result;
+    }
+
+    public double cToK(double Ctemp){
+        double result = Ctemp + 273.15;
+        return result;
+    }
+
     public ArrayList<PSItrackingObject> getTrackingArrayList(){return this.trackingArray;}
 
     public void setBottleDate(String bDate){
@@ -62,7 +100,6 @@ public class Beer implements Serializable{
         }
         setTrackingDate();
     }
-
     public String getBottleDateString(){return sdf.format(bottleDate.getTime());}
 
     public void setTrackingDate(){
@@ -70,12 +107,11 @@ public class Beer implements Serializable{
         trackingDate = Calendar.getInstance();
         trackingDate.setTime(bDate);
     }
+    public String getTrackingDateString(){return sdf.format(trackingDate.getTime());}
 
     public void addToTrackingDate(int days){
         trackingDate.add(Calendar.DATE, days);
     }
-
-    public String getTrackingDateString(){return sdf.format(trackingDate.getTime());}
 
     public void setReadyDate(int days){
         Date bDate = bottleDate.getTime();
@@ -83,32 +119,34 @@ public class Beer implements Serializable{
     	readyDate.setTime(bDate);
     	readyDate.add(Calendar.DATE, days);
     }
-
     public String getReadyDateString(){return sdf.format(readyDate.getTime());}
 
 
 
-    public class PSItrackingObject implements Serializable{
-        private int trackedPSI, trackedTemp;
+    public class TrackingObject implements Serializable{
+        private int trackedPSI, trackedTemp; //temp in F
+        private double trackedVol;
         private Calendar trackedDate;
 
-        public PSItrackingObject(){
+        public TrackingObject(){
             trackedPSI = getCurrentPSI();
             trackedDate = Calendar.getInstance();
-	    trackedTemp = getCurrentTemp();
+	    	trackedTemp = getCurrentTemp();
         }
 
-        public PSItrackingObject(Calendar date){
+        public TrackingObject(Calendar date){
             Date trackDate = date.getTime();
             trackedPSI = getCurrentPSI();
             trackedDate = Calendar.getInstance();
             trackedDate.setTime(trackDate);
-	    trackedTemp = getCurrentTemp();
+	    	trackedTemp = getCurrentTemp();
+            trackedVol = getCurrentVolume();
         }
 
         public int getPSI(){return trackedPSI;}
         public String getDateString(){return sdf.format(trackedDate.getTime());}
-	public int getTemp(){return trackedTemp;}
+		public int getTemp(){return trackedTemp;}
+        public double getVolume(){return trackedVol;}
     }
 
     public void saveCurrentBeerStateToFile(){
@@ -132,7 +170,7 @@ public class Beer implements Serializable{
 
     }
 
-    }
+}
 
 
 

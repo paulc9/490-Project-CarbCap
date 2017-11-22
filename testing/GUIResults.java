@@ -38,7 +38,7 @@ public class GUIResults extends JPanel implements ActionListener{
 
     JPanel thePanel, thePanel2, thePanel3, thePanel4, container;
     ChartPanel chartPanel;
-    JLabel labelName, labelCurrentPSI, labelDesiredPSI, labelReadyDate, labelGraph, graphImgLabel, labelManualPSI, labelBeerType, labelBottleDate;
+    JLabel labelName, labelCurrentPSI, labelDesiredPSI, labelReadyDate, labelGraph, graphImgLabel, labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol;
     JButton buttonDelBeer, buttonEnter;
     ImageIcon graphImg;
     JTextField psiInput;
@@ -71,7 +71,7 @@ public class GUIResults extends JPanel implements ActionListener{
         thePanel2.setLayout(new GridLayout(0, 1));
         thePanel4.setLayout(new BorderLayout());
 
-        font = new Font("Helvetica", Font.PLAIN, 22);
+        font = new Font("Helvetica", Font.PLAIN, 18);
 
 
         labelName = new JLabel("", SwingConstants.CENTER);
@@ -82,6 +82,7 @@ public class GUIResults extends JPanel implements ActionListener{
         labelBeerType = new JLabel("", SwingConstants.CENTER);
         labelBottleDate = new JLabel("", SwingConstants.CENTER);
         labelManualPSI = new JLabel("Manual PSI Input:", SwingConstants.CENTER);
+        labelCurrentVol = new JLabel("", SwingConstants.CENTER);
 
         psiInput = new JTextField(10);
         psiInput.setMaximumSize( psiInput.getPreferredSize() );
@@ -111,6 +112,7 @@ public class GUIResults extends JPanel implements ActionListener{
         labelBeerType.setFont(font);
         labelManualPSI.setFont(font);
         labelBottleDate.setFont(font);
+        labelCurrentVol.setFont(font);
         buttonEnter.setFont(font);
 
 
@@ -119,6 +121,7 @@ public class GUIResults extends JPanel implements ActionListener{
         addComp(thePanel2, labelBottleDate, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelCurrentPSI, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelDesiredPSI, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(thePanel2, labelCurrentVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelReadyDate, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelGraph, 0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
@@ -175,6 +178,7 @@ public class GUIResults extends JPanel implements ActionListener{
         labelName.setText("Name: " + currentBeer.getName());
         labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
         labelDesiredPSI.setText("Desired PSI: " + currentBeer.getDesiredPSI());
+        labelCurrentVol.setText("Current CO2 Volume: " + currentBeer.getCurrentVolume());
         labelReadyDate.setText("Estimated Ready Date: " + currentBeer.getReadyDateString() );
         labelGraph.setText("Graph: ");
         labelBeerType.setText("Beer Type: " + currentBeer.getType());
@@ -203,11 +207,16 @@ public class GUIResults extends JPanel implements ActionListener{
         else if ((JButton) action == buttonEnter && psiInput.getText().isEmpty() )
             JOptionPane.showMessageDialog(this, "Please enter PSI");
         else if ((JButton) action == buttonEnter && !psiInput.getText().isEmpty() ){
-            currentBeer.setCurrentPSI(Integer.parseInt(psiInput.getText()));
+            currentBeer.setCurrentTracking(Integer.parseInt(psiInput.getText()));
             currentBeer.saveCurrentBeerStateToFile();
-            labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
-            drawGraph();
+            updatePage();
         }
+    }
+
+    public void updatePage(){
+        labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
+        labelCurrentVol.setText("Current CO2 Volume: " + currentBeer.getCurrentVolume());
+        drawGraph();
     }
 
     public void linkPages(InputPage next, CardLayout change, JPanel main){
@@ -220,8 +229,8 @@ public class GUIResults extends JPanel implements ActionListener{
         thePanel4.removeAll();
         thePanel4.revalidate();
         JFreeChart lineChart = ChartFactory.createLineChart(
-            "Beer PSI",
-            "Date", "PSI",
+            "CO2 Volumes in Beer",
+            "Date", "Volumes CO2",
             createDataset(),
             PlotOrientation.VERTICAL,
             true,true,false);
@@ -236,7 +245,7 @@ public class GUIResults extends JPanel implements ActionListener{
         int results = currentBeer.getTrackingArrayList().size();
         ArrayList<Beer.PSItrackingObject> beer = currentBeer.getTrackingArrayList();
         for(int i = 0; i < results; i++){
-            dataset.addValue(beer.get(i).getPSI(), "PSI", beer.get(i).getDateString());
+            dataset.addValue(beer.get(i).getVolume(), "Volumes CO2", beer.get(i).getDateString());
         }
         return dataset;
     }
