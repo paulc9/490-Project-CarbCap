@@ -29,8 +29,8 @@ import java.util.*;
 
 public class InputPage extends JPanel implements ActionListener{
 
-	JLabel panel1_Text, beerLabel, bottleDate, emailLabel, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, psiLabel;
-	JTextField beerLabelIn, psiIn, beerTypeIn, emailIn;
+	JLabel panel1_Text, beerLabel, bottleDate, emailLabel, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, volumeLabel;
+	JTextField beerLabelIn, volumeIn, beerTypeIn, emailIn;
 	JComboBox beerList;
 	JButton button1, button2;
 	JPanel mainPanel, panel1, panel2, panel3, panel4, container;
@@ -168,8 +168,8 @@ public class InputPage extends JPanel implements ActionListener{
 
 	public void makePanel4(){
 		panel4_Text = new JLabel("Type in the following info for a custom beer", SwingConstants.CENTER);
-		psiLabel = new JLabel("Desired Final PSI Level");
-		psiIn = new JTextField(7);
+		volumeLabel = new JLabel("Desired Final CO2 volume level");
+		volumeIn = new JTextField(7);
 		beerTypeLabel = new JLabel("Beer Type");
 		beerTypeIn = new JTextField(15);
 		button2 = new JButton("Ok");
@@ -177,9 +177,9 @@ public class InputPage extends JPanel implements ActionListener{
 		panel4_Text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		panel4_Text.setFont(CarbCap.titleFont);
 		beerTypeLabel.setFont(CarbCap.labelFont);
-		psiLabel.setFont(CarbCap.labelFont);
+		volumeLabel.setFont(CarbCap.labelFont);
 		beerTypeIn.setMaximumSize(beerTypeIn.getPreferredSize());
-		psiIn.setMaximumSize(psiIn.getPreferredSize());
+		volumeIn.setMaximumSize(volumeIn.getPreferredSize());
 		button2.setPreferredSize(CarbCap.buttonSize);
 		button2.addActionListener(this);
 
@@ -189,9 +189,9 @@ public class InputPage extends JPanel implements ActionListener{
 		box4.add(Box.createRigidArea(CarbCap.space));
 		box4.add(beerTypeIn);
 		box4.add(Box.createHorizontalGlue());
-		box4.add(psiLabel);
+		box4.add(volumeLabel);
 		box4.add(Box.createRigidArea(CarbCap.space));
-		box4.add(psiIn);
+		box4.add(volumeIn);
 		box4.add(Box.createHorizontalGlue());
 		box4.add(button2);
 		box4.add(Box.createRigidArea(CarbCap.edgeSpace));
@@ -213,6 +213,7 @@ public class InputPage extends JPanel implements ActionListener{
 				currentBeer.setType((String) beerList.getSelectedItem());
 				beerIndex = beerList.getSelectedIndex();
 				currentBeer.setDesiredPSI(premadeBeers.beerArray.get(beerIndex).getDesiredPSI());
+				currentBeer.setDesiredVolume(premadeBeers.beerArray.get(beerIndex).getDesiredVolume());
 				currentBeer.setBeerImage(premadeBeers.beerArray.get(beerIndex).getBeerImage());
 			}
 			else{
@@ -220,7 +221,7 @@ public class InputPage extends JPanel implements ActionListener{
 					currentBeer.setType("Custom");
 				else
 					currentBeer.setType(beerTypeIn.getText());
-				currentBeer.setDesiredPSI(Integer.parseInt(psiIn.getText()));
+				currentBeer.setDesiredVolume(Double.parseDouble(volumeIn.getText()));
 				currentBeer.setBeerImage("beer_10");
 			}
 			currentBeer.setReadyDate(21);
@@ -231,8 +232,8 @@ public class InputPage extends JPanel implements ActionListener{
 	}
 
 	public Boolean errorCheck(Object action){
-		Boolean beerLabelEmpty, bottleDateEmpty, emailEmpty, beerTypeEmpty, psiEmpty, error;
-		beerLabelEmpty = bottleDateEmpty = emailEmpty = beerTypeEmpty = psiEmpty = error = false;
+		Boolean beerLabelEmpty, bottleDateEmpty, emailEmpty, beerTypeEmpty, volumeEmpty, error;
+		beerLabelEmpty = bottleDateEmpty = emailEmpty = beerTypeEmpty = volumeEmpty = error = false;
 		StringBuilder message = new StringBuilder("Please input the following missing information to select this option:\n");
 		if (beerLabelIn.getText().isEmpty() == true){
 			beerLabelEmpty = true;
@@ -248,8 +249,8 @@ public class InputPage extends JPanel implements ActionListener{
 		}
 		if (beerTypeIn.getText().isEmpty() == true)			// No error, since empty beer type means "Custom" will be used instead
 			beerTypeEmpty = true;
-		if (psiIn.getText().isEmpty() == true)
-			psiEmpty = true;
+		if (volumeIn.getText().isEmpty() == true)
+			volumeEmpty = true;
 		if (beerLabelEmpty)
 			message.append("- Beer label\n");
 		if (bottleDateEmpty)
@@ -261,8 +262,8 @@ public class InputPage extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(this, message);
 		}
 		else if ((JButton) action == button2){
-			if (psiEmpty){
-				message.append("- Desired Final PSI");
+			if (volumeEmpty){
+				message.append("- Desired Final CO2 volume");
 				error = true;
 			}
 			if (error)
@@ -276,7 +277,7 @@ public class InputPage extends JPanel implements ActionListener{
 
 	public void clearFields(){
 		beerLabelIn.setText("");
-		psiIn.setText("");
+		volumeIn.setText("");
 		beerTypeIn.setText("");
 		bottleDateIn.getJFormattedTextField().setText("");
 		emailIn.setText("");

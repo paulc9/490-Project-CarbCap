@@ -38,7 +38,7 @@ public class GUIResults extends JPanel implements ActionListener{
 
     JPanel thePanel, thePanel2, thePanel3, thePanel4, container;
     ChartPanel chartPanel;
-    JLabel labelName, labelCurrentPSI, labelDesiredPSI, labelReadyDate, labelGraph, graphImgLabel, labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol;
+    JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, graphImgLabel, labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol;
     JButton buttonDelBeer, buttonEnter;
     ImageIcon graphImg;
     JTextField psiInput;
@@ -76,13 +76,13 @@ public class GUIResults extends JPanel implements ActionListener{
 
         labelName = new JLabel("", SwingConstants.CENTER);
         labelCurrentPSI = new JLabel("", SwingConstants.CENTER);
-        labelDesiredPSI = new JLabel("", SwingConstants.CENTER);
         labelReadyDate = new JLabel("", SwingConstants.CENTER);
         labelGraph = new JLabel("", SwingConstants.CENTER);
         labelBeerType = new JLabel("", SwingConstants.CENTER);
         labelBottleDate = new JLabel("", SwingConstants.CENTER);
         labelManualPSI = new JLabel("Manual PSI Input:", SwingConstants.CENTER);
         labelCurrentVol = new JLabel("", SwingConstants.CENTER);
+        labelDesiredVol = new JLabel("", SwingConstants.CENTER);
 
         psiInput = new JTextField(10);
         psiInput.setMaximumSize( psiInput.getPreferredSize() );
@@ -99,13 +99,12 @@ public class GUIResults extends JPanel implements ActionListener{
         buttonDelBeer.addActionListener(this);
 
         buttonEnter = new JButton("Confirm");
-        buttonEnter.setToolTipText("Enter Current PSI");
+        buttonEnter.setToolTipText("Enter Current PSI (assume temperature is at 50 deg F)");
         buttonEnter.addActionListener(this);
 
 
         labelName.setFont(font);
         labelCurrentPSI.setFont(font);
-        labelDesiredPSI.setFont(font);
         labelReadyDate.setFont(font);
         labelGraph.setFont(font);
         buttonDelBeer.setFont(font);
@@ -113,6 +112,7 @@ public class GUIResults extends JPanel implements ActionListener{
         labelManualPSI.setFont(font);
         labelBottleDate.setFont(font);
         labelCurrentVol.setFont(font);
+        labelDesiredVol.setFont(font);
         buttonEnter.setFont(font);
 
 
@@ -120,8 +120,8 @@ public class GUIResults extends JPanel implements ActionListener{
         addComp(thePanel2, labelBeerType, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelBottleDate, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelCurrentPSI, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelDesiredPSI, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelCurrentVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(thePanel2, labelDesiredVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelReadyDate, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelGraph, 0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
@@ -177,8 +177,8 @@ public class GUIResults extends JPanel implements ActionListener{
         currentBeer = loadBeer();
         labelName.setText("Name: " + currentBeer.getName());
         labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
-        labelDesiredPSI.setText("Desired PSI: " + currentBeer.getDesiredPSI());
         labelCurrentVol.setText("Current CO2 Volume: " + currentBeer.getCurrentVolume());
+        labelDesiredVol.setText("Desired CO2 Volume: " + currentBeer.getDesiredVolume());
         labelReadyDate.setText("Estimated Ready Date: " + currentBeer.getReadyDateString() );
         labelGraph.setText("Graph: ");
         labelBeerType.setText("Beer Type: " + currentBeer.getType());
