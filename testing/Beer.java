@@ -10,6 +10,7 @@ public class Beer implements Serializable{
     private double desiredVolume, currentVolume;
     private String beerType, beerName, beerImage, email;
     private Calendar bottleDate, trackingDate, readyDate;
+    private Boolean readyMailSent;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
     private ArrayList<TrackingObject>  trackingArray = new ArrayList<TrackingObject>();
     //color
@@ -18,6 +19,7 @@ public class Beer implements Serializable{
         this.beerName = name;
         setBottleDate(bDate);
         this.email = mail;
+        this.readyMailSent = false;
     }
 
     public Beer(){};
@@ -137,6 +139,9 @@ public class Beer implements Serializable{
     	readyDate.add(Calendar.DATE, days);
     }
     public String getReadyDateString(){return sdf.format(readyDate.getTime());}
+
+    public void readyMailLogged(){this.readyMailSent = true;}
+    public Boolean readyMailCheck(){return readyMailSent;}
 
 
 

@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.*;
 import java.io.*;
 import java.nio.file.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartFactory;
@@ -32,6 +34,10 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 
 public class GUIResults extends JPanel implements ActionListener{
@@ -209,6 +215,15 @@ public class GUIResults extends JPanel implements ActionListener{
         else if ((JButton) action == buttonEnter && !psiInput.getText().isEmpty() ){
             currentBeer.setCurrentTracking(Integer.parseInt(psiInput.getText()));
             currentBeer.saveCurrentBeerStateToFile();
+            if(currentBeer.getCurrentVolume() >= currentBeer.getDesiredVolume() && currentBeer.readyMailCheck() == false)
+            {
+                try {  
+                    sentmail();
+                    currentBeer.readyMailLogged();
+                } catch (Exception ex) {
+                    Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             updatePage();
         }
     }
@@ -249,6 +264,39 @@ public class GUIResults extends JPanel implements ActionListener{
         }
         return dataset;
     }
+
+    public void sentmail() throws MessagingException, Exception
+    {
+        Properties props = new Properties();                    
+        props.setProperty("mail.transport.protocol", "smtp");   
+        props.setProperty("mail.smtp.host", "smtp.gmail.com");   
+        props.setProperty("mail.smtp.auth", "true"); 
+        final String smtpPort = "465";
+        props.setProperty("mail.smtp.port", smtpPort);
+        props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.setProperty("mail.smtp.socketFactory.fallback", "false");
+        props.setProperty("mail.smtp.socketFactory.port", smtpPort);
+        Session session = Session.getInstance(props);
+        session.setDebug(true);   
+        MimeMessage message = createMimeMessage(session, "carbcap490@gmail.com", currentBeer.getEmail());
+        Transport transport = session.getTransport();
+        transport.connect("carbcap490@gmail.com", "Comp4900");
+        transport.sendMessage(message, message.getAllRecipients());
+        transport.close();
+    }  
+    public MimeMessage createMimeMessage(Session session, String sendMail, String receiveMail) throws Exception 
+    {
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(sendMail, "CarbCap", "UTF-8"));
+        message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiveMail, "", "UTF-8"));
+        message.setSubject("Your Beer is Ready", "UTF-8");
+        message.setContent("Hello there, your beer " + currentBeer.getName() + " is ready!!!", "text/html;charset=UTF-8");
+        message.setSentDate(new Date());
+        message.saveChanges();
+        return message;
+    }  
+
+
 
         // Sets the rules for a component destined for a GridBagLayout
         // and then adds it
