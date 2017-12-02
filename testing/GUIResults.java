@@ -224,13 +224,42 @@ public class GUIResults extends JPanel implements ActionListener{
             currentBeer.setCurrentTracking(Integer.parseInt(psiInput.getText()));
             currentBeer.adjustReadyDate();
             currentBeer.saveCurrentBeerStateToFile();
+            // Email ready notification
             if(currentBeer.getCurrentVolume() >= currentBeer.getDesiredVolume() && currentBeer.readyCheck() == false)
             {
                 try {  
-                    sentmail();
+                    String subject = "Your Beer is Ready";
+                    String content = "Hello there, your beer \"" + currentBeer.getName() + "\" is ready!!!";
+                    sentmail(subject, content);
                     currentBeer.readyLogged();
                 } catch (Exception ex) {
                     Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            // Email warning notification
+            else if(currentBeer.getCurrentVolume() > 4.1 && currentBeer.warningCheck() == false)
+            {
+                try{
+                    String subject = "Beer Warning";
+                    String content = "Your beer \"" + currentBeer.getName() + "\" is at CO2 level " + currentBeer.getCurrentVolume() + " and is in danger of bursting!";
+                    sentmail(subject, content);
+                    currentBeer.warningLogged();
+                } catch (Exception ex){
+                    Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            // Email plateaued notification
+            else if(currentBeer.plateauedCheck() == false)
+            {
+                if(currentBeer.weekPlateaued() == true){
+                    try{
+                        String subject = "Beer Plateaued";
+                        String content = "Your beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + currentBeer.getCurrentVolume() + " and will likely not carbonate much more.";
+                        sentmail(subject, content);
+                        currentBeer.plateauedLogged();
+                    } catch (Exception ex){
+                        Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
             updatePage();
@@ -287,7 +316,7 @@ public class GUIResults extends JPanel implements ActionListener{
 
 
 
-    public void sentmail() throws MessagingException, Exception
+    public void sentmail(String subject, String content) throws MessagingException, Exception
     {
         Properties props = new Properties();                    
         props.setProperty("mail.transport.protocol", "smtp");   
@@ -300,19 +329,19 @@ public class GUIResults extends JPanel implements ActionListener{
         props.setProperty("mail.smtp.socketFactory.port", smtpPort);
         Session session = Session.getInstance(props);
         session.setDebug(true);   
-        MimeMessage message = createMimeMessage(session, "carbcap490@gmail.com", currentBeer.getEmail());
+        MimeMessage message = createMimeMessage(session, "carbcap490@gmail.com", currentBeer.getEmail(), subject, content);
         Transport transport = session.getTransport();
         transport.connect("carbcap490@gmail.com", "Comp4900");
         transport.sendMessage(message, message.getAllRecipients());
         transport.close();
     }  
-    public MimeMessage createMimeMessage(Session session, String sendMail, String receiveMail) throws Exception 
+    public MimeMessage createMimeMessage(Session session, String sendMail, String receiveMail, String subject, String content) throws Exception 
     {
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(sendMail, "CarbCap", "UTF-8"));
         message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiveMail, "", "UTF-8"));
-        message.setSubject("Your Beer is Ready", "UTF-8");
-        message.setContent("Hello there, your beer " + currentBeer.getName() + " is ready!!!", "text/html;charset=UTF-8");
+        message.setSubject(subject, "UTF-8");
+        message.setContent(content, "text/html;charset=UTF-8");
         message.setSentDate(new Date());
         message.saveChanges();
         return message;
