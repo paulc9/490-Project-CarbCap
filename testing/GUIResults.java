@@ -243,7 +243,7 @@ public class GUIResults extends JPanel implements ActionListener{
     private DefaultCategoryDataset createDataset(){
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         int results = currentBeer.getTrackingArrayList().size();
-        ArrayList<Beer.TrackingObject> beer = currentBeer.getTrackingArrayList();
+        ArrayList<Beer.PSItrackingObject> beer = currentBeer.getTrackingArrayList();
         for(int i = 0; i < results; i++){
             dataset.addValue(beer.get(i).getVolume(), "Volumes CO2", beer.get(i).getDateString());
         }
