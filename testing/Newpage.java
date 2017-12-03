@@ -9,7 +9,6 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.net.URL;
-import java.io.*;
 /**
  *
  * @author Administrator
@@ -26,7 +25,6 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
     InputPage input;
     GUIResults results;
     CardLayout pages;
-    Beer currentBeer;
     /**
      * @param args the command line arguments
      */
@@ -69,19 +67,17 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
         date=new JLabel();
     }
 
-    public void setPage(Beer beer){
+    public void setPage(){
         theBox.removeAll();
         p3.removeAll();
 
-        currentBeer = beer;
-
-        URL url = this.getClass().getClassLoader().getResource("images/"+currentBeer.getBeerImage()+".jpg");
+        URL url = this.getClass().getClassLoader().getResource("images/"+InputPage.currentBeer.getBeerImage()+".jpg");
         img=new ImageIcon(url);
         img.setImage(img.getImage().getScaledInstance(Newpage.width, Newpage.height, Image.SCALE_DEFAULT));
         showImg=new JLabel(img);
         theBox.add(showImg);
 
-        psi.setText("Desired PSI: " + currentBeer.getDesiredPSI());
+        psi.setText("Desired PSI: " + InputPage.currentBeer.getDesiredPSI());
         //psi.setColumns(10);
         psi.setFont(new java.awt.Font("黑体", 0, 17));
         psi.setForeground(new java.awt.Color(228, 125, 0));
@@ -90,7 +86,7 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
         theBox.add(psi);
         theBox.add(Box.createVerticalStrut(5));
      
-        name.setText("The beer name: " + currentBeer.getName() );
+        name.setText("The beer name: " + InputPage.currentBeer.getName() );
         name.setFont(new java.awt.Font("黑体", 0, 17));
         name.setForeground(new java.awt.Color(228, 125, 0));
         //name.setColumns(10);
@@ -99,13 +95,13 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
         theBox.add(name);
         theBox.add(Box.createVerticalStrut(5));
 
-        type.setText("The beer type: " + currentBeer.getType());
+        type.setText("The beer type: " + InputPage.currentBeer.getType());
         type.setFont(new java.awt.Font("黑体", 0, 17));
         type.setForeground(new java.awt.Color(228, 125, 0));
         theBox.add(type);
         theBox.add(Box.createVerticalStrut(5));
      
-        date.setText("The bottle date: " + currentBeer.getBottleDateString());
+        date.setText("The bottle date: " + InputPage.currentBeer.getBottleDateString());
         date.setFont(new java.awt.Font("黑体", 0, 17));
         date.setForeground(new java.awt.Color(228, 125, 0));
         theBox.add(date);
@@ -131,7 +127,7 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
         if ((JButton) action == back)
             pages.show(container, "Input");
         else if((JButton) action == next){
-            currentBeer.saveCurrentBeerStateToFile();
+            InputPage.currentBeer.saveCurrentBeerStateToFile();
             results.setPage();
             pages.show(container, "Results");
         }

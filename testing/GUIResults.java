@@ -22,8 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.*;
-import java.io.*;
-import java.nio.file.*;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartFactory;
@@ -47,7 +45,7 @@ public class GUIResults extends JPanel implements ActionListener{
     CardLayout pages;
     Box theBox;
     Calendar dateCounter;
-    Beer currentBeer;
+    Beer currentBeer = loadBeer();
 
 
     public static void main(String[] args) {
@@ -140,8 +138,7 @@ public class GUIResults extends JPanel implements ActionListener{
         this.add(thePanel);
     }
 
-    public Beer loadBeer(){
-        Beer inBeer = null;
+    public void loadBeer(){
         try
         {
             // Reading the object from a file
@@ -149,7 +146,7 @@ public class GUIResults extends JPanel implements ActionListener{
             ObjectInputStream in = new ObjectInputStream(file);
 
             // Method for deserialization of object
-            inBeer = (Beer)in.readObject();
+            Beer inBeer = (Beer)in.readObject();
 
             in.close();
             file.close();
@@ -167,11 +164,11 @@ public class GUIResults extends JPanel implements ActionListener{
         {
             System.out.println("ClassNotFoundException is caught");
         }
-        return inBeer;
+
+    return inBeer;
     }
 
     public void setPage(){
-        currentBeer = loadBeer();
         labelName.setText("Name: " + currentBeer.getName());
         labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
         labelDesiredPSI.setText("Desired PSI: " + currentBeer.getDesiredPSI());
@@ -185,10 +182,9 @@ public class GUIResults extends JPanel implements ActionListener{
 
     public void actionPerformed(ActionEvent e){
         Object action = e.getSource();
-        if ((JButton) action == buttonDelBeer){
-            Path path = Paths.get("savedCurrentBeer.ser");
+        if ((JButton) action == buttonDelBeer)
             try {
-                Files.delete(path);
+                Files.delete("savedCurrentBeer.ser");
             } catch (NoSuchFileException x) {
                 System.err.format("%s: no such" + " file or directory%n", path);
             } catch (DirectoryNotEmptyException x) {
@@ -198,12 +194,10 @@ public class GUIResults extends JPanel implements ActionListener{
                 System.err.println(x);
             }
             pages.show(container, "Input");
-        }
         else if ((JButton) action == buttonEnter && psiInput.getText().isEmpty() )
             JOptionPane.showMessageDialog(this, "Please enter PSI");
         else if ((JButton) action == buttonEnter && !psiInput.getText().isEmpty() ){
             currentBeer.setCurrentPSI(Integer.parseInt(psiInput.getText()));
-            currentBeer.saveCurrentBeerStateToFile();
             labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
             drawGraph();
         }

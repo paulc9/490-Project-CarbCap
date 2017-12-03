@@ -41,7 +41,7 @@ public class InputPage extends JPanel implements ActionListener{
 	JDatePickerImpl bottleDateIn;
 	Newpage confirm;
 	CardLayout pages;
-	Beer currentBeer;
+	static Beer currentBeer;
 	int beerIndex;
 	BeerArray premadeBeers;
 
@@ -214,7 +214,7 @@ public class InputPage extends JPanel implements ActionListener{
 				currentBeer.setBeerImage("beer_10");
 			}
 			currentBeer.setReadyDate(21);
-			confirm.setPage(currentBeer);
+			confirm.setPage();
 			pages.show(container, "Confirm");
 
 		}
