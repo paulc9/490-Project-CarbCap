@@ -21,7 +21,7 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
     private JLabel showImg;
     private final static int width=400;
     private final static int height=320;
-    JLabel ask, volume, name, type, date;
+    JLabel ask, psi, name, type, date;
     JButton back, next;
     InputPage input;
     GUIResults results;
@@ -63,7 +63,7 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
         next.addActionListener(this);
         p2.add(next);
 
-        volume=new JLabel();
+        psi=new JLabel();
         name=new JLabel();
         type=new JLabel();
         date=new JLabel();
@@ -81,13 +81,13 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
         showImg=new JLabel(img);
         theBox.add(showImg);
 
-        volume.setText("Desired CO2 volume: " + currentBeer.getDesiredVolume());
-        //volume.setColumns(10);
-        volume.setFont(new java.awt.Font("黑体", 0, 17));
-        volume.setForeground(new java.awt.Color(228, 125, 0));
-        volume.setBackground(new java.awt.Color(240, 240, 240));
-        volume.setBorder(null);
-        theBox.add(volume);
+        psi.setText("Desired PSI: " + currentBeer.getDesiredPSI());
+        //psi.setColumns(10);
+        psi.setFont(new java.awt.Font("黑体", 0, 17));
+        psi.setForeground(new java.awt.Color(228, 125, 0));
+        psi.setBackground(new java.awt.Color(240, 240, 240));
+        psi.setBorder(null);
+        theBox.add(psi);
         theBox.add(Box.createVerticalStrut(5));
      
         name.setText("The beer name: " + currentBeer.getName() );

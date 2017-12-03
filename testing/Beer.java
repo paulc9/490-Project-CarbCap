@@ -58,32 +58,16 @@ public class Beer implements Serializable{
     public void setDesiredVolume(double vol){this.desiredVolume = vol;}
     public double getDesiredVolume(){return this.desiredVolume;}
 
-    /*
-        Converts psi and Fahrenheit temp to the CO2 carbonation in beer.
-        Result is very close to numbers on beer chart from: 
-        http://www.kegerators.com/carbonation-table.php
-    */
+    //Converts psi and Fahrenheit temp to the CO2 carbonation in beer
+    //Formula requires that temp be in Celsius and pressure be in bar
+    //May not be the correct formula just yet???
     public void setCurrentVolume(int psi, int Ftemp){
-        double c = (-16.6999 - 0.0101059 * Ftemp + 0.00116512 * Math.pow(Ftemp, 2)) - (double)psi;
-        double b = 0.173354 * (double)Ftemp + 4.24267;
-        double a = -0.0684226;
-        double result = solveQuadEq(a, b, c);
-        this.currentVolume = result;
+        double Ctemp = fToC(Ftemp);
+        double barPressure = psiToBar(psi);
+        double carbInGperL = (barPressure + 1.013) * 10 * Math.pow(2.71828182845904, (-10.73797 + (2617.25 / (Ctemp + 273.15))));
+        this.currentVolume = volConvert(carbInGperL, Ctemp);
     }
     public double getCurrentVolume(){return this.currentVolume;}
-
-    public double solveQuadEq(double a, double b, double c){
-        double result1, result2, root;
-        root = Math.pow(b, 2) - 4 * a * c;
-        result1 = ( -b + Math.sqrt(root) ) / ( 2 * a );
-        result2 = ( -b + Math.sqrt(root) ) / ( 2 * a );
-        if(result1 >= 0)
-            return result1;
-        else
-            return result2;
-    }
-
-/* Could be used for future conversion features??
 
     public double fToC(int Ftemp){
         double result = ((double)Ftemp - 32) / 1.8;
@@ -105,7 +89,6 @@ public class Beer implements Serializable{
         double result = Ctemp + 273.15;
         return result;
     }
-*/
 
     public ArrayList<TrackingObject> getTrackingArrayList(){return this.trackingArray;}
 
