@@ -26,6 +26,8 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartFactory;
@@ -38,6 +40,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMultipart;
 
 
 public class GUIResults extends JPanel implements ActionListener{
@@ -219,51 +223,62 @@ public class GUIResults extends JPanel implements ActionListener{
             pages.show(container, "Input");
         }
         else if ((JButton) action == buttonEnter && psiInput.getText().isEmpty() )
-            JOptionPane.showMessageDialog(this, "Please enter PSI");
+            JOptionPane.showMessageDialog(this, "Please enter PSI.");
         else if ((JButton) action == buttonEnter && !psiInput.getText().isEmpty() ){
-            currentBeer.setCurrentTracking(Integer.parseInt(psiInput.getText()));
-            currentBeer.adjustAvgVolRate();
-            currentBeer.adjustReadyDate();
-            currentBeer.saveCurrentBeerStateToFile();
-            // Email ready notification
-            if(currentBeer.getCurrentVolume() >= currentBeer.getDesiredVolume() && currentBeer.readyCheck() == false)
-            {
-                try {  
-                    String subject = "Your Beer is Ready";
-                    String content = "Hello there, your beer \"" + currentBeer.getName() + "\" is ready!!!";
-                    sentmail(subject, content);
-                    currentBeer.readyLogged();
-                } catch (Exception ex) {
-                    Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            try {
+                currentBeer.setCurrentTracking(Integer.parseInt(psiInput.getText()));
+                currentBeer.adjustAvgVolRate();
+                currentBeer.adjustReadyDate();
+                currentBeer.saveCurrentBeerStateToFile();
+                emailNotify();
+                updatePage();
+            } catch(NumberFormatException exx) {
+                JOptionPane.showMessageDialog(this, "Input error. Please enter a whole integer for PSI."); 
             }
-            // Email warning notification
-            else if(currentBeer.getCurrentVolume() > 4.1 && currentBeer.warningCheck() == false)
-            {
+        }
+    }
+
+    public void emailNotify(){
+        String imageName=System.getProperty("user.dir")+"\\images\\"+currentBeer.getBeerImage()+".jpg";
+        // Email ready notification
+        if(currentBeer.getCurrentVolume() >= currentBeer.getDesiredVolume() && currentBeer.readyCheck() == false)
+        {
+            try {  
+                String subject = "Your Beer is Ready";
+                String content = "Hello there, your beer \"" + currentBeer.getName() + "\" is ready!!!";
+                sentmail(subject, content, imageName);
+                currentBeer.readyLogged();
+            } catch (Exception ex) {
+                Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        // Email warning notification
+        else if(currentBeer.getCurrentVolume() > 4.1 && currentBeer.warningCheck() == false)
+        {
+            try{
+                String subject = "Beer Warning";
+                String content = "Your beer \"" + currentBeer.getName() + "\" is at CO2 level " + currentBeer.getCurrentVolume() + " and is in danger of bursting!";
+                sentmail(subject, content, imageName);
+                currentBeer.warningLogged();
+            } catch (Exception ex){
+                Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        // Email plateaued notification
+        else if(currentBeer.plateauedCheck() == false)
+        {
+            if(currentBeer.weekPlateaued() == true){
                 try{
-                    String subject = "Beer Warning";
-                    String content = "Your beer \"" + currentBeer.getName() + "\" is at CO2 level " + currentBeer.getCurrentVolume() + " and is in danger of bursting!";
-                    sentmail(subject, content);
-                    currentBeer.warningLogged();
+                    String subject = "Beer Plateaued";
+                    String content = "Your beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + currentBeer.getCurrentVolume() + " and will likely not carbonate much more.";
+                    sentmail(subject, content, imageName);
+                    currentBeer.plateauedLogged();
                 } catch (Exception ex){
                     Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            // Email plateaued notification
-            else if(currentBeer.plateauedCheck() == false)
-            {
-                if(currentBeer.weekPlateaued() == true){
-                    try{
-                        String subject = "Beer Plateaued";
-                        String content = "Your beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + currentBeer.getCurrentVolume() + " and will likely not carbonate much more.";
-                        sentmail(subject, content);
-                        currentBeer.plateauedLogged();
-                    } catch (Exception ex){
-                        Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-            updatePage();
         }
     }
 
@@ -317,7 +332,7 @@ public class GUIResults extends JPanel implements ActionListener{
 
 
 
-    public void sentmail(String subject, String content) throws MessagingException, Exception
+    public void sentmail(String subject, String content, String image) throws MessagingException, Exception
     {
         Properties props = new Properties();                    
         props.setProperty("mail.transport.protocol", "smtp");   
@@ -330,19 +345,29 @@ public class GUIResults extends JPanel implements ActionListener{
         props.setProperty("mail.smtp.socketFactory.port", smtpPort);
         Session session = Session.getInstance(props);
         session.setDebug(true);   
-        MimeMessage message = createMimeMessage(session, "carbcap490@gmail.com", currentBeer.getEmail(), subject, content);
+        MimeMessage message = createMimeMessage(session, "carbcap490@gmail.com", currentBeer.getEmail(), subject, content, image);
         Transport transport = session.getTransport();
         transport.connect("carbcap490@gmail.com", "Comp4900");
         transport.sendMessage(message, message.getAllRecipients());
         transport.close();
     }  
-    public MimeMessage createMimeMessage(Session session, String sendMail, String receiveMail, String subject, String content) throws Exception 
+    public MimeMessage createMimeMessage(Session session, String sendMail, String receiveMail, String subject, String content, String image) throws Exception 
     {
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(sendMail, "CarbCap", "UTF-8"));
         message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiveMail, "", "UTF-8"));
         message.setSubject(subject, "UTF-8");
-        message.setContent(content, "text/html;charset=UTF-8");
+        MimeBodyPart imageName = new MimeBodyPart();
+        DataHandler dh = new DataHandler(new FileDataSource(image));
+        imageName.setDataHandler(dh);
+        imageName.setContentID("beer image");
+        MimeBodyPart text = new MimeBodyPart();
+        text.setContent(content, "text/html;charset=UTF-8");
+        MimeMultipart mailBody= new MimeMultipart();
+        mailBody.addBodyPart(text);
+        mailBody.addBodyPart(imageName);
+        mailBody.setSubType("related"); 
+        message.setContent(mailBody);
         message.setSentDate(new Date());
         message.saveChanges();
         return message;

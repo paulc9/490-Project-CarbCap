@@ -258,21 +258,30 @@ public class InputPage extends JPanel implements ActionListener{
 		if (emailEmpty)
 			message.append("- E-mail for notification\n");
 		if ((JButton) action == button1){
-			if (error)
+			if (error){
 				JOptionPane.showMessageDialog(this, message);
+				return true;
+			}
 		}
 		else if ((JButton) action == button2){
 			if (volumeEmpty){
 				message.append("- Desired Final CO2 volume");
 				error = true;
 			}
-			if (error)
+			else{
+				try{
+					Double check = Double.parseDouble(volumeIn.getText());
+				} catch (NumberFormatException e){
+					JOptionPane.showMessageDialog(this, "Input error. Please enter a number with or without decimals for CO2 volume.");
+					return true;
+				}
+			}
+			if (error){
 				JOptionPane.showMessageDialog(this, message);
+				return true;
+			}
 		}
-		if (error)
-			return true;
-		else
-			return false;
+		return false;
 	}
 
 	public void clearFields(){
