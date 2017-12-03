@@ -123,7 +123,7 @@ public class GUIResults extends JPanel implements ActionListener{
 
     public void setPage(){
         labelName.setText("Name: " + InputPage.currentBeer.getName());
-        labelCurrentPSI.setText("Current PSI: "+ InputPage.currentBeer.getCurrentPSI());
+        labelCurrentPSI.setText("Current PSI: +PSI");
         labelDesiredPSI.setText("Desired PSI: " + InputPage.currentBeer.getDesiredPSI());
         labelReadyDate.setText("Estimated Ready Date: " + InputPage.currentBeer.getReadyDateString() );
         labelGraph.setText("Graph: ");
@@ -135,10 +135,6 @@ public class GUIResults extends JPanel implements ActionListener{
         Object action = e.getSource();
         if ((JButton) action == buttonDelBeer)
             pages.show(container, "Input");
-        else if ((JButton) action == buttonEnter && psiInput.getText.isEmpty() )
-            JOptionPane.showMessageDialog(this, "Please enter PSI");
-        else if ((JButton) action == buttonEnter && !psiInput.getText.isEmpty() )
-            InputPage.currentBeer.setCurrentPSI(Integer.parseInt(psiInput.getText()));
     }
 
     public void linkPages(InputPage next, CardLayout change, JPanel main){
