@@ -7,10 +7,10 @@ import java.lang.Math;
 
 public class Beer implements Serializable{
     private int desiredPSI, beerID, currentPSI, desiredTemp, currentTemp;
-    private double desiredVolume, currentVolume, volPerDay;
+    private double desiredVolume, currentVolume;
     private String beerType, beerName, beerImage, email;
     private Calendar bottleDate, trackingDate, readyDate;
-    private Boolean ready;
+    private Boolean readyMailSent;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
     private ArrayList<TrackingObject>  trackingArray = new ArrayList<TrackingObject>();
     //color
@@ -19,7 +19,7 @@ public class Beer implements Serializable{
         this.beerName = name;
         setBottleDate(bDate);
         this.email = mail;
-        this.ready = false;
+        this.readyMailSent = false;
     }
 
     public Beer(){};
@@ -140,44 +140,8 @@ public class Beer implements Serializable{
     }
     public String getReadyDateString(){return sdf.format(readyDate.getTime());}
 
-    /* 
-        Adjusts estimated ready date based on average rate of last 4 CO2 volumes
-        If there are less than 4 recorded volumes, then estimated date of 3 weeks from bottle date is used
-    */
-    public void adjustReadyDate(){
-        if(trackingArray.size() >= 4 && ready == false){
-            double rate = 0;
-            double remainingVol;
-            int count = 3;
-            int daysRemaining = 0;
-            for(int i = trackingArray.size() - 1; i > trackingArray.size() - 4; i--){
-                double change = trackingArray.get(i).getVolume() - trackingArray.get(i-1).getVolume();
-                rate += change;
-            }
-            rate /= count;
-            setVolPerDay(rate);
-            remainingVol = desiredVolume - currentVolume;
-            daysRemaining = (int)(Math.ceil(remainingVol / rate)) - 1;      // subtract 1 because the current day's PSI has not been recorded yet
-            Date currentDate = trackingDate.getTime();
-            readyDate = Calendar.getInstance();
-            readyDate.setTime(currentDate);
-            readyDate.add(Calendar.DATE, daysRemaining);
-        }
-    }
-
-    public void setVolPerDay(double rate){this.volPerDay = rate;}
-    public String getVolPerDayString(){
-        String result;
-        if(trackingArray.size() >= 4)
-            result = Double.toString(volPerDay);
-        else
-            result = "Not enough data";
-        return result;
-    }
-    public double getVolPerDay(){return volPerDay;}
-
-    public void readyLogged(){this.ready = true;}
-    public Boolean readyCheck(){return ready;}
+    public void readyMailLogged(){this.readyMailSent = true;}
+    public Boolean readyMailCheck(){return readyMailSent;}
 
 
 

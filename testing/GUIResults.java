@@ -44,7 +44,7 @@ public class GUIResults extends JPanel implements ActionListener{
 
     JPanel thePanel, thePanel2, thePanel3, thePanel4, container;
     ChartPanel chartPanel;
-    JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, graphImgLabel, labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
+    JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, graphImgLabel, labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol;
     JButton buttonDelBeer, buttonEnter;
     ImageIcon graphImg;
     JTextField psiInput;
@@ -77,7 +77,7 @@ public class GUIResults extends JPanel implements ActionListener{
         thePanel2.setLayout(new GridLayout(0, 1));
         thePanel4.setLayout(new BorderLayout());
 
-        font = new Font("Helvetica", Font.PLAIN, 17);
+        font = new Font("Helvetica", Font.PLAIN, 18);
 
 
         labelName = new JLabel("", SwingConstants.CENTER);
@@ -88,7 +88,6 @@ public class GUIResults extends JPanel implements ActionListener{
         labelBottleDate = new JLabel("", SwingConstants.CENTER);
         labelManualPSI = new JLabel("Manual PSI Input:", SwingConstants.CENTER);
         labelCurrentVol = new JLabel("", SwingConstants.CENTER);
-        labelVolPerDay = new JLabel("", SwingConstants.CENTER);
         labelDesiredVol = new JLabel("", SwingConstants.CENTER);
 
         psiInput = new JTextField(10);
@@ -119,7 +118,6 @@ public class GUIResults extends JPanel implements ActionListener{
         labelManualPSI.setFont(font);
         labelBottleDate.setFont(font);
         labelCurrentVol.setFont(font);
-        labelVolPerDay.setFont(font);
         labelDesiredVol.setFont(font);
         buttonEnter.setFont(font);
 
@@ -129,7 +127,6 @@ public class GUIResults extends JPanel implements ActionListener{
         addComp(thePanel2, labelBottleDate, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelCurrentPSI, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelCurrentVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelVolPerDay, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelDesiredVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelReadyDate, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelGraph, 0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
@@ -187,7 +184,6 @@ public class GUIResults extends JPanel implements ActionListener{
         labelName.setText("Name: " + currentBeer.getName());
         labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
         labelCurrentVol.setText("Current CO2 Volume: " + currentBeer.getCurrentVolume());
-        labelVolPerDay.setText("Average CO2 Volume Rate (from past 4 days): " + currentBeer.getVolPerDayString());
         labelDesiredVol.setText("Desired CO2 Volume: " + currentBeer.getDesiredVolume());
         labelReadyDate.setText("Estimated Ready Date: " + currentBeer.getReadyDateString() );
         labelGraph.setText("Graph: ");
@@ -196,10 +192,6 @@ public class GUIResults extends JPanel implements ActionListener{
         dateCounter = Calendar.getInstance();
         drawGraph();
     }
-
-
-
-
 
     public void actionPerformed(ActionEvent e){
         Object action = e.getSource();
@@ -222,13 +214,12 @@ public class GUIResults extends JPanel implements ActionListener{
             JOptionPane.showMessageDialog(this, "Please enter PSI");
         else if ((JButton) action == buttonEnter && !psiInput.getText().isEmpty() ){
             currentBeer.setCurrentTracking(Integer.parseInt(psiInput.getText()));
-            currentBeer.adjustReadyDate();
             currentBeer.saveCurrentBeerStateToFile();
-            if(currentBeer.getCurrentVolume() >= currentBeer.getDesiredVolume() && currentBeer.readyCheck() == false)
+            if(currentBeer.getCurrentVolume() >= currentBeer.getDesiredVolume() && currentBeer.readyMailCheck() == false)
             {
                 try {  
                     sentmail();
-                    currentBeer.readyLogged();
+                    currentBeer.readyMailLogged();
                 } catch (Exception ex) {
                     Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -240,24 +231,14 @@ public class GUIResults extends JPanel implements ActionListener{
     public void updatePage(){
         labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
         labelCurrentVol.setText("Current CO2 Volume: " + currentBeer.getCurrentVolume());
-        labelVolPerDay.setText("Average CO2 Volume Rate (from past 4 days): " + currentBeer.getVolPerDayString());
-        if(currentBeer.readyCheck() == false)
-            labelReadyDate.setText("Estimated Ready Date: " + currentBeer.getReadyDateString() );
-        else
-            labelReadyDate.setText("Estimated Ready Date: Now ready!");
         drawGraph();
     }
-
 
     public void linkPages(InputPage next, CardLayout change, JPanel main){
         input = next;
         pages = change;
         container = main;
     } 
-
-
-
-
 
     private void drawGraph(){
         thePanel4.removeAll();
@@ -283,9 +264,6 @@ public class GUIResults extends JPanel implements ActionListener{
         }
         return dataset;
     }
-
-
-
 
     public void sentmail() throws MessagingException, Exception
     {
