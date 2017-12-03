@@ -258,13 +258,6 @@ public class InputPage extends JPanel implements ActionListener{
 			return false;
 	}
 
-	public void clearFields(){
-		beerLabelIn.setText("");
-		psiIn.setText("");
-		beerTypeIn.setText("");
-		bottleDateIn.getJFormattedTextField().setText("");
-	}
-
 	// needed for calendar date selection
 	public class DateLabelFormatter extends AbstractFormatter {
 
