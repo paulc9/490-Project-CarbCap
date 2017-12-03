@@ -10,7 +10,7 @@ public class Beer implements Serializable{
     private double desiredVolume, currentVolume, volPerDay;
     private String beerType, beerName, beerImage, email;
     private Calendar bottleDate, trackingDate, readyDate;
-    private Boolean ready, warning, plateaued;
+    private Boolean ready;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
     private ArrayList<TrackingObject>  trackingArray = new ArrayList<TrackingObject>();
     //color
@@ -20,8 +20,6 @@ public class Beer implements Serializable{
         setBottleDate(bDate);
         this.email = mail;
         this.ready = false;
-        this.warning = false;
-        this.plateaued = false;
     }
 
     public Beer(){};
@@ -180,27 +178,6 @@ public class Beer implements Serializable{
 
     public void readyLogged(){this.ready = true;}
     public Boolean readyCheck(){return ready;}
-
-    public void warningLogged(){this.warning = true;}
-    public Boolean warningCheck(){return warning;}
-
-    public void plateauedLogged(){this.plateaued = true;}
-    public Boolean plateauedCheck(){return plateaued;}
-
-    /*
-        Checks the change in CO2 volume over the past 7 days
-        If the change is less than the changeThreshold, the function returns true (meaning the beer has plateaued)
-    */
-    public Boolean weekPlateaued(){
-        Double changeThreshold = 0.05;
-        if(trackingArray.size() >= 7){
-            int i = trackingArray.size() - 1;
-            Double rate = trackingArray.get(i).getVolume() - trackingArray.get(i-6).getVolume();
-            if(rate < changeThreshold)
-                return true;
-        }
-        return false;
-    }
 
 
 
