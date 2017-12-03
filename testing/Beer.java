@@ -147,7 +147,7 @@ public class Beer implements Serializable{
         If there are less than 4 recorded volumes, then estimated date of 3 weeks from bottle date is used
     */
     public void adjustReadyDate(){
-        if(ready == false){
+        if(ready == false && trackingArray.size() >= 4){
             double remainingVol;
             double rate = avgVolRate;
             int daysRemaining = 0;

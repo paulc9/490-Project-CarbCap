@@ -46,16 +46,19 @@ import javax.mail.internet.MimeMultipart;
 
 public class GUIResults extends JPanel implements ActionListener{
 
-    JPanel thePanel, thePanel2, thePanel3, thePanel4, container;
+    JPanel thePanel, thePanel2, thePanel3, thePanel4, container, imgPanel;
     ChartPanel chartPanel;
-    JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, graphImgLabel, labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
+    // Data name labels
+    JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, /*graphImgLabel,*/ labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
+    // Data value labels
+    JLabel valName, valCurrentPSI, valReadyDate, valManualPSI, valBeerType, valBottleDate, valCurrentVol, valDesiredVol, valVolPerDay;
     JButton buttonDelBeer, buttonEnter;
     ImageIcon graphImg;
     JTextField psiInput;
     Font font;
     InputPage input;
     CardLayout pages;
-    Box theBox;
+    Box topBox, theBox;
     Calendar dateCounter;
     Beer currentBeer;
 
@@ -73,27 +76,29 @@ public class GUIResults extends JPanel implements ActionListener{
         thePanel2 = new JPanel();
         thePanel3 = new JPanel();
         thePanel4 = new JPanel();
+        imgPanel = new JPanel();
 
+        topBox = Box.createHorizontalBox();
         theBox = Box.createHorizontalBox();
 
         this.setLayout(new BorderLayout());         // Needed to make graph display properly
         thePanel.setLayout(new BoxLayout(thePanel, BoxLayout.PAGE_AXIS));
-        thePanel2.setLayout(new GridLayout(0, 1));
+        thePanel2.setLayout(new GridLayout(8, 2));
         thePanel4.setLayout(new BorderLayout());
 
         font = new Font("Helvetica", Font.PLAIN, 17);
 
 
-        labelName = new JLabel("", SwingConstants.CENTER);
-        labelCurrentPSI = new JLabel("", SwingConstants.CENTER);
-        labelReadyDate = new JLabel("", SwingConstants.CENTER);
+        labelName = new JLabel("Name", SwingConstants.CENTER);
+        labelCurrentPSI = new JLabel("Current PSI", SwingConstants.CENTER);
+        labelReadyDate = new JLabel("Estimated Ready Date", SwingConstants.CENTER);
         labelGraph = new JLabel("", SwingConstants.CENTER);
-        labelBeerType = new JLabel("", SwingConstants.CENTER);
-        labelBottleDate = new JLabel("", SwingConstants.CENTER);
+        labelBeerType = new JLabel("Beer Type", SwingConstants.CENTER);
+        labelBottleDate = new JLabel("Bottled on", SwingConstants.CENTER);
         labelManualPSI = new JLabel("Manual PSI Input:", SwingConstants.CENTER);
-        labelCurrentVol = new JLabel("", SwingConstants.CENTER);
-        labelVolPerDay = new JLabel("", SwingConstants.CENTER);
-        labelDesiredVol = new JLabel("", SwingConstants.CENTER);
+        labelCurrentVol = new JLabel("Current CO2 Volume", SwingConstants.CENTER);
+        labelVolPerDay = new JLabel("Average CO2 Volume Rate (from past 4 days)", SwingConstants.CENTER);
+        labelDesiredVol = new JLabel("Desired CO2 Volume", SwingConstants.CENTER);
 
         psiInput = new JTextField(10);
         psiInput.setMaximumSize( psiInput.getPreferredSize() );
@@ -113,6 +118,16 @@ public class GUIResults extends JPanel implements ActionListener{
         buttonEnter.setToolTipText("Enter Current PSI (assume temperature is at 50 deg F)");
         buttonEnter.addActionListener(this);
 
+        valName = new JLabel();
+        valCurrentPSI = new JLabel();
+        valReadyDate = new JLabel();
+        valManualPSI = new JLabel();
+        valBeerType = new JLabel();
+        valBottleDate = new JLabel();
+        valCurrentVol = new JLabel();
+        valDesiredVol = new JLabel();
+        valVolPerDay = new JLabel();
+
 
         labelName.setFont(font);
         labelCurrentPSI.setFont(font);
@@ -127,6 +142,52 @@ public class GUIResults extends JPanel implements ActionListener{
         labelDesiredVol.setFont(font);
         buttonEnter.setFont(font);
 
+        valName.setFont(font);
+        valCurrentPSI.setFont(font);
+        valReadyDate.setFont(font);
+        valManualPSI.setFont(font);
+        valBeerType.setFont(font);
+        valBottleDate.setFont(font);
+        valCurrentVol.setFont(font);
+        valDesiredVol.setFont(font);
+        valVolPerDay.setFont(font);
+
+        valName.setForeground(Color.BLACK);
+        valCurrentPSI.setForeground(Color.BLACK);
+        valReadyDate.setForeground(Color.BLACK);
+        valManualPSI.setForeground(Color.BLACK);
+        valBeerType.setForeground(Color.BLACK);
+        valBottleDate.setForeground(Color.BLACK);
+        valCurrentVol.setForeground(Color.BLACK);
+        valDesiredVol.setForeground(Color.BLACK);
+        valVolPerDay.setForeground(Color.BLACK);
+
+        thePanel2.add(labelName);
+        thePanel2.add(valName);
+        thePanel2.add(labelBeerType);
+        thePanel2.add(valBeerType);
+        thePanel2.add(labelBottleDate);
+        thePanel2.add(valBottleDate);
+        thePanel2.add(labelReadyDate);
+        thePanel2.add(valReadyDate);
+        thePanel2.add(labelDesiredVol);
+        thePanel2.add(valDesiredVol);
+        thePanel2.add(labelCurrentVol);
+        thePanel2.add(valCurrentVol);
+        thePanel2.add(labelVolPerDay);
+        thePanel2.add(valVolPerDay);
+        thePanel2.add(labelCurrentPSI);
+        thePanel2.add(valCurrentPSI);
+/*
+        addComp(thePanel2, labelName, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(thePanel2, valName, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(thePanel2, labelBottleDate, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(thePanel2, labelCurrentPSI, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(thePanel2, labelCurrentVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(thePanel2, labelVolPerDay, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(thePanel2, labelDesiredVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(thePanel2, labelReadyDate, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(thePanel2, labelGraph, 0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
         addComp(thePanel2, labelName, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelBeerType, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
@@ -137,7 +198,7 @@ public class GUIResults extends JPanel implements ActionListener{
         addComp(thePanel2, labelDesiredVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelReadyDate, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelGraph, 0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-
+*/
         //thePanel4.add(graphImgLabel);
 
         theBox.add(Box.createRigidArea(new Dimension(100,0)));
@@ -148,8 +209,10 @@ public class GUIResults extends JPanel implements ActionListener{
         theBox.add(Box.createRigidArea(new Dimension(150,0)));
         theBox.add(buttonDelBeer);
 
+        topBox.add(thePanel2);
+        topBox.add(imgPanel);
 
-        thePanel.add(thePanel2);
+        thePanel.add(topBox);
         thePanel.add(thePanel4);
         thePanel.add(theBox);
 
@@ -187,17 +250,28 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
     public void setPage(){
+        imgPanel.removeAll();
         currentBeer = loadBeer();
-        labelName.setText("Name: " + currentBeer.getName());
-        labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
-        labelCurrentVol.setText("Current CO2 Volume: " + currentBeer.getCurrentVolume());
-        labelVolPerDay.setText("Average CO2 Volume Rate (from past 4 days): " + currentBeer.getAvgVolRateString());
-        labelDesiredVol.setText("Desired CO2 Volume: " + currentBeer.getDesiredVolume());
-        labelReadyDate.setText("Estimated Ready Date: " + currentBeer.getReadyDateString() );
+
+        URL url = this.getClass().getClassLoader().getResource("images/"+currentBeer.getBeerImage()+".jpg");
+        ImageIcon img=new ImageIcon(url);
+        img.setImage(img.getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT));
+        JLabel showImg=new JLabel(img);
+        imgPanel.add(showImg);
+
+        valName.setText(currentBeer.getName());
+        valCurrentPSI.setText("" + currentBeer.getCurrentPSI());
+        valCurrentVol.setText("" + currentBeer.getCurrentVolume());
+        valVolPerDay.setText("" + currentBeer.getAvgVolRateString());
+        valDesiredVol.setText("" + currentBeer.getDesiredVolume());
+        valReadyDate.setText("" + currentBeer.getReadyDateString() );
         labelGraph.setText("Graph: ");
-        labelBeerType.setText("Beer Type: " + currentBeer.getType());
-        labelBottleDate.setText("Bottled on: " + currentBeer.getBottleDateString());
+        valBeerType.setText(currentBeer.getType());
+        valBottleDate.setText(currentBeer.getBottleDateString());
         dateCounter = Calendar.getInstance();
+
+        thePanel.revalidate();
+        thePanel.repaint();
         drawGraph();
     }
 
@@ -283,13 +357,13 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
     public void updatePage(){
-        labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
-        labelCurrentVol.setText("Current CO2 Volume: " + currentBeer.getCurrentVolume());
-        labelVolPerDay.setText("Average CO2 Volume Rate (from past 4 days): " + currentBeer.getAvgVolRateString());
+        valCurrentPSI.setText("" + currentBeer.getCurrentPSI());
+        valCurrentVol.setText("" + currentBeer.getCurrentVolume());
+        valVolPerDay.setText(currentBeer.getAvgVolRateString());
         if(currentBeer.readyCheck() == false)
-            labelReadyDate.setText("Estimated Ready Date: " + currentBeer.getReadyDateString() );
+            valReadyDate.setText("" + currentBeer.getReadyDateString() );
         else
-            labelReadyDate.setText("Estimated Ready Date: Now ready!");
+            valReadyDate.setText("Now ready!");
         drawGraph();
     }
 
