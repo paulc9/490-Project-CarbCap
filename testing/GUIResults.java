@@ -45,16 +45,11 @@ public class GUIResults extends JPanel implements ActionListener{
     CardLayout pages;
     Box theBox;
     Calendar dateCounter;
-    Beer currentBeer = loadBeer();
 
 
     public static void main(String[] args) {
         new GUIResults();
     }
-
-
-
-
 
     public GUIResults() {
         thePanel = new JPanel();
@@ -138,44 +133,14 @@ public class GUIResults extends JPanel implements ActionListener{
         this.add(thePanel);
     }
 
-    public void loadBeer(){
-        try
-        {
-            // Reading the object from a file
-            FileInputStream file = new FileInputStream("savedCurrentBeer.ser");
-            ObjectInputStream in = new ObjectInputStream(file);
-
-            // Method for deserialization of object
-            Beer inBeer = (Beer)in.readObject();
-
-            in.close();
-            file.close();
-
-            System.out.println("Object has been deserialized ");
-
-        }
-
-        catch(IOException ex)
-        {
-            System.out.println("IOException is caught");
-        }
-
-        catch(ClassNotFoundException ex)
-        {
-            System.out.println("ClassNotFoundException is caught");
-        }
-
-    return inBeer;
-    }
-
     public void setPage(){
-        labelName.setText("Name: " + currentBeer.getName());
-        labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
-        labelDesiredPSI.setText("Desired PSI: " + currentBeer.getDesiredPSI());
-        labelReadyDate.setText("Estimated Ready Date: " + currentBeer.getReadyDateString() );
+        labelName.setText("Name: " + InputPage.currentBeer.getName());
+        labelCurrentPSI.setText("Current PSI: "+ InputPage.currentBeer.getCurrentPSI());
+        labelDesiredPSI.setText("Desired PSI: " + InputPage.currentBeer.getDesiredPSI());
+        labelReadyDate.setText("Estimated Ready Date: " + InputPage.currentBeer.getReadyDateString() );
         labelGraph.setText("Graph: ");
-        labelBeerType.setText("Beer Type: " + currentBeer.getType());
-        labelBottleDate.setText("Bottled on: " + currentBeer.getBottleDateString());
+        labelBeerType.setText("Beer Type: " + InputPage.currentBeer.getType());
+        labelBottleDate.setText("Bottled on: " + InputPage.currentBeer.getBottleDateString());
         dateCounter = Calendar.getInstance();
         drawGraph();
     }
@@ -187,8 +152,8 @@ public class GUIResults extends JPanel implements ActionListener{
         else if ((JButton) action == buttonEnter && psiInput.getText().isEmpty() )
             JOptionPane.showMessageDialog(this, "Please enter PSI");
         else if ((JButton) action == buttonEnter && !psiInput.getText().isEmpty() ){
-            currentBeer.setCurrentPSI(Integer.parseInt(psiInput.getText()));
-            labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
+            InputPage.currentBeer.setCurrentPSI(Integer.parseInt(psiInput.getText()));
+            labelCurrentPSI.setText("Current PSI: "+ InputPage.currentBeer.getCurrentPSI());
             drawGraph();
         }
     }
@@ -216,8 +181,8 @@ public class GUIResults extends JPanel implements ActionListener{
 
     private DefaultCategoryDataset createDataset(){
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        int results = currentBeer.getTrackingArrayList().size();
-        ArrayList<Beer.PSItrackingObject> beer = currentBeer.getTrackingArrayList();
+        int results = InputPage.currentBeer.getTrackingArrayList().size();
+        ArrayList<Beer.PSItrackingObject> beer = InputPage.currentBeer.getTrackingArrayList();
         for(int i = 0; i < results; i++){
             dataset.addValue(beer.get(i).getPSI(), "PSI", beer.get(i).getDateString());
         }

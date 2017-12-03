@@ -2,14 +2,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.io.*;
 
-public class Beer implements Serializable{
+public class Beer{
     private int desiredPSI, beerID, currentPSI, desiredTemp; //currentPSI may be ArrayList
     private String beerType, beerName, beerImage;
     private Calendar bottleDate, trackingDate, readyDate;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
-    private ArrayList<PSItrackingObject>  trackingArray = new ArrayList<PSItrackingObject>();
+    ArrayList<PSItrackingObject>  trackingArray = new ArrayList<PSItrackingObject>();
     //color
     //estimatedFinishDate
 
@@ -88,7 +87,6 @@ public class Beer implements Serializable{
         public PSItrackingObject(){
             trackedPSI = getCurrentPSI();
             trackedDate = Calendar.getInstance();
-            saveCurrentBeerStateToFile();
         }
 
         public PSItrackingObject(Calendar date){
@@ -96,32 +94,10 @@ public class Beer implements Serializable{
             trackedPSI = getCurrentPSI();
             trackedDate = Calendar.getInstance();
             trackedDate.setTime(trackDate);
-            saveCurrentBeerStateToFile();
         }
 
         public int getPSI(){return trackedPSI;}
         public String getDateString(){return sdf.format(trackedDate.getTime());}
-    }
-
-    public void saveCurrentBeerStateToFile(){
-        try{
-            //Saving of object in a file
-            FileOutputStream file = new FileOutputStream("savedCurrentBeer.ser");
-            ObjectOutputStream out = new ObjectOutputStream(file);
-
-            // Method for serialization of object
-            out.writeObject(this);
-
-            out.close();
-            file.close();
-
-            System.out.println("Object has been serialized");
-        }
-        catch(IOException ex)
-        {
-            System.out.println("IOException is caught /n save error");
-        }
-
     }
 
     }

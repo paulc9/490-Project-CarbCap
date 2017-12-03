@@ -13,7 +13,7 @@ import java.net.URL;
  *
  * @author Administrator
  */
-public class Newpage extends JPanel implements ActionListener, Serializable{
+public class Newpage extends JPanel implements ActionListener{
     JPanel mainPanel, p1, p2, p3, container;
     Box theBox;
     private ImageIcon img;
@@ -127,7 +127,6 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
         if ((JButton) action == back)
             pages.show(container, "Input");
         else if((JButton) action == next){
-            InputPage.currentBeer.saveCurrentBeerStateToFile();
             results.setPage();
             pages.show(container, "Results");
         }
