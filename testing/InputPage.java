@@ -170,7 +170,7 @@ public class InputPage extends JPanel implements ActionListener{
 		panel4_Text = new JLabel("Type in the following info for a custom beer", SwingConstants.CENTER);
 		volumeLabel = new JLabel("Desired Final CO2 volume level");
 		volumeIn = new JTextField(7);
-		beerTypeLabel = new JLabel("Beer Type (optional)");
+		beerTypeLabel = new JLabel("Beer Type");
 		beerTypeIn = new JTextField(15);
 		button2 = new JButton("Ok");
 
