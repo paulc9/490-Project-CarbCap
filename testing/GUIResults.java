@@ -187,7 +187,7 @@ public class GUIResults extends JPanel implements ActionListener{
         labelName.setText("Name: " + currentBeer.getName());
         labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
         labelCurrentVol.setText("Current CO2 Volume: " + currentBeer.getCurrentVolume());
-        labelVolPerDay.setText("Average CO2 Volume Rate (from past 4 days): " + currentBeer.getAvgVolRateString());
+        labelVolPerDay.setText("Average CO2 Volume Rate (from past 4 days): " + currentBeer.getVolPerDayString());
         labelDesiredVol.setText("Desired CO2 Volume: " + currentBeer.getDesiredVolume());
         labelReadyDate.setText("Estimated Ready Date: " + currentBeer.getReadyDateString() );
         labelGraph.setText("Graph: ");
@@ -222,7 +222,6 @@ public class GUIResults extends JPanel implements ActionListener{
             JOptionPane.showMessageDialog(this, "Please enter PSI");
         else if ((JButton) action == buttonEnter && !psiInput.getText().isEmpty() ){
             currentBeer.setCurrentTracking(Integer.parseInt(psiInput.getText()));
-            currentBeer.adjustAvgVolRate();
             currentBeer.adjustReadyDate();
             currentBeer.saveCurrentBeerStateToFile();
             // Email ready notification
@@ -270,7 +269,7 @@ public class GUIResults extends JPanel implements ActionListener{
     public void updatePage(){
         labelCurrentPSI.setText("Current PSI: "+ currentBeer.getCurrentPSI());
         labelCurrentVol.setText("Current CO2 Volume: " + currentBeer.getCurrentVolume());
-        labelVolPerDay.setText("Average CO2 Volume Rate (from past 4 days): " + currentBeer.getAvgVolRateString());
+        labelVolPerDay.setText("Average CO2 Volume Rate (from past 4 days): " + currentBeer.getVolPerDayString());
         if(currentBeer.readyCheck() == false)
             labelReadyDate.setText("Estimated Ready Date: " + currentBeer.getReadyDateString() );
         else
