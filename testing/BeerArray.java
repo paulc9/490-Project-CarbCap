@@ -16,38 +16,31 @@ public class BeerArray{
 		lager.setDesiredPSI(17);
 		lager.setDesiredTemp(45);
 		lager.setType("Lager");
-		lager.setBeerImage("lager");
-
+		        //lager.setColor();
 		paleAle.setDesiredPSI(16);
 		paleAle.setDesiredTemp(45);
 		paleAle.setType("Pale Ale");
-		paleAle.setBeerImage("pale ale");
-
+		       // paleAle.setColor();
 		amberAle.setDesiredPSI(16);
 		amberAle.setDesiredTemp(50);
 		amberAle.setType("Amber Ale");
-		amberAle.setBeerImage("amber ale");
-
+		        //amberAle.setColor();
 		brownAle.setDesiredPSI(11);
 		brownAle.setDesiredTemp(40);
 		brownAle.setType("Brown Ale");
-		brownAle.setBeerImage("brown ale");
-
+		        //brownAle.setColor();
 		stout.setDesiredPSI(11);
 		stout.setDesiredTemp(55);
 		stout.setType("Stout");
-		stout.setBeerImage("stout");
-
+		        //stout.setColor();
 		porter.setDesiredPSI(6);
 		porter.setDesiredTemp(50);
 		porter.setType("Porter");
-		porter.setBeerImage("porter");
-
+		        //porter.setColor();
 		belgianWhite.setDesiredPSI(9);
 		belgianWhite.setDesiredTemp(45);
 		belgianWhite.setType("Belgian White");
-		belgianWhite.setBeerImage("belgian white");
-
+		        //belgianWhite.setColor();
 		beerArray.add(lager);
 		beerArray.add(paleAle);
 		beerArray.add(amberAle);

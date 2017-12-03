@@ -71,7 +71,7 @@ public class Newpage extends JPanel implements ActionListener{
         theBox.removeAll();
         p3.removeAll();
 
-        URL url = this.getClass().getClassLoader().getResource("images/"+InputPage.currentBeer.getBeerImage()+".jpg");
+        URL url = this.getClass().getClassLoader().getResource("images/beer_10.jpg");
         img=new ImageIcon(url);
         img.setImage(img.getImage().getScaledInstance(Newpage.width, Newpage.height, Image.SCALE_DEFAULT));
         showImg=new JLabel(img);
