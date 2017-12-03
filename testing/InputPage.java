@@ -56,7 +56,6 @@ public class InputPage extends JPanel implements ActionListener{
 		box2 = Box.createHorizontalBox();
 		box4 = Box.createHorizontalBox();
 
-		this.setLayout(new BorderLayout());
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		panel1.setLayout(new BoxLayout(panel1, BoxLayout.PAGE_AXIS));
 		panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));

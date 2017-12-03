@@ -21,21 +21,11 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
-import java.util.*;
-
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
 
 
 public class GUIResults extends JPanel implements ActionListener{
 
     JPanel thePanel, thePanel2, thePanel3, thePanel4, container;
-    ChartPanel chartPanel;
     JLabel labelName, labelCurrentPSI, labelDesiredPSI, labelReadyDate, labelGraph, graphImgLabel, labelManualPSI, labelBeerType, labelBottleDate;
     JButton buttonDelBeer, buttonEnter;
     ImageIcon graphImg;
@@ -44,7 +34,6 @@ public class GUIResults extends JPanel implements ActionListener{
     InputPage input;
     CardLayout pages;
     Box theBox;
-    Calendar dateCounter;
 
 
     public static void main(String[] args) {
@@ -59,10 +48,9 @@ public class GUIResults extends JPanel implements ActionListener{
 
         theBox = Box.createHorizontalBox();
 
-        this.setLayout(new BorderLayout());         // Needed to make graph display properly
-        thePanel.setLayout(new BoxLayout(thePanel, BoxLayout.PAGE_AXIS));
+
+        thePanel.setLayout(new GridLayout(0, 1));
         thePanel2.setLayout(new GridLayout(0, 1));
-        thePanel4.setLayout(new BorderLayout());
 
         font = new Font("Helvetica", Font.PLAIN, 22);
 
@@ -78,14 +66,14 @@ public class GUIResults extends JPanel implements ActionListener{
 
         psiInput = new JTextField(10);
         psiInput.setMaximumSize( psiInput.getPreferredSize() );
-/*
+
         URL url = this.getClass().getClassLoader().getResource("images/graph.jpg");
         graphImg = new ImageIcon(url);
         Image image = graphImg.getImage(); // transform it
         Image newimg = image.getScaledInstance(320, 165,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-        graphImg = new ImageIcon(newimg);  // transform it back
+        graphImg = new ImageIcon(newimg);  // transform it back*/
         graphImgLabel = new JLabel(graphImg);
-*/
+
         buttonDelBeer = new JButton("Delete Beer");
         buttonDelBeer.setToolTipText("Delete Current Beer Data");
         buttonDelBeer.addActionListener(this);
@@ -115,7 +103,7 @@ public class GUIResults extends JPanel implements ActionListener{
         addComp(thePanel2, labelReadyDate, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
         addComp(thePanel2, labelGraph, 0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
-        //thePanel4.add(graphImgLabel);
+        thePanel4.add(graphImgLabel);
 
         theBox.add(Box.createRigidArea(new Dimension(100,0)));
         theBox.add(labelManualPSI);
@@ -141,21 +129,16 @@ public class GUIResults extends JPanel implements ActionListener{
         labelGraph.setText("Graph: ");
         labelBeerType.setText("Beer Type: " + InputPage.currentBeer.getType());
         labelBottleDate.setText("Bottled on: " + InputPage.currentBeer.getBottleDateString());
-        dateCounter = Calendar.getInstance();
-        drawGraph();
     }
 
     public void actionPerformed(ActionEvent e){
         Object action = e.getSource();
         if ((JButton) action == buttonDelBeer)
             pages.show(container, "Input");
-        else if ((JButton) action == buttonEnter && psiInput.getText().isEmpty() )
+        else if ((JButton) action == buttonEnter && psiInput.getText.isEmpty() )
             JOptionPane.showMessageDialog(this, "Please enter PSI");
-        else if ((JButton) action == buttonEnter && !psiInput.getText().isEmpty() ){
+        else if ((JButton) action == buttonEnter && !psiInput.getText.isEmpty() )
             InputPage.currentBeer.setCurrentPSI(Integer.parseInt(psiInput.getText()));
-            labelCurrentPSI.setText("Current PSI: "+ InputPage.currentBeer.getCurrentPSI());
-            drawGraph();
-        }
     }
 
     public void linkPages(InputPage next, CardLayout change, JPanel main){
@@ -163,31 +146,6 @@ public class GUIResults extends JPanel implements ActionListener{
         pages = change;
         container = main;
     } 
-
-    private void drawGraph(){
-        thePanel4.removeAll();
-        thePanel4.revalidate();
-        JFreeChart lineChart = ChartFactory.createLineChart(
-            "Beer PSI",
-            "Date", "PSI",
-            createDataset(),
-            PlotOrientation.VERTICAL,
-            true,true,false);
-        chartPanel = new ChartPanel(lineChart);
-        //chartPanel.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
-        //chartPanel.setVisible(true);
-        thePanel4.add(chartPanel, BorderLayout.CENTER);
-    }
-
-    private DefaultCategoryDataset createDataset(){
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        int results = InputPage.currentBeer.getTrackingArrayList().size();
-        ArrayList<Beer.PSItrackingObject> beer = InputPage.currentBeer.getTrackingArrayList();
-        for(int i = 0; i < results; i++){
-            dataset.addValue(beer.get(i).getPSI(), "PSI", beer.get(i).getDateString());
-        }
-        return dataset;
-    }
 
         // Sets the rules for a component destined for a GridBagLayout
         // and then adds it
