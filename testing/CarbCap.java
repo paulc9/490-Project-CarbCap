@@ -39,6 +39,7 @@ public class CarbCap extends JFrame implements Serializable{
 	InputPage input;
 	Newpage confirm;
 	GUIResults results;
+	static DecimalFormat df;
 
 
 	public CarbCap(){
@@ -71,6 +72,8 @@ public class CarbCap extends JFrame implements Serializable{
 		boxSpace = new Dimension(0, 30);
 		edgeSpace = new Dimension(40, 0);
 		buttonSize = new Dimension(100, 40);
+
+		df = new DecimalFormat("#.0000");
 	}
 
 	public void frameLayout(){

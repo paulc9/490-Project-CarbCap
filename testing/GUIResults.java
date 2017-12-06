@@ -261,7 +261,7 @@ public class GUIResults extends JPanel implements ActionListener{
 
         valName.setText(currentBeer.getName());
         valCurrentPSI.setText("" + currentBeer.getCurrentPSI());
-        valCurrentVol.setText("" + currentBeer.getCurrentVolume());
+        valCurrentVol.setText("" + CarbCap.df.format(currentBeer.getCurrentVolume()));
         valVolPerDay.setText("" + currentBeer.getAvgVolRateString());
         valDesiredVol.setText("" + currentBeer.getDesiredVolume());
         valReadyDate.setText("" + currentBeer.getReadyDateString() );
@@ -332,7 +332,7 @@ public class GUIResults extends JPanel implements ActionListener{
         {
             try{
                 String subject = "Beer Warning";
-                String content = "Your beer \"" + currentBeer.getName() + "\" is at CO2 level " + currentBeer.getCurrentVolume() + " and is in danger of bursting!";
+                String content = "Your beer \"" + currentBeer.getName() + "\" is at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and is in danger of bursting!";
                 sentmail(subject, content, imageName);
                 currentBeer.warningLogged();
             } catch (Exception ex){
@@ -346,7 +346,7 @@ public class GUIResults extends JPanel implements ActionListener{
             if(currentBeer.weekPlateaued() == true){
                 try{
                     String subject = "Beer Plateaued";
-                    String content = "Your beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + currentBeer.getCurrentVolume() + " and will likely not carbonate much more.";
+                    String content = "Your beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and will likely not carbonate much more.";
                     sentmail(subject, content, imageName);
                     currentBeer.plateauedLogged();
                 } catch (Exception ex){
@@ -358,12 +358,14 @@ public class GUIResults extends JPanel implements ActionListener{
 
     public void updatePage(){
         valCurrentPSI.setText("" + currentBeer.getCurrentPSI());
-        valCurrentVol.setText("" + currentBeer.getCurrentVolume());
-        valVolPerDay.setText(currentBeer.getAvgVolRateString());
-        if(currentBeer.readyCheck() == false)
-            valReadyDate.setText("" + currentBeer.getReadyDateString() );
-        else
+        valCurrentVol.setText("" + CarbCap.df.format(currentBeer.getCurrentVolume()));
+        valVolPerDay.setText("" + currentBeer.getAvgVolRateString());
+        if(currentBeer.readyCheck() == true)
             valReadyDate.setText("Now ready!");
+        else if(currentBeer.getAvgVolRate() < 0.005 && currentBeer.rateExistsCheck() == true)
+        	valReadyDate.setText("Too slow...");
+        else
+            valReadyDate.setText("" + currentBeer.getReadyDateString() );
         drawGraph();
     }
 

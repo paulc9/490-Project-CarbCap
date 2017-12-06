@@ -10,7 +10,7 @@ public class Beer implements Serializable{
     private double desiredVolume, currentVolume, avgVolRate;
     private String beerType, beerName, beerImage, email;
     private Calendar bottleDate, trackingDate, readyDate;
-    private Boolean ready, warning, plateaued;
+    private Boolean ready, warning, plateaued, avgRateExists;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
     private ArrayList<TrackingObject>  trackingArray = new ArrayList<TrackingObject>();
     //color
@@ -22,6 +22,7 @@ public class Beer implements Serializable{
         this.ready = false;
         this.warning = false;
         this.plateaued = false;
+        this.avgRateExists = false;
     }
 
     public Beer(){};
@@ -162,6 +163,7 @@ public class Beer implements Serializable{
 
     public void adjustAvgVolRate(){
         if(trackingArray.size() >= 4){
+            this.avgRateExists = true;
             double rate = 0;
             int count = 3;
             for(int i = trackingArray.size() - 1; i > trackingArray.size() - 4; i--){
@@ -174,8 +176,9 @@ public class Beer implements Serializable{
     }
     public String getAvgVolRateString(){
         String result;
-        if(trackingArray.size() >= 4)
-            result = Double.toString(avgVolRate);
+        if(trackingArray.size() >= 4){
+            result = "" + CarbCap.df.format(avgVolRate);
+        }
         else
             result = "Not enough data";
         return result;
@@ -190,6 +193,9 @@ public class Beer implements Serializable{
 
     public void plateauedLogged(){this.plateaued = true;}
     public Boolean plateauedCheck(){return plateaued;}
+
+    public void rateExistsLogged(){this.avgRateExists = true;}
+    public Boolean rateExistsCheck(){return avgRateExists;}
 
     /*
         Checks the change in CO2 volume over the past 7 days
