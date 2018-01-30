@@ -319,7 +319,7 @@ public class GUIResults extends JPanel implements ActionListener{
         {
             try {  
                 String subject = "Your Beer is Ready";
-                String content = "Hello there, your beer \"" + currentBeer.getName() + "\" is ready!!!";
+                String content = "Hello there, your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is ready!!!";
                 sentmail(subject, content, imageName);
                 currentBeer.readyLogged();
             } catch (Exception ex) {
@@ -332,7 +332,7 @@ public class GUIResults extends JPanel implements ActionListener{
         {
             try{
                 String subject = "Beer Warning";
-                String content = "Your beer \"" + currentBeer.getName() + "\" is at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and is in danger of bursting!";
+                String content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and is in danger of bursting!";
                 sentmail(subject, content, imageName);
                 currentBeer.warningLogged();
             } catch (Exception ex){
@@ -346,7 +346,7 @@ public class GUIResults extends JPanel implements ActionListener{
             if(currentBeer.weekPlateaued() == true){
                 try{
                     String subject = "Beer Plateaued";
-                    String content = "Your beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and will likely not carbonate much more.";
+                    String content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and will likely not carbonate much more.";
                     sentmail(subject, content, imageName);
                     currentBeer.plateauedLogged();
                 } catch (Exception ex){

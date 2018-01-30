@@ -25,6 +25,18 @@ public class Beer implements Serializable{
         this.avgRateExists = false;
     }
 
+    public Beer(String type, double volume){
+        this.beerType = type;
+        this.desiredVolume = volume;
+        this.beerImage = "beer_10";
+    }
+
+    public Beer(double volume){
+        this.beerType = "Custom";
+        this.desiredVolume = volume;
+        this.beerImage = "beer_10";
+    }
+
     public Beer(){};
 
     public void setBeerImage(String i){this.beerImage=i;}
@@ -252,7 +264,7 @@ public class Beer implements Serializable{
             out.close();
             file.close();
 
-            System.out.println("Object has been serialized");
+            System.out.println("Current beer has been serialized");
         }
         catch(IOException ex)
         {

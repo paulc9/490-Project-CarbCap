@@ -1,6 +1,7 @@
 import java.util.*;
+import java.io.*;
 
-public class BeerArray{
+public class BeerArray implements Serializable{
     ArrayList<Beer> beerArray = new ArrayList<Beer>();
     Beer lager, paleAle, amberAle, brownAle, stout, porter, belgianWhite;
 
@@ -62,5 +63,24 @@ public class BeerArray{
 		beerArray.add(stout);
 		beerArray.add(porter);
 		beerArray.add(belgianWhite);
+	}
+
+	public void savePresetBeersToFile(){
+		try{
+			 //Saving of object in a file
+            FileOutputStream file = new FileOutputStream("savedPresetBeers.ser");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+
+            // Method for serialization of object
+            out.writeObject(this);
+
+            out.close();
+            file.close();
+
+            System.out.println("Preset beers object has been serialized");
+		}
+		catch(IOException ex){
+			System.out.println("IOException is caught /n save error");
+		}
 	}
 }

@@ -26,13 +26,14 @@ import java.net.URLClassLoader;
 import java.lang.StringBuilder;
 import java.lang.String;
 import java.util.*;
+import java.io.*;
 
 public class InputPage extends JPanel implements ActionListener{
 
 	JLabel panel1_Text, beerLabel, bottleDate, emailLabel, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, volumeLabel;
 	JTextField beerLabelIn, volumeIn, beerTypeIn, emailIn;
 	JComboBox beerList;
-	JButton button1, button2;
+	JButton button1, button2, savePresetButton;
 	JPanel mainPanel, panel1, panel2, panel3, panel4, container;
 	Box box1, box1_2, box2, box4;
 	org.jdatepicker.impl.UtilDateModel model;
@@ -43,7 +44,7 @@ public class InputPage extends JPanel implements ActionListener{
 	CardLayout pages;
 	Beer currentBeer;
 	int beerIndex;
-	BeerArray premadeBeers;
+	BeerArray presetBeers;
 
 	public InputPage(){
 		mainPanel = new JPanel();
@@ -131,11 +132,16 @@ public class InputPage extends JPanel implements ActionListener{
 
 	public void makePanel2(){
 		int count = 0;
-		panel2_Text = new JLabel("Select a beer type from the drop-down menu below for an existing beer", SwingConstants.CENTER);
+		panel2_Text = new JLabel("Select a beer type from the drop-down menu below for an existing/preset beer", SwingConstants.CENTER);
 		beerListLabel = new JLabel("Beer type", SwingConstants.CENTER);
-		premadeBeers = new BeerArray();
+
+		File presetFile = new File("savedPresetBeers.ser");
+		if (presetFile.exists())
+			presetBeers = loadPresetBeers();
+		else
+			presetBeers = new BeerArray();
 		beerList = new JComboBox();
-		for(Beer beer: premadeBeers.beerArray)
+		for(Beer beer: presetBeers.beerArray)
 			beerList.addItem(beer.getType());
 		//String[] beerStrings = {"Beer 1", "Beer 2", "Beer 3", "Beer 4"};
 		button1 = new JButton("Ok");
@@ -172,6 +178,7 @@ public class InputPage extends JPanel implements ActionListener{
 		volumeIn = new JTextField(7);
 		beerTypeLabel = new JLabel("Beer Type (optional)");
 		beerTypeIn = new JTextField(15);
+		savePresetButton = new JButton("Save info as preset");
 		button2 = new JButton("Ok");
 
 		panel4_Text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
@@ -181,6 +188,7 @@ public class InputPage extends JPanel implements ActionListener{
 		beerTypeIn.setMaximumSize(beerTypeIn.getPreferredSize());
 		volumeIn.setMaximumSize(volumeIn.getPreferredSize());
 		button2.setPreferredSize(CarbCap.buttonSize);
+		savePresetButton.addActionListener(this);
 		button2.addActionListener(this);
 
 		panel4.add(panel4_Text);
@@ -192,6 +200,8 @@ public class InputPage extends JPanel implements ActionListener{
 		box4.add(volumeLabel);
 		box4.add(Box.createRigidArea(CarbCap.space));
 		box4.add(volumeIn);
+		box4.add(Box.createHorizontalGlue());
+		box4.add(savePresetButton);
 		box4.add(Box.createHorizontalGlue());
 		box4.add(button2);
 		box4.add(Box.createRigidArea(CarbCap.edgeSpace));
@@ -207,14 +217,30 @@ public class InputPage extends JPanel implements ActionListener{
 
 	public void actionPerformed(ActionEvent e){
 		Object action = e.getSource();
-		if (!errorCheck(action)){
+		if ((JButton) action == savePresetButton){
+			try{
+				Double check = Double.parseDouble(volumeIn.getText());
+				if (beerTypeIn.getText().isEmpty() == true){
+					presetBeers.beerArray.add(new Beer(check));
+					JOptionPane.showMessageDialog(this, "Custom beer \"Custom\" with CO2 volume " + check + " saved as preset");
+				}
+				else{
+					presetBeers.beerArray.add(new Beer(beerTypeIn.getText(), check));
+					JOptionPane.showMessageDialog(this, "Custom beer \"" + beerTypeIn.getText() + "\" with CO2 volume " + check + " saved as preset");
+				}
+				presetBeers.savePresetBeersToFile();
+			} catch (NumberFormatException error){
+				JOptionPane.showMessageDialog(this, "Input error. Please enter a number with or without decimals for CO2 volume.");
+			}
+		}
+		else if (!errorCheck(action)){
 			currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText(), emailIn.getText());
 			if ((JButton) action == button1){
 				currentBeer.setType((String) beerList.getSelectedItem());
 				beerIndex = beerList.getSelectedIndex();
-				currentBeer.setDesiredPSI(premadeBeers.beerArray.get(beerIndex).getDesiredPSI());
-				currentBeer.setDesiredVolume(premadeBeers.beerArray.get(beerIndex).getDesiredVolume());
-				currentBeer.setBeerImage(premadeBeers.beerArray.get(beerIndex).getBeerImage());
+				currentBeer.setDesiredPSI(presetBeers.beerArray.get(beerIndex).getDesiredPSI());
+				currentBeer.setDesiredVolume(presetBeers.beerArray.get(beerIndex).getDesiredVolume());
+				currentBeer.setBeerImage(presetBeers.beerArray.get(beerIndex).getBeerImage());
 			}
 			else{
 				if (beerTypeIn.getText().isEmpty())
@@ -290,6 +316,38 @@ public class InputPage extends JPanel implements ActionListener{
 		beerTypeIn.setText("");
 		bottleDateIn.getJFormattedTextField().setText("");
 		emailIn.setText("");
+	}
+
+	public BeerArray loadPresetBeers(){
+		BeerArray presetBeers = null;
+
+		try
+        {
+            // Reading the object from a file
+            FileInputStream file = new FileInputStream("savedPresetBeers.ser");
+            ObjectInputStream in = new ObjectInputStream(file);
+
+            // Method for deserialization of object
+            presetBeers = (BeerArray)in.readObject();
+
+            in.close();
+            file.close();
+
+            System.out.println("Object has been deserialized ");
+
+        }
+
+        catch(IOException ex)
+        {
+            System.out.println("IOException is caught");
+        }
+
+        catch(ClassNotFoundException ex)
+        {
+            System.out.println("ClassNotFoundException is caught");
+        }
+
+        return presetBeers;
 	}
 
 	// needed for calendar date selection
