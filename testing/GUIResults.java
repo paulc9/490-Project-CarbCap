@@ -282,7 +282,7 @@ public class GUIResults extends JPanel implements ActionListener{
     public void actionPerformed(ActionEvent e){
         Object action = e.getSource();
         if ((JButton) action == buttonDelBeer){
-            final ImageIcon BeerIcon = new ImageIcon("d:\\Users\\Bhawley\\Documents\\GitHub\\490-Project-CarbCap\\testing\\images\\Beer Icon.png");
+            final ImageIcon BeerIcon = new ImageIcon("images/Beer Icon.png");
             int n = JOptionPane.showConfirmDialog(
                     thePanel,
                     "Are you sure you want to delete your beer?",
