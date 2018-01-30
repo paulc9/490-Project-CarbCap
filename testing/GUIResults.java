@@ -282,19 +282,30 @@ public class GUIResults extends JPanel implements ActionListener{
     public void actionPerformed(ActionEvent e){
         Object action = e.getSource();
         if ((JButton) action == buttonDelBeer){
-            Path path = Paths.get("savedCurrentBeer.ser");
-            try {
-                Files.delete(path);
-            } catch (NoSuchFileException x) {
-                System.err.format("%s: no such" + " file or directory%n", path);
-            } catch (DirectoryNotEmptyException x) {
-                System.err.format("%s not empty%n", path);
-            } catch (IOException x) {
-                // File permission problems are caught here.
-                System.err.println(x);
+            final ImageIcon BeerIcon = new ImageIcon("d:\\Users\\Bhawley\\Documents\\GitHub\\490-Project-CarbCap\\testing\\images\\Beer Icon.png");
+            int n = JOptionPane.showConfirmDialog(
+                    thePanel,
+                    "Are you sure you want to delete your beer?",
+                    "Delete Confirmation",
+                    JOptionPane.YES_NO_OPTION, 2,
+                    BeerIcon);
+
+            if(n==0) {
+                Path path = Paths.get("savedCurrentBeer.ser");
+
+                try {
+                    Files.delete(path);
+                } catch (NoSuchFileException x) {
+                    System.err.format("%s: no such" + " file or directory%n", path);
+                } catch (DirectoryNotEmptyException x) {
+                    System.err.format("%s not empty%n", path);
+                } catch (IOException x) {
+                    // File permission problems are caught here.
+                    System.err.println(x);
+                }
+                input.clearFields();
+                pages.show(container, "Input");
             }
-            input.clearFields();
-            pages.show(container, "Input");
         }
         else if ((JButton) action == buttonEnter && psiInput.getText().isEmpty() )
             JOptionPane.showMessageDialog(this, "Please enter PSI.");
