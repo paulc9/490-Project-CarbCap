@@ -90,6 +90,8 @@ public class CarbCap extends JFrame implements Serializable{
 		int yPos = (dim.height / 2) - (this.getHeight() / 2);
 		this.setLocation(xPos, yPos);
 
+		add(new TrackingPage());
+/*
 		pages = new CardLayout();
 		container = new JPanel();
 		container.setLayout(pages);
@@ -117,6 +119,7 @@ public class CarbCap extends JFrame implements Serializable{
 			add(container);
 		//this.setResizable(false);
 		}
+*/
 	}
 
 	public static void main(String[] args){
