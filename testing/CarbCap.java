@@ -35,6 +35,7 @@ public class CarbCap extends JFrame implements Serializable{
 	static Font titleFont, labelFont;
 	static Border border, raised, padding;
 	static Dimension space, boxSpace, edgeSpace, buttonSize;
+	static int width, height;
 	JPanel container;
 	InputPage input;
 	Newpage confirm;
@@ -82,8 +83,8 @@ public class CarbCap extends JFrame implements Serializable{
 		Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension dim = tk.getScreenSize();
 
-        int width = (dim.width / 2) + (dim.width / 20);
-        int height = (dim.height / 2) + (dim.height / 10);
+        width = (dim.width / 2) + (dim.width / 20);
+        height = (dim.height / 2) + (dim.height / 10);
         this.setSize(width, height);
 
 		int xPos = (dim.width / 2) - (this.getWidth() / 2);
@@ -99,14 +100,17 @@ public class CarbCap extends JFrame implements Serializable{
 		input = new InputPage();
 		confirm = new Newpage();
 		results = new GUIResults();
+		tracking = new TrackingPage();
 
-		input.linkPages(confirm, pages, container);
+		input.linkPages(tracking, confirm, pages, container);
 		confirm.linkPages(input, results, pages, container);
-		results.linkPages(input, pages, container);
+		results.linkPages(tracking, pages, container);
+		tracking.linkPages(input, results, pages, container);
 
 		container.add(input, "Input");
 		container.add(confirm, "Confirm");
 		container.add(results, "Results");
+		container.add(tracking, "Tracking");
 
 
 		File tmpFile = new File("savedCurrentBeer.ser");

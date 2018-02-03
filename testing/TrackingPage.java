@@ -29,11 +29,16 @@ import java.io.*;
 
 public class TrackingPage extends JPanel implements ActionListener{
 
-	JPanel mainPanel, panel1, panel2, panel3, insideScrollPane;
+	JPanel mainPanel, panel1, panel2, panel3, insideScrollPane, container;
 	JLabel panel1_Text;
-	JButton newBeerButton, optionsButton, helpButton;
+	JButton newBeerButton, optionsButton, helpButton, panelAddTest;
 	Box box3;
 	JScrollPane scrollPane;
+	int width, height;
+	GUIResults results;
+	InputPage input;
+	CardLayout pages;
+
 
 	public static void main(String[] args){
 		new TrackingPage();
@@ -59,7 +64,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		mainPanel.setBorder(CarbCap.padding);
 		panel1.setBorder(new CompoundBorder(CarbCap.border, CarbCap.padding));
 		panel2.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
-		panel2.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
+		panel3.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 
 		mainPanel.add(panel1);
 		mainPanel.add(Box.createVerticalGlue());
@@ -81,23 +86,30 @@ public class TrackingPage extends JPanel implements ActionListener{
 	}
 
 	public void makePanel2(){
-		/*scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();
 		insideScrollPane = new JPanel();
-		insideScrollPane.setLayout(new BorderLayout());
-		*/
+		scrollPane.setPreferredSize(new Dimension(this.getWidth(), (int)(CarbCap.height - CarbCap.height * 0.5)));
+		insideScrollPane.setLayout(new BoxLayout(insideScrollPane, BoxLayout.PAGE_AXIS));
+		scrollPane.setViewportView(insideScrollPane);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		panel2.add(scrollPane);
 	}
 
 	public void makePanel3(){
 		newBeerButton = new JButton("Create new beer");
 		optionsButton = new JButton("Options");
+		panelAddTest = new JButton("test");
 		newBeerButton.addActionListener(this);
+		panelAddTest.addActionListener(this);
 		optionsButton.addActionListener(this);
 
-		newBeerButton.setPreferredSize(CarbCap.buttonSize);
-		optionsButton.setPreferredSize(CarbCap.buttonSize);
+		//newBeerButton.setPreferredSize(CarbCap.buttonSize);
+		//optionsButton.setPreferredSize(CarbCap.buttonSize);
 
 		box3.add(Box.createRigidArea(CarbCap.edgeSpace));
 		box3.add(newBeerButton);
+		box3.add(Box.createHorizontalGlue());
+		box3.add(panelAddTest);
 		box3.add(Box.createHorizontalGlue());
 		box3.add(optionsButton);
 		box3.add(Box.createRigidArea(CarbCap.edgeSpace));
@@ -105,6 +117,27 @@ public class TrackingPage extends JPanel implements ActionListener{
 	}
 
 	public void actionPerformed(ActionEvent e){
+		Object action = e.getSource();
+		if((JButton) action == panelAddTest)
+			addPanel();
+	}
 
+	public void addPanel(){
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		//panel.setPreferredSize();
+		panel.setBorder(new CompoundBorder(CarbCap.border, CarbCap.padding));
+		panel.add(new JLabel("added label"));
+
+		insideScrollPane.add(panel);
+		insideScrollPane.revalidate();
+		insideScrollPane.repaint();
+	}
+
+	public void linkPages(InputPage in, GUIResults res, CardLayout change, JPanel main){
+		input = in;
+		results = res;
+		pages = change;
+		container = main;
 	}
 }

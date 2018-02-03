@@ -56,7 +56,7 @@ public class GUIResults extends JPanel implements ActionListener{
     ImageIcon graphImg;
     JTextField psiInput;
     Font font;
-    InputPage input;
+    TrackingPage tracking;
     CardLayout pages;
     Box topBox, theBox;
     Calendar dateCounter;
@@ -303,7 +303,7 @@ public class GUIResults extends JPanel implements ActionListener{
                     // File permission problems are caught here.
                     System.err.println(x);
                 }
-                input.clearFields();
+                //input.clearFields();
                 pages.show(container, "Input");
             }
         }
@@ -381,8 +381,8 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
 
-    public void linkPages(InputPage next, CardLayout change, JPanel main){
-        input = next;
+    public void linkPages(TrackingPage track, CardLayout change, JPanel main){
+        tracking = track;
         pages = change;
         container = main;
     } 
