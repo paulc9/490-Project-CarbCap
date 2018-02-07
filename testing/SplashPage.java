@@ -39,23 +39,21 @@ import javax.swing.JPanel;
 /**
  * Created by Bhawley on 2/6/2018.
  */
-public class SplashPage2 extends JFrame {
+public class SplashPage extends JPanel{
 
-    JPanel mainPanel, panel1;
+    JPanel mainPanel, panel1, container;
     JLabel letsBrewLable, carbCapLable, img;
     final ImageIcon LargeBeer;
     Box box1, box2, box3;
+    InputPage input;
+    GUIResults results;
+    CardLayout pages;
 
 
 
 
 
-    public SplashPage2() {
-
-        this.setSize(1000, 500);
-
-        CarbCap.styling();
-
+    public SplashPage() {
         mainPanel = new JPanel();
         carbCapLable = new JLabel("CarbCap", SwingConstants.CENTER);
         letsBrewLable = new JLabel("Let's Get Brewin'", SwingConstants.CENTER);
@@ -74,7 +72,7 @@ public class SplashPage2 extends JFrame {
         carbCapLable.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         carbCapLable.setFont(CarbCap.titleFont);
         letsBrewLable.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        letsBrewLable.setFont(CarbCap.titleFont);
+        letsBrewLable.setFont(CarbCap.labelFont);
         img.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
         img.setIcon(LargeBeer);
@@ -96,16 +94,42 @@ public class SplashPage2 extends JFrame {
         mainPanel.add(box2);
         mainPanel.add(box3);
 
-        this.add(mainPanel, BorderLayout.CENTER);
+        this.add(mainPanel);
+    }
 
-        this.setVisible(true);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public void linkPages(InputPage in, GUIResults result, CardLayout change, JPanel main){
+    	input = in;
+    	results = result;
+    	pages = change;
+    	container = main;
+    }
+
+    public void changeToInput(){
+    	ActionListener taskPerformer = new ActionListener(){
+      		public void actionPerformed(ActionEvent evt) {
+        		pages.show(container, "Input");
+      		}
+    	};
+    	Timer timer = new Timer(3000, taskPerformer);
+    	timer.setRepeats(false);
+    	timer.start();
+    }
+
+    public void changeToResults(){
+    	ActionListener taskPerformer = new ActionListener(){
+      		public void actionPerformed(ActionEvent evt) {
+        		pages.show(container, "Results");
+      		}
+    	};
+    	Timer timer = new Timer(3000, taskPerformer);
+    	timer.setRepeats(false);
+    	timer.start();
     }
 
 
     public static void main (String[] args){
 
-        new SplashPage2();
+        new SplashPage();
     }
 
 }

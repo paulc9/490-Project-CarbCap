@@ -36,6 +36,7 @@ public class CarbCap extends JFrame implements Serializable{
 	static Border border, raised, padding;
 	static Dimension space, boxSpace, edgeSpace, buttonSize;
 	JPanel container;
+	SplashPage splash;
 	InputPage input;
 	Newpage confirm;
 	GUIResults results;
@@ -94,14 +95,17 @@ public class CarbCap extends JFrame implements Serializable{
 		container = new JPanel();
 		container.setLayout(pages);
 
+		splash = new SplashPage();
 		input = new InputPage();
 		confirm = new Newpage();
 		results = new GUIResults();
 
+		splash.linkPages(input, results, pages, container);
 		input.linkPages(confirm, pages, container);
 		confirm.linkPages(input, results, pages, container);
 		results.linkPages(input, pages, container);
 
+		container.add(splash, "Splash");
 		container.add(input, "Input");
 		container.add(confirm, "Confirm");
 		container.add(results, "Results");
@@ -110,10 +114,12 @@ public class CarbCap extends JFrame implements Serializable{
 		File tmpFile = new File("savedCurrentBeer.ser");
 		if(tmpFile.exists()){
 			results.setPage();
-			pages.show(container, "Results");
+			splash.changeToResults();
+			pages.show(container, "Splash");
 			add(container);
 		}else{
-			pages.show(container, "Input");
+			splash.changeToInput();
+			pages.show(container, "Splash");
 			add(container);
 		//this.setResizable(false);
 		}
