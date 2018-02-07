@@ -38,6 +38,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 	GUIResults results;
 	InputPage input;
 	CardLayout pages;
+	ArrayList<Beer> trackedBeers;
 
 
 	public static void main(String[] args){
@@ -81,7 +82,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 	public void makePanel1(){
 		panel1_Text = new JLabel("List of tracked beers");
-		panel1_Text.setFont(CarbCap.labelFont);
+		panel1_Text.setFont(CarbCap.titleFont);
 		panel1.add(panel1_Text);
 	}
 
@@ -92,6 +93,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		insideScrollPane.setLayout(new BoxLayout(insideScrollPane, BoxLayout.PAGE_AXIS));
 		scrollPane.setViewportView(insideScrollPane);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		panel2.add(scrollPane);
 	}
 
@@ -124,11 +126,55 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 	public void addPanel(){
 		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-		//panel.setPreferredSize();
+		Box infoBox = Box.createHorizontalBox();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS)/*new FlowLayout()*/);
+		panel.setMinimumSize(new Dimension(scrollPane.getViewport().getSize().width, 200));
+		//panel.setPreferredSize(new Dimension(scrollPane.getViewport().getSize().width, 200));
 		panel.setBorder(new CompoundBorder(CarbCap.border, CarbCap.padding));
-		panel.add(new JLabel("added label"));
 
+		//panel.add(new JLabel("added label"));
+		
+		panel.add(infoBox);
+
+		URL url = this.getClass().getClassLoader().getResource("images/Beer Icon.png");
+        ImageIcon img=new ImageIcon(url);
+        img.setImage(img.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
+        JLabel showImg=new JLabel(img);
+        infoBox.add(showImg);
+
+        infoBox.add(Box.createHorizontalGlue());
+
+        Box info1 = Box.createVerticalBox();
+        JLabel beerName = new JLabel("beer name");
+        JLabel beerType = new JLabel("beer type");
+        info1.add(beerName);
+        info1.add(beerType);
+        infoBox.add(info1);
+
+        beerName.setFont(CarbCap.labelFont);
+        beerType.setFont(CarbCap.labelFont);
+
+        infoBox.add(Box.createHorizontalGlue());
+
+        Box info2 = Box.createVerticalBox();
+        JLabel currentVolume = new JLabel("current co2");
+        JLabel readyDate = new JLabel("estimated ready date");
+        info2.add(currentVolume);
+        info2.add(readyDate);
+        infoBox.add(info2);
+
+        currentVolume.setFont(CarbCap.labelFont);
+        readyDate.setFont(CarbCap.labelFont);
+
+        infoBox.add(Box.createHorizontalGlue());
+
+        Box buttonBox = Box.createVerticalBox();
+        JButton ok = new JButton("ok");
+        JButton delete = new JButton("delete");
+        buttonBox.add(ok);
+        buttonBox.add(delete);
+        infoBox.add(buttonBox);
+		
 		insideScrollPane.add(panel);
 		insideScrollPane.revalidate();
 		insideScrollPane.repaint();
