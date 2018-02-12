@@ -61,6 +61,8 @@ public class GUIResults extends JPanel implements ActionListener{
     Box topBox, theBox;
     Calendar dateCounter;
     Beer currentBeer;
+    ArrayList<Beer> trackedBeers;
+    int trackedBeersIndex;
 
 
     public static void main(String[] args) {
@@ -249,9 +251,9 @@ public class GUIResults extends JPanel implements ActionListener{
         return inBeer;
     }
 
-    public void setPage(){
+    public void setPage(Beer beer){
         imgPanel.removeAll();
-        currentBeer = loadBeer();
+        currentBeer = beer;
 
         URL url = this.getClass().getClassLoader().getResource("images/"+currentBeer.getBeerImage()+".jpg");
         ImageIcon img=new ImageIcon(url);
@@ -275,7 +277,10 @@ public class GUIResults extends JPanel implements ActionListener{
         drawGraph();
     }
 
-
+    public void setPage(Beer beer, int index){
+        trackedBeersIndex = index;
+        setPage(beer);
+    }
 
 
 
@@ -314,7 +319,8 @@ public class GUIResults extends JPanel implements ActionListener{
                 currentBeer.setCurrentTracking(Integer.parseInt(psiInput.getText()));
                 currentBeer.adjustAvgVolRate();
                 currentBeer.adjustReadyDate();
-                currentBeer.saveCurrentBeerStateToFile();
+                //currentBeer.saveCurrentBeerStateToFile();
+                saveUpdatedBeer();
                 emailNotify();
                 updatePage();
             } catch(NumberFormatException exx) {
@@ -458,8 +464,75 @@ public class GUIResults extends JPanel implements ActionListener{
         message.setSentDate(new Date());
         message.saveChanges();
         return message;
-    }  
+    }
 
+    public void saveNewBeer(){
+        File beerFile = new File("savedBeers.ser");
+        if (beerFile.exists()){
+            loadTrackedBeers();
+            trackedBeers.add(currentBeer);
+            saveTrackedBeers();
+            trackedBeersIndex = trackedBeers.size() - 1;
+        } else {
+            trackedBeers = new ArrayList<Beer>();
+            trackedBeers.add(currentBeer);
+            saveTrackedBeers();
+            trackedBeersIndex = 0;            
+        }
+    }
+
+    public void saveUpdatedBeer(){
+        trackedBeers.set(trackedBeersIndex, currentBeer);
+        saveTrackedBeers();
+    }
+
+    public void saveTrackedBeers(){
+        try{
+            //Saving of object in a file
+            FileOutputStream file = new FileOutputStream("savedBeers.ser");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+
+            // Method for serialization of object
+            out.writeObject(trackedBeers);
+
+            out.close();
+            file.close();
+
+            System.out.println("savedBeers.ser has been serialized");
+        }
+        catch(IOException ex)
+        {
+            System.out.println("Error while saving savedBeers.ser");
+        }
+    }
+
+    public void loadTrackedBeers(){
+        try
+        {
+            // Reading the object from a file
+            FileInputStream file = new FileInputStream("savedBeers.ser");
+            ObjectInputStream in = new ObjectInputStream(file);
+
+            // Method for deserialization of object
+            trackedBeers = (ArrayList<Beer>)in.readObject();
+
+            in.close();
+            file.close();
+
+            System.out.println("savedBeers.ser has been deserialized");
+
+        }
+
+        catch(IOException ex)
+        {
+            System.out.println("Error while loading savedBeers.ser");
+        }
+
+        catch(ClassNotFoundException ex)
+        {
+            System.out.println("ClassNotFoundException is caught");
+        }
+    }
 
 
         // Sets the rules for a component destined for a GridBagLayout

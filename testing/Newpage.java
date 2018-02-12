@@ -131,8 +131,8 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
         if ((JButton) action == back)
             pages.show(container, "Input");
         else if((JButton) action == next){
-            currentBeer.saveCurrentBeerStateToFile();
-            results.setPage();
+            results.setPage(currentBeer);
+            results.saveNewBeer();
             pages.show(container, "Results");
         }
     }

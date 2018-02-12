@@ -120,11 +120,21 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 	public void actionPerformed(ActionEvent e){
 		Object action = e.getSource();
+		/*
 		if((JButton) action == panelAddTest)
 			addPanel();
+		else */if ((JButton) action == newBeerButton){
+			pages.show(container, "Input");
+		}
 	}
 
-	public void addPanel(){
+	public void displayTrackedBeers(){
+
+		for(Beer beer: trackedBeers)
+			addBeerPanel(beer);
+	}
+
+	public void addBeerPanel(Beer beer){
 		JPanel panel = new JPanel();
 		Box infoBox = Box.createHorizontalBox();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS)/*new FlowLayout()*/);
@@ -136,7 +146,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		
 		panel.add(infoBox);
 
-		URL url = this.getClass().getClassLoader().getResource("images/Beer Icon.png");
+		URL url = this.getClass().getClassLoader().getResource("images/" + beer.getBeerImage() + ".jpg");
         ImageIcon img=new ImageIcon(url);
         img.setImage(img.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
         JLabel showImg=new JLabel(img);
@@ -145,8 +155,8 @@ public class TrackingPage extends JPanel implements ActionListener{
         infoBox.add(Box.createHorizontalGlue());
 
         Box info1 = Box.createVerticalBox();
-        JLabel beerName = new JLabel("beer name");
-        JLabel beerType = new JLabel("beer type");
+        JLabel beerName = new JLabel("Name: " + beer.getName());
+        JLabel beerType = new JLabel("Type: " + beer.getType());
         info1.add(beerName);
         info1.add(beerType);
         infoBox.add(info1);
@@ -157,8 +167,8 @@ public class TrackingPage extends JPanel implements ActionListener{
         infoBox.add(Box.createHorizontalGlue());
 
         Box info2 = Box.createVerticalBox();
-        JLabel currentVolume = new JLabel("current co2");
-        JLabel readyDate = new JLabel("estimated ready date");
+        JLabel currentVolume = new JLabel("Current CO2: " + CarbCap.df.format(beer.getCurrentVolume()));
+        JLabel readyDate = new JLabel("Estimated ready date: " + beer.getReadyDateString());
         info2.add(currentVolume);
         info2.add(readyDate);
         infoBox.add(info2);
@@ -169,8 +179,8 @@ public class TrackingPage extends JPanel implements ActionListener{
         infoBox.add(Box.createHorizontalGlue());
 
         Box buttonBox = Box.createVerticalBox();
-        JButton ok = new JButton("ok");
-        JButton delete = new JButton("delete");
+        JButton ok = new JButton("More info");
+        JButton delete = new JButton("Delete");
         buttonBox.add(ok);
         buttonBox.add(delete);
         infoBox.add(buttonBox);
