@@ -52,7 +52,7 @@ public class GUIResults extends JPanel implements ActionListener{
     JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, /*graphImgLabel,*/ labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
     // Data value labels
     JLabel valName, valCurrentPSI, valReadyDate, valManualPSI, valBeerType, valBottleDate, valCurrentVol, valDesiredVol, valVolPerDay;
-    JButton buttonDelBeer, buttonEnter;
+    JButton buttonDelBeer, buttonEnter, buttonBack;
     ImageIcon graphImg;
     JTextField psiInput;
     Font font;
@@ -119,6 +119,10 @@ public class GUIResults extends JPanel implements ActionListener{
         buttonEnter = new JButton("Confirm");
         buttonEnter.setToolTipText("Enter Current PSI (assume temperature is at 50 deg F)");
         buttonEnter.addActionListener(this);
+
+        buttonBack = new JButton("Back");
+        buttonBack.setToolTipText("Go back to tracking beers page");
+        buttonBack.addActionListener(this);
 
         valName = new JLabel();
         valCurrentPSI = new JLabel();
@@ -203,6 +207,7 @@ public class GUIResults extends JPanel implements ActionListener{
 */
         //thePanel4.add(graphImgLabel);
 
+        theBox.add(buttonBack);
         theBox.add(Box.createRigidArea(new Dimension(100,0)));
         theBox.add(labelManualPSI);
         theBox.add(psiInput);
@@ -251,6 +256,11 @@ public class GUIResults extends JPanel implements ActionListener{
         return inBeer;
     }
 
+    public void setPage(Beer beer, ArrayList<Beer> tracked){
+        trackedBeers = tracked;
+        setPage(beer);
+    }
+
     public void setPage(Beer beer){
         imgPanel.removeAll();
         currentBeer = beer;
@@ -296,6 +306,7 @@ public class GUIResults extends JPanel implements ActionListener{
                     BeerIcon);
 
             if(n==0) {
+                /*
                 Path path = Paths.get("savedCurrentBeer.ser");
 
                 try {
@@ -308,6 +319,7 @@ public class GUIResults extends JPanel implements ActionListener{
                     // File permission problems are caught here.
                     System.err.println(x);
                 }
+                */
                 //input.clearFields();
                 pages.show(container, "Input");
             }
@@ -326,6 +338,11 @@ public class GUIResults extends JPanel implements ActionListener{
             } catch(NumberFormatException exx) {
                 JOptionPane.showMessageDialog(this, "Input error. Please enter a whole integer for PSI."); 
             }
+        }
+        else if ((JButton) action == buttonBack){
+            tracking.setBeerArray(trackedBeers);
+            tracking.displayTrackedBeers();
+            pages.show(container, "Tracking");
         }
     }
 

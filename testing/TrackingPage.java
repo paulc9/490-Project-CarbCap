@@ -30,8 +30,8 @@ import java.io.*;
 public class TrackingPage extends JPanel implements ActionListener{
 
 	JPanel mainPanel, panel1, panel2, panel3, insideScrollPane, container;
-	JLabel panel1_Text;
-	JButton newBeerButton, optionsButton, helpButton, panelAddTest;
+	JLabel panel1_Text, noBeersText;
+	JButton newBeerButton, optionsButton, helpButton;
 	Box box3;
 	JScrollPane scrollPane;
 	int width, height;
@@ -77,6 +77,8 @@ public class TrackingPage extends JPanel implements ActionListener{
 		makePanel2();
 		makePanel3();
 
+		trackedBeers = null;
+
 		this.add(mainPanel);
 	}
 
@@ -100,9 +102,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 	public void makePanel3(){
 		newBeerButton = new JButton("Create new beer");
 		optionsButton = new JButton("Options");
-		panelAddTest = new JButton("test");
 		newBeerButton.addActionListener(this);
-		panelAddTest.addActionListener(this);
 		optionsButton.addActionListener(this);
 
 		//newBeerButton.setPreferredSize(CarbCap.buttonSize);
@@ -110,8 +110,6 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 		box3.add(Box.createRigidArea(CarbCap.edgeSpace));
 		box3.add(newBeerButton);
-		box3.add(Box.createHorizontalGlue());
-		box3.add(panelAddTest);
 		box3.add(Box.createHorizontalGlue());
 		box3.add(optionsButton);
 		box3.add(Box.createRigidArea(CarbCap.edgeSpace));
@@ -124,14 +122,28 @@ public class TrackingPage extends JPanel implements ActionListener{
 		if((JButton) action == panelAddTest)
 			addPanel();
 		else */if ((JButton) action == newBeerButton){
+			input.clearFields();
 			pages.show(container, "Input");
 		}
 	}
 
-	public void displayTrackedBeers(){
+	public void setBeerArray(ArrayList<Beer> beers){
+		trackedBeers = beers;
+	}
 
-		for(Beer beer: trackedBeers)
-			addBeerPanel(beer);
+	public void displayTrackedBeers(){
+		insideScrollPane.removeAll();
+        if(trackedBeers == null || trackedBeers.size() == 0)
+        	displayNoBeersMessage();
+        else{
+        	for(Beer beer: trackedBeers)
+				addBeerPanel(beer);
+        }
+	}
+
+	public void displayNoBeersMessage(){
+		noBeersText = new JLabel("No tracked beers found");
+		insideScrollPane.add(noBeersText);
 	}
 
 	public void addBeerPanel(Beer beer){
@@ -179,16 +191,54 @@ public class TrackingPage extends JPanel implements ActionListener{
         infoBox.add(Box.createHorizontalGlue());
 
         Box buttonBox = Box.createVerticalBox();
-        JButton ok = new JButton("More info");
+        JButton moreInfo = new JButton("More info");
         JButton delete = new JButton("Delete");
-        buttonBox.add(ok);
+        buttonBox.add(moreInfo);
         buttonBox.add(delete);
         infoBox.add(buttonBox);
+        // More info button action
+        moreInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+			    results.setPage(beer, trackedBeers);
+			    pages.show(container, "Results");
+			}
+		});
+		// Delete button action
+
 		
 		insideScrollPane.add(panel);
 		insideScrollPane.revalidate();
 		insideScrollPane.repaint();
 	}
+
+	public void loadTrackedBeers(){
+        try
+        {
+            // Reading the object from a file
+            FileInputStream file = new FileInputStream("savedBeers.ser");
+            ObjectInputStream in = new ObjectInputStream(file);
+
+            // Method for deserialization of object
+            trackedBeers = (ArrayList<Beer>)in.readObject();
+
+            in.close();
+            file.close();
+
+            System.out.println("savedBeers.ser has been deserialized");
+
+        }
+
+        catch(IOException ex)
+        {
+            System.out.println("Error while loading savedBeers.ser");
+        }
+
+        catch(ClassNotFoundException ex)
+        {
+            System.out.println("ClassNotFoundException is caught");
+        }
+    }
 
 	public void linkPages(InputPage in, GUIResults res, CardLayout change, JPanel main){
 		input = in;

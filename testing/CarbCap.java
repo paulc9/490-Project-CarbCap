@@ -40,6 +40,7 @@ public class CarbCap extends JFrame implements Serializable{
 	InputPage input;
 	Newpage confirm;
 	GUIResults results;
+	TrackingPage tracking;
 	static DecimalFormat df;
 
 
@@ -91,8 +92,6 @@ public class CarbCap extends JFrame implements Serializable{
 		int yPos = (dim.height / 2) - (this.getHeight() / 2);
 		this.setLocation(xPos, yPos);
 
-		add(new TrackingPage());
-/*
 		pages = new CardLayout();
 		container = new JPanel();
 		container.setLayout(pages);
@@ -113,17 +112,15 @@ public class CarbCap extends JFrame implements Serializable{
 		container.add(tracking, "Tracking");
 
 
-		File tmpFile = new File("savedCurrentBeer.ser");
+		File tmpFile = new File("savedBeers.ser");
 		if(tmpFile.exists()){
-			results.setPage();
-			pages.show(container, "Results");
-			add(container);
-		}else{
-			pages.show(container, "Input");
-			add(container);
-		//this.setResizable(false);
+			tracking.loadTrackedBeers();
 		}
-*/
+		tracking.displayTrackedBeers();
+		pages.show(container, "Tracking");
+		add(container);
+		//this.setResizable(false);
+
 	}
 
 	public static void main(String[] args){
