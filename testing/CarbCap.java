@@ -41,6 +41,7 @@ public class CarbCap extends JFrame implements Serializable{
 	Newpage confirm;
 	GUIResults results;
 	TrackingPage tracking;
+	SplashPage splash;
 	static DecimalFormat df;
 
 
@@ -100,16 +101,19 @@ public class CarbCap extends JFrame implements Serializable{
 		confirm = new Newpage();
 		results = new GUIResults();
 		tracking = new TrackingPage();
+		splash = new SplashPage();
 
 		input.linkPages(tracking, confirm, pages, container);
 		confirm.linkPages(input, results, pages, container);
 		results.linkPages(tracking, pages, container);
 		tracking.linkPages(input, results, pages, container);
+		splash.linkPages(tracking, pages, container);
 
 		container.add(input, "Input");
 		container.add(confirm, "Confirm");
 		container.add(results, "Results");
 		container.add(tracking, "Tracking");
+		container.add(splash, "Splash");
 
 
 		File tmpFile = new File("savedBeers.ser");
@@ -117,7 +121,8 @@ public class CarbCap extends JFrame implements Serializable{
 			tracking.loadTrackedBeers();
 		}
 		tracking.displayTrackedBeers();
-		pages.show(container, "Tracking");
+		pages.show(container, "Splash");
+		splash.changePage();
 		add(container);
 		//this.setResizable(false);
 
