@@ -256,8 +256,9 @@ public class GUIResults extends JPanel implements ActionListener{
         return inBeer;
     }
 
-    public void setPage(Beer beer, ArrayList<Beer> tracked){
+    public void setPage(Beer beer, ArrayList<Beer> tracked, int index){
         trackedBeers = tracked;
+        trackedBeersIndex = index;
         setPage(beer);
     }
 
@@ -287,12 +288,6 @@ public class GUIResults extends JPanel implements ActionListener{
         drawGraph();
     }
 
-    public void setPage(Beer beer, int index){
-        trackedBeersIndex = index;
-        setPage(beer);
-    }
-
-
 
     public void actionPerformed(ActionEvent e){
         Object action = e.getSource();
@@ -321,7 +316,11 @@ public class GUIResults extends JPanel implements ActionListener{
                 }
                 */
                 //input.clearFields();
-                pages.show(container, "Input");
+                trackedBeers.remove(trackedBeersIndex);
+                saveTrackedBeers();
+                tracking.setBeerArray(trackedBeers);
+                tracking.displayTrackedBeers();
+                pages.show(container, "Tracking");
             }
         }
         else if ((JButton) action == buttonEnter && psiInput.getText().isEmpty() )

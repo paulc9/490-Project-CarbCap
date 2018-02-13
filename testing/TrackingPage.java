@@ -118,10 +118,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 	public void actionPerformed(ActionEvent e){
 		Object action = e.getSource();
-		/*
-		if((JButton) action == panelAddTest)
-			addPanel();
-		else */if ((JButton) action == newBeerButton){
+		if ((JButton) action == newBeerButton){
 			input.clearFields();
 			pages.show(container, "Input");
 		}
@@ -136,17 +133,22 @@ public class TrackingPage extends JPanel implements ActionListener{
         if(trackedBeers == null || trackedBeers.size() == 0)
         	displayNoBeersMessage();
         else{
-        	for(Beer beer: trackedBeers)
-				addBeerPanel(beer);
+        	int index = 0;
+        	for(Beer beer: trackedBeers){
+				addBeerPanel(beer, index);
+				index++;
+        	}
         }
 	}
 
 	public void displayNoBeersMessage(){
 		noBeersText = new JLabel("No tracked beers found");
 		insideScrollPane.add(noBeersText);
+		insideScrollPane.revalidate();
+		insideScrollPane.repaint();
 	}
 
-	public void addBeerPanel(Beer beer){
+	public void addBeerPanel(Beer beer, int index){
 		JPanel panel = new JPanel();
 		Box infoBox = Box.createHorizontalBox();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS)/*new FlowLayout()*/);
@@ -200,12 +202,19 @@ public class TrackingPage extends JPanel implements ActionListener{
         moreInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-			    results.setPage(beer, trackedBeers);
+			    results.setPage(beer, trackedBeers, index);
 			    pages.show(container, "Results");
 			}
 		});
 		// Delete button action
-
+		delete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				trackedBeers.remove(index);
+			    saveTrackedBeers();
+			    displayTrackedBeers();
+			}
+		});
 		
 		insideScrollPane.add(panel);
 		insideScrollPane.revalidate();
@@ -237,6 +246,26 @@ public class TrackingPage extends JPanel implements ActionListener{
         catch(ClassNotFoundException ex)
         {
             System.out.println("ClassNotFoundException is caught");
+        }
+    }
+
+    public void saveTrackedBeers(){
+        try{
+            //Saving of object in a file
+            FileOutputStream file = new FileOutputStream("savedBeers.ser");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+
+            // Method for serialization of object
+            out.writeObject(trackedBeers);
+
+            out.close();
+            file.close();
+
+            System.out.println("savedBeers.ser has been serialized");
+        }
+        catch(IOException ex)
+        {
+            System.out.println("Error while saving savedBeers.ser");
         }
     }
 
