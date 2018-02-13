@@ -45,8 +45,7 @@ public class SplashPage extends JPanel{
     JLabel letsBrewLable, carbCapLable, img;
     final ImageIcon LargeBeer;
     Box box1, box2, box3;
-    InputPage input;
-    GUIResults results;
+    TrackingPage tracking;
     CardLayout pages;
 
 
@@ -97,35 +96,22 @@ public class SplashPage extends JPanel{
         this.add(mainPanel);
     }
 
-    public void linkPages(InputPage in, GUIResults result, CardLayout change, JPanel main){
-    	input = in;
-    	results = result;
+    public void linkPages(TrackingPage track, CardLayout change, JPanel main){
+    	tracking = track;
     	pages = change;
     	container = main;
     }
 
-    public void changeToInput(){
+    public void changePage(){
     	ActionListener taskPerformer = new ActionListener(){
       		public void actionPerformed(ActionEvent evt) {
-        		pages.show(container, "Input");
+        		pages.show(container, "Tracking");
       		}
     	};
     	Timer timer = new Timer(3000, taskPerformer);
     	timer.setRepeats(false);
     	timer.start();
     }
-
-    public void changeToResults(){
-    	ActionListener taskPerformer = new ActionListener(){
-      		public void actionPerformed(ActionEvent evt) {
-        		pages.show(container, "Results");
-      		}
-    	};
-    	Timer timer = new Timer(3000, taskPerformer);
-    	timer.setRepeats(false);
-    	timer.start();
-    }
-
 
     public static void main (String[] args){
 

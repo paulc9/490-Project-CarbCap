@@ -35,11 +35,13 @@ public class CarbCap extends JFrame implements Serializable{
 	static Font titleFont, labelFont;
 	static Border border, raised, padding;
 	static Dimension space, boxSpace, edgeSpace, buttonSize;
+	static int width, height;
 	JPanel container;
-	SplashPage splash;
 	InputPage input;
 	Newpage confirm;
 	GUIResults results;
+	TrackingPage tracking;
+	SplashPage splash;
 	static DecimalFormat df;
 
 
@@ -83,8 +85,8 @@ public class CarbCap extends JFrame implements Serializable{
 		Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension dim = tk.getScreenSize();
 
-        int width = (dim.width / 2) + (dim.width / 20);
-        int height = (dim.height / 2) + (dim.height / 10);
+        width = (dim.width / 2) + (dim.width / 20);
+        height = (dim.height / 2) + (dim.height / 10);
         this.setSize(width, height);
 
 		int xPos = (dim.width / 2) - (this.getWidth() / 2);
@@ -95,34 +97,35 @@ public class CarbCap extends JFrame implements Serializable{
 		container = new JPanel();
 		container.setLayout(pages);
 
-		splash = new SplashPage();
 		input = new InputPage();
 		confirm = new Newpage();
 		results = new GUIResults();
+		tracking = new TrackingPage();
+		splash = new SplashPage();
 
-		splash.linkPages(input, results, pages, container);
-		input.linkPages(confirm, pages, container);
+		input.linkPages(tracking, confirm, pages, container);
 		confirm.linkPages(input, results, pages, container);
-		results.linkPages(input, pages, container);
+		results.linkPages(tracking, pages, container);
+		tracking.linkPages(input, results, pages, container);
+		splash.linkPages(tracking, pages, container);
 
-		container.add(splash, "Splash");
 		container.add(input, "Input");
 		container.add(confirm, "Confirm");
 		container.add(results, "Results");
+		container.add(tracking, "Tracking");
+		container.add(splash, "Splash");
 
 
-		File tmpFile = new File("savedCurrentBeer.ser");
+		File tmpFile = new File("savedBeers.ser");
 		if(tmpFile.exists()){
-			results.setPage();
-			splash.changeToResults();
-			pages.show(container, "Splash");
-			add(container);
-		}else{
-			splash.changeToInput();
-			pages.show(container, "Splash");
-			add(container);
-		//this.setResizable(false);
+			tracking.loadTrackedBeers();
 		}
+		tracking.displayTrackedBeers();
+		pages.show(container, "Splash");
+		splash.changePage();
+		add(container);
+		//this.setResizable(false);
+
 	}
 
 	public static void main(String[] args){

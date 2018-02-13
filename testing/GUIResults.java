@@ -52,15 +52,17 @@ public class GUIResults extends JPanel implements ActionListener{
     JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, /*graphImgLabel,*/ labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
     // Data value labels
     JLabel valName, valCurrentPSI, valReadyDate, valManualPSI, valBeerType, valBottleDate, valCurrentVol, valDesiredVol, valVolPerDay;
-    JButton buttonDelBeer, buttonEnter;
+    JButton buttonDelBeer, buttonEnter, buttonBack;
     ImageIcon graphImg;
     JTextField psiInput;
     Font font;
-    InputPage input;
+    TrackingPage tracking;
     CardLayout pages;
     Box topBox, theBox;
     Calendar dateCounter;
     Beer currentBeer;
+    ArrayList<Beer> trackedBeers;
+    int trackedBeersIndex;
 
 
     public static void main(String[] args) {
@@ -117,6 +119,10 @@ public class GUIResults extends JPanel implements ActionListener{
         buttonEnter = new JButton("Confirm");
         buttonEnter.setToolTipText("Enter Current PSI (assume temperature is at 50 deg F)");
         buttonEnter.addActionListener(this);
+
+        buttonBack = new JButton("Back");
+        buttonBack.setToolTipText("Go back to tracking beers page");
+        buttonBack.addActionListener(this);
 
         valName = new JLabel();
         valCurrentPSI = new JLabel();
@@ -201,6 +207,7 @@ public class GUIResults extends JPanel implements ActionListener{
 */
         //thePanel4.add(graphImgLabel);
 
+        theBox.add(buttonBack);
         theBox.add(Box.createRigidArea(new Dimension(100,0)));
         theBox.add(labelManualPSI);
         theBox.add(psiInput);
@@ -249,9 +256,15 @@ public class GUIResults extends JPanel implements ActionListener{
         return inBeer;
     }
 
-    public void setPage(){
+    public void setPage(Beer beer, ArrayList<Beer> tracked, int index){
+        trackedBeers = tracked;
+        trackedBeersIndex = index;
+        setPage(beer);
+    }
+
+    public void setPage(Beer beer){
         imgPanel.removeAll();
-        currentBeer = loadBeer();
+        currentBeer = beer;
 
         URL url = this.getClass().getClassLoader().getResource("images/"+currentBeer.getBeerImage()+".jpg");
         ImageIcon img=new ImageIcon(url);
@@ -276,9 +289,6 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
 
-
-
-
     public void actionPerformed(ActionEvent e){
         Object action = e.getSource();
         if ((JButton) action == buttonDelBeer){
@@ -291,6 +301,7 @@ public class GUIResults extends JPanel implements ActionListener{
                     BeerIcon);
 
             if(n==0) {
+                /*
                 Path path = Paths.get("savedCurrentBeer.ser");
 
                 try {
@@ -303,8 +314,13 @@ public class GUIResults extends JPanel implements ActionListener{
                     // File permission problems are caught here.
                     System.err.println(x);
                 }
-                input.clearFields();
-                pages.show(container, "Input");
+                */
+                //input.clearFields();
+                trackedBeers.remove(trackedBeersIndex);
+                saveTrackedBeers();
+                tracking.setBeerArray(trackedBeers);
+                tracking.displayTrackedBeers();
+                pages.show(container, "Tracking");
             }
         }
         else if ((JButton) action == buttonEnter && psiInput.getText().isEmpty() )
@@ -314,12 +330,18 @@ public class GUIResults extends JPanel implements ActionListener{
                 currentBeer.setCurrentTracking(Integer.parseInt(psiInput.getText()));
                 currentBeer.adjustAvgVolRate();
                 currentBeer.adjustReadyDate();
-                currentBeer.saveCurrentBeerStateToFile();
+                //currentBeer.saveCurrentBeerStateToFile();
+                saveUpdatedBeer();
                 emailNotify();
                 updatePage();
             } catch(NumberFormatException exx) {
                 JOptionPane.showMessageDialog(this, "Input error. Please enter a whole integer for PSI."); 
             }
+        }
+        else if ((JButton) action == buttonBack){
+            tracking.setBeerArray(trackedBeers);
+            tracking.displayTrackedBeers();
+            pages.show(container, "Tracking");
         }
     }
 
@@ -381,8 +403,8 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
 
-    public void linkPages(InputPage next, CardLayout change, JPanel main){
-        input = next;
+    public void linkPages(TrackingPage track, CardLayout change, JPanel main){
+        tracking = track;
         pages = change;
         container = main;
     } 
@@ -458,8 +480,75 @@ public class GUIResults extends JPanel implements ActionListener{
         message.setSentDate(new Date());
         message.saveChanges();
         return message;
-    }  
+    }
 
+    public void saveNewBeer(){
+        File beerFile = new File("savedBeers.ser");
+        if (beerFile.exists()){
+            loadTrackedBeers();
+            trackedBeers.add(currentBeer);
+            saveTrackedBeers();
+            trackedBeersIndex = trackedBeers.size() - 1;
+        } else {
+            trackedBeers = new ArrayList<Beer>();
+            trackedBeers.add(currentBeer);
+            saveTrackedBeers();
+            trackedBeersIndex = 0;            
+        }
+    }
+
+    public void saveUpdatedBeer(){
+        trackedBeers.set(trackedBeersIndex, currentBeer);
+        saveTrackedBeers();
+    }
+
+    public void saveTrackedBeers(){
+        try{
+            //Saving of object in a file
+            FileOutputStream file = new FileOutputStream("savedBeers.ser");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+
+            // Method for serialization of object
+            out.writeObject(trackedBeers);
+
+            out.close();
+            file.close();
+
+            System.out.println("savedBeers.ser has been serialized");
+        }
+        catch(IOException ex)
+        {
+            System.out.println("Error while saving savedBeers.ser");
+        }
+    }
+
+    public void loadTrackedBeers(){
+        try
+        {
+            // Reading the object from a file
+            FileInputStream file = new FileInputStream("savedBeers.ser");
+            ObjectInputStream in = new ObjectInputStream(file);
+
+            // Method for deserialization of object
+            trackedBeers = (ArrayList<Beer>)in.readObject();
+
+            in.close();
+            file.close();
+
+            System.out.println("savedBeers.ser has been deserialized");
+
+        }
+
+        catch(IOException ex)
+        {
+            System.out.println("Error while loading savedBeers.ser");
+        }
+
+        catch(ClassNotFoundException ex)
+        {
+            System.out.println("ClassNotFoundException is caught");
+        }
+    }
 
 
         // Sets the rules for a component destined for a GridBagLayout

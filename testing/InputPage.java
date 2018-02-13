@@ -40,6 +40,7 @@ public class InputPage extends JPanel implements ActionListener{
 	Properties p;
 	JDatePanelImpl datePanel;
 	JDatePickerImpl bottleDateIn;
+	TrackingPage tracking;
 	Newpage confirm;
 	CardLayout pages;
 	Beer currentBeer;
@@ -209,7 +210,8 @@ public class InputPage extends JPanel implements ActionListener{
 		panel4.add(box4);
 	}
 
-	public void linkPages(Newpage next, CardLayout change, JPanel main){
+	public void linkPages(TrackingPage back, Newpage next, CardLayout change, JPanel main){
+		tracking = back;
 		confirm = next;
 		pages = change;
 		container = main;
