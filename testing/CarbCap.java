@@ -121,8 +121,16 @@ public class CarbCap extends JFrame implements Serializable{
 			tracking.loadTrackedBeers();
 		}
 		tracking.displayTrackedBeers();
+
+		/* Show splash page *//*
 		pages.show(container, "Splash");
 		splash.changePage();
+		/* */
+
+		/* Skip splash page */
+		pages.show(container, "Tracking");
+		/* */
+
 		add(container);
 		//this.setResizable(false);
 

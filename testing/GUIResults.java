@@ -32,6 +32,7 @@ import javax.activation.FileDataSource;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.*;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 import org.jfree.chart.plot.PlotOrientation;
@@ -63,6 +64,7 @@ public class GUIResults extends JPanel implements ActionListener{
     Beer currentBeer;
     ArrayList<Beer> trackedBeers;
     int trackedBeersIndex;
+    double low, high;
 
 
     public static void main(String[] args) {
@@ -422,6 +424,8 @@ public class GUIResults extends JPanel implements ActionListener{
             createDataset(),
             PlotOrientation.VERTICAL,
             true,true,false);
+        NumberAxis num = (NumberAxis)lineChart.getCategoryPlot().getRangeAxis();
+        lineChart.getCategoryPlot().getRangeAxis().setRange(low * 0.95, high * 1.05);
         chartPanel = new ChartPanel(lineChart);
         //chartPanel.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
         //chartPanel.setVisible(true);
@@ -432,8 +436,19 @@ public class GUIResults extends JPanel implements ActionListener{
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         int results = currentBeer.getTrackingArrayList().size();
         ArrayList<Beer.TrackingObject> beer = currentBeer.getTrackingArrayList();
+        if (results == 0){
+            low = 0.0;
+            high = 1.0;
+        }
+        else
+            low = high = beer.get(0).getVolume();
         for(int i = 0; i < results; i++){
-            dataset.addValue(beer.get(i).getVolume(), "Volumes CO2", beer.get(i).getDateString());
+            double vol = beer.get(i).getVolume();
+            dataset.addValue(vol, "Volumes CO2", beer.get(i).getDateString());
+            if (low > vol)
+                low = vol;
+            if (high < vol)
+                high = vol;
         }
         return dataset;
     }
