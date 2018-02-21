@@ -139,8 +139,10 @@ public class InputPage extends JPanel implements ActionListener{
 		File presetFile = new File("savedPresetBeers.ser");
 		if (presetFile.exists())
 			presetBeers = loadPresetBeers();
-		else
+		else{
 			presetBeers = new BeerArray();
+			presetBeers.savePresetBeersToFile();
+		}
 		beerList = new JComboBox();
 		for(Beer beer: presetBeers.beerArray)
 			beerList.addItem(beer.getType());

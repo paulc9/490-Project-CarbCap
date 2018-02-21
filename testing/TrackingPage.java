@@ -122,6 +122,15 @@ public class TrackingPage extends JPanel implements ActionListener{
 			input.clearFields();
 			pages.show(container, "Input");
 		}
+		else if ((JButton) action == optionsButton){
+			OptionsPage b = new OptionsPage();
+			JOptionPane options = new JOptionPane(b,
+				JOptionPane.PLAIN_MESSAGE,
+				JOptionPane.OK_CANCEL_OPTION);
+			JDialog dialog = options.createDialog("Settings");
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		}
 	}
 
 	public void setBeerArray(ArrayList<Beer> beers){
