@@ -15,7 +15,9 @@ public class BeerComboBoxRenderer extends BasicComboBoxRenderer{
 		super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
 		Beer beer = (Beer) value;
-		String temp = beer.getType();
+		String temp = "";
+		if (beer != null)
+			temp = beer.getType();
 		setText(temp);
 
 		return this;

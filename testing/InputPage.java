@@ -138,10 +138,10 @@ public class InputPage extends JPanel implements ActionListener{
 
 		File presetFile = new File("savedPresetBeers.ser");
 		if (presetFile.exists())
-			presetBeers = loadPresetBeers();
+			presetBeers = BeerArray.loadPresetBeers();
 		else{
 			presetBeers = new BeerArray();
-			presetBeers.savePresetBeersToFile();
+			presetBeers.savePresetBeers();
 		}
 		beerList = new JComboBox();
 		for(Beer beer: presetBeers.beerArray)
@@ -232,7 +232,7 @@ public class InputPage extends JPanel implements ActionListener{
 					presetBeers.beerArray.add(new Beer(beerTypeIn.getText(), check));
 					JOptionPane.showMessageDialog(this, "Custom beer \"" + beerTypeIn.getText() + "\" with CO2 volume " + check + " saved as preset");
 				}
-				presetBeers.savePresetBeersToFile();
+				presetBeers.savePresetBeers();
 			} catch (NumberFormatException error){
 				JOptionPane.showMessageDialog(this, "Input error. Please enter a number with or without decimals for CO2 volume.");
 			}
@@ -320,38 +320,6 @@ public class InputPage extends JPanel implements ActionListener{
 		beerTypeIn.setText("");
 		bottleDateIn.getJFormattedTextField().setText("");
 		emailIn.setText("");
-	}
-
-	public BeerArray loadPresetBeers(){
-		BeerArray presetBeers = null;
-
-		try
-        {
-            // Reading the object from a file
-            FileInputStream file = new FileInputStream("savedPresetBeers.ser");
-            ObjectInputStream in = new ObjectInputStream(file);
-
-            // Method for deserialization of object
-            presetBeers = (BeerArray)in.readObject();
-
-            in.close();
-            file.close();
-
-            System.out.println("Object has been deserialized ");
-
-        }
-
-        catch(IOException ex)
-        {
-            System.out.println("IOException is caught");
-        }
-
-        catch(ClassNotFoundException ex)
-        {
-            System.out.println("ClassNotFoundException is caught");
-        }
-
-        return presetBeers;
 	}
 
 	// needed for calendar date selection

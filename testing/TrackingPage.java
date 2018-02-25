@@ -123,13 +123,17 @@ public class TrackingPage extends JPanel implements ActionListener{
 			pages.show(container, "Input");
 		}
 		else if ((JButton) action == optionsButton){
-			OptionsPage b = new OptionsPage();
-			JOptionPane options = new JOptionPane(b,
+			OptionsPage optionsPage = new OptionsPage();
+			JOptionPane options = new JOptionPane(optionsPage,
 				JOptionPane.PLAIN_MESSAGE,
 				JOptionPane.OK_CANCEL_OPTION);
 			JDialog dialog = options.createDialog("Settings");
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
+			int value = ((Integer)options.getValue()).intValue();
+			if(value == JOptionPane.OK_OPTION){
+				optionsPage.saveSettings();
+			}
 		}
 	}
 

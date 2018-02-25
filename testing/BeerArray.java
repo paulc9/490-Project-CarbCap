@@ -65,7 +65,7 @@ public class BeerArray implements Serializable{
 		beerArray.add(belgianWhite);
 	}
 
-	public void savePresetBeersToFile(){
+	public void savePresetBeers(){
 		try{
 			 //Saving of object in a file
             FileOutputStream file = new FileOutputStream("savedPresetBeers.ser");
@@ -82,5 +82,36 @@ public class BeerArray implements Serializable{
 		catch(IOException ex){
 			System.out.println("IOException is caught /n save error");
 		}
+	}
+
+	public static BeerArray loadPresetBeers(){
+		BeerArray presetBeers = null;
+
+		try
+        {
+            // Reading the object from a file
+            FileInputStream file = new FileInputStream("savedPresetBeers.ser");
+            ObjectInputStream in = new ObjectInputStream(file);
+
+            // Method for deserialization of object
+            presetBeers = (BeerArray)in.readObject();
+
+            in.close();
+            file.close();
+
+            System.out.println("Preset beers object has been deserialized ");
+        }
+
+        catch(IOException ex)
+        {
+            System.out.println("IOException is caught");
+        }
+
+        catch(ClassNotFoundException ex)
+        {
+            System.out.println("ClassNotFoundException is caught");
+        }
+
+        return presetBeers;
 	}
 }
