@@ -130,9 +130,11 @@ public class TrackingPage extends JPanel implements ActionListener{
 			JDialog dialog = options.createDialog("Settings");
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
-			int value = ((Integer)options.getValue()).intValue();
-			if(value == JOptionPane.OK_OPTION){
-				optionsPage.saveSettings();
+			if (options.getValue() != null){
+				int value = ((Integer)options.getValue()).intValue();
+				if(value == JOptionPane.OK_OPTION){
+					optionsPage.saveSettings();
+				}
 			}
 		}
 	}

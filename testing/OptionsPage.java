@@ -52,6 +52,7 @@ public class OptionsPage extends JPanel implements ActionListener{
 	public void makeNotifyPanel(){
 		JLabel emailLabel = new JLabel("Email");
 		emailIn = new JTextField(15);
+		emailIn.setText(CarbCap.properties.getProperty("email"));
 
 		notifyPanel.add(emailLabel);
 		notifyPanel.add(emailIn);
@@ -235,6 +236,16 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 	public void saveSettings(){
 		presetBeers.savePresetBeers();
+		saveProperties();
+	}
+
+	public void saveProperties(){
+		CarbCap.properties.setProperty("email", emailIn.getText());
+		try{
+			CarbCap.properties.store(new FileOutputStream(CarbCap.PROPERTIES_PATH), null);
+		} catch (IOException e){
+			
+		}
 	}
 
 	public void printTest(){

@@ -36,6 +36,8 @@ public class CarbCap extends JFrame implements Serializable{
 	static Border border, raised, padding;
 	static Dimension space, boxSpace, edgeSpace, buttonSize;
 	static int width, height;
+	static String PROPERTIES_PATH = "options.properties";
+	static Properties properties;
 	JPanel container;
 	InputPage input;
 	Newpage confirm;
@@ -54,6 +56,7 @@ public class CarbCap extends JFrame implements Serializable{
 		//URL[] url={new URL("../lib/jdatepicker-1.3.4.jar")};
 		//URLClassLoader loader = new URLClassLoader(url);
 		styling();
+		loadProperties();
 		frameLayout();
 
 		this.setVisible(true);
@@ -77,6 +80,15 @@ public class CarbCap extends JFrame implements Serializable{
 		buttonSize = new Dimension(100, 40);
 
 		df = new DecimalFormat("#.0000");
+	}
+
+	public void loadProperties(){
+		properties = new Properties();
+		try{
+			properties.load(new FileInputStream(PROPERTIES_PATH));
+		} catch (IOException e){
+			
+		}
 	}
 
 	public void frameLayout(){
