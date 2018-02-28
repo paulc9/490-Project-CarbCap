@@ -18,43 +18,43 @@ public class BeerArray implements Serializable{
 		lager.setDesiredTemp(45);
 		lager.setDesiredVolume(2.8);
 		lager.setType("Lager");
-		lager.setBeerImage("lager");
+		lager.setBeerImage("images/lager.jpg");
 
 		paleAle.setDesiredPSI(16);
 		paleAle.setDesiredTemp(45);
 		paleAle.setDesiredVolume(2.6);
 		paleAle.setType("Pale Ale");
-		paleAle.setBeerImage("pale ale");
+		paleAle.setBeerImage("images/pale ale.jpg");
 
 		amberAle.setDesiredPSI(16);
 		amberAle.setDesiredTemp(50);
 		amberAle.setDesiredVolume(2.4);
 		amberAle.setType("Amber Ale");
-		amberAle.setBeerImage("amber ale");
+		amberAle.setBeerImage("images/amber ale.jpg");
 
 		brownAle.setDesiredPSI(11);
 		brownAle.setDesiredTemp(40);
 		brownAle.setDesiredVolume(2.2);
 		brownAle.setType("Brown Ale");
-		brownAle.setBeerImage("brown ale");
+		brownAle.setBeerImage("images/brown ale.jpg");
 
 		stout.setDesiredPSI(11);
 		stout.setDesiredTemp(55);
 		stout.setDesiredVolume(1.8);
 		stout.setType("Stout");
-		stout.setBeerImage("stout");
+		stout.setBeerImage("images/stout.jpg");
 
 		porter.setDesiredPSI(6);
 		porter.setDesiredTemp(50);
 		porter.setDesiredVolume(1.5);
 		porter.setType("Porter");
-		porter.setBeerImage("porter");
+		porter.setBeerImage("images/porter.jpg");
 
 		belgianWhite.setDesiredPSI(9);
 		belgianWhite.setDesiredTemp(45);
 		belgianWhite.setDesiredVolume(2.0);
 		belgianWhite.setType("Belgian White");
-		belgianWhite.setBeerImage("belgian white");
+		belgianWhite.setBeerImage("images/belgian white.jpg");
 
 		beerArray.add(lager);
 		beerArray.add(paleAle);
