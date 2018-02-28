@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.*;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.nio.file.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -268,8 +269,8 @@ public class GUIResults extends JPanel implements ActionListener{
         imgPanel.removeAll();
         currentBeer = beer;
 
-        URL url = this.getClass().getClassLoader().getResource("images/"+currentBeer.getBeerImage()+".jpg");
-        ImageIcon img=new ImageIcon(url);
+        //URL url = this.getClass().getClassLoader().getResource("images/"+currentBeer.getBeerImage()+".jpg");
+        ImageIcon img=new ImageIcon(currentBeer.getBeerImage());
         img.setImage(img.getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT));
         JLabel showImg=new JLabel(img);
         imgPanel.add(showImg);

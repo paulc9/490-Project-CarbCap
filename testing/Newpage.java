@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.net.URL;
 import java.io.*;
+import java.net.MalformedURLException;
 /**
  *
  * @author Administrator
@@ -75,8 +76,8 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
 
         currentBeer = beer;
 
-        URL url = this.getClass().getClassLoader().getResource("images/"+currentBeer.getBeerImage()+".jpg");
-        img=new ImageIcon(url);
+        //URL url = this.getClass().getClassLoader().getResource(currentBeer.getBeerImage());
+        img=new ImageIcon(currentBeer.getBeerImage());
         img.setImage(img.getImage().getScaledInstance(Newpage.width, Newpage.height, Image.SCALE_DEFAULT));
         showImg=new JLabel(img);
         theBox.add(showImg);

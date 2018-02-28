@@ -27,15 +27,17 @@ import java.lang.StringBuilder;
 import java.lang.String;
 import java.util.*;
 import java.io.*;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class InputPage extends JPanel implements ActionListener{
 
-	JLabel panel1_Text, beerLabel, bottleDate, emailLabel, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, volumeLabel;
-	JTextField beerLabelIn, volumeIn, beerTypeIn, emailIn;
+	JLabel panel1_Text, beerLabel, bottleDate, emailLabel, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, volumeLabel, imageLabel;
+	JTextField beerLabelIn, volumeIn, beerTypeIn, emailIn, imagePathIn;
 	JComboBox beerList;
-	JButton button1, button2, savePresetButton, backButton;
+	JButton button1, button2, savePresetButton, backButton, imageButton;
 	JPanel mainPanel, panel1, panel2, panel3, panel4, container;
-	Box box1, box1_2, box2, box4;
+	Box box1, box1_2, box2, box4, box4_2;
 	org.jdatepicker.impl.UtilDateModel model;
 	Properties p;
 	JDatePanelImpl datePanel;
@@ -58,6 +60,7 @@ public class InputPage extends JPanel implements ActionListener{
 		box1_2 = Box.createHorizontalBox();
 		box2 = Box.createHorizontalBox();
 		box4 = Box.createHorizontalBox();
+		box4_2 = Box.createHorizontalBox();
 
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
@@ -190,18 +193,27 @@ public class InputPage extends JPanel implements ActionListener{
 		beerTypeIn = new JTextField(15);
 		savePresetButton = new JButton("Save info as preset");
 		button2 = new JButton("Ok");
+		imageLabel = new JLabel("Custom beer image");
+		imagePathIn = new JTextField(15);
+		imageButton = new JButton("Choose image");
+
 
 		panel4_Text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		panel4_Text.setFont(CarbCap.titleFont);
 		beerTypeLabel.setFont(CarbCap.labelFont);
 		volumeLabel.setFont(CarbCap.labelFont);
+		imageLabel.setFont(CarbCap.labelFont);
 		beerTypeIn.setMaximumSize(beerTypeIn.getPreferredSize());
 		volumeIn.setMaximumSize(volumeIn.getPreferredSize());
+		imagePathIn.setMaximumSize(imagePathIn.getPreferredSize());
 		button2.setPreferredSize(CarbCap.buttonSize);
+		imageButton.setPreferredSize(CarbCap.buttonSize);
 		savePresetButton.addActionListener(this);
 		button2.addActionListener(this);
+		imageButton.addActionListener(this);
 
 		panel4.add(panel4_Text);
+
 		box4.add(Box.createRigidArea(CarbCap.edgeSpace));
 		box4.add(beerTypeLabel);
 		box4.add(Box.createRigidArea(CarbCap.space));
@@ -215,8 +227,17 @@ public class InputPage extends JPanel implements ActionListener{
 		box4.add(Box.createHorizontalGlue());
 		box4.add(button2);
 		box4.add(Box.createRigidArea(CarbCap.edgeSpace));
+
+		box4_2.add(Box.createRigidArea(CarbCap.edgeSpace));
+		box4_2.add(imageLabel);
+		box4_2.add(Box.createRigidArea(CarbCap.space));
+		box4_2.add(imagePathIn);
+		box4_2.add(Box.createRigidArea(CarbCap.space));
+		box4_2.add(imageButton);
+
 		panel4.add(Box.createRigidArea(CarbCap.boxSpace));
 		panel4.add(box4);
+		panel4.add(box4_2);
 	}
 
 	public void linkPages(TrackingPage back, Newpage next, CardLayout change, JPanel main){
@@ -230,6 +251,19 @@ public class InputPage extends JPanel implements ActionListener{
 		Object action = e.getSource();
 		if((JButton) action == backButton){
 			pages.show(container, "Tracking");
+		}
+		else if ((JButton) action == imageButton){
+			final JFileChooser fc = new JFileChooser(new File(System.getProperty("user.home")));
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg");
+			fc.setFileFilter(filter);
+
+			int ret = fc.showOpenDialog(this);
+
+			if (ret == JFileChooser.APPROVE_OPTION){
+				File file = fc.getSelectedFile();
+
+				imagePathIn.setText(file.getPath());
+			}
 		}
 		else if ((JButton) action == savePresetButton){
 			try{
@@ -262,7 +296,10 @@ public class InputPage extends JPanel implements ActionListener{
 				else
 					currentBeer.setType(beerTypeIn.getText());
 				currentBeer.setDesiredVolume(Double.parseDouble(volumeIn.getText()));
-				currentBeer.setBeerImage("beer_10");
+				if (imagePathIn.getText().isEmpty())
+					currentBeer.setBeerImage("images/beer_10.jpg");
+				else
+					currentBeer.setBeerImage(imagePathIn.getText());
 			}
 			currentBeer.setReadyDate(21);
 			confirm.setPage(currentBeer);
@@ -339,6 +376,7 @@ public class InputPage extends JPanel implements ActionListener{
 		} catch (ParseException e){
 			bottleDateIn.getJFormattedTextField().setText("");
 		}
+		imagePathIn.setText("");
 		//emailIn.setText("");
 	}
 

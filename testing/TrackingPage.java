@@ -175,8 +175,8 @@ public class TrackingPage extends JPanel implements ActionListener{
 		
 		panel.add(infoBox);
 
-		URL url = this.getClass().getClassLoader().getResource("images/" + beer.getBeerImage() + ".jpg");
-        ImageIcon img=new ImageIcon(url);
+		//URL url = this.getClass().getClassLoader().getResource("images/" + beer.getBeerImage() + ".jpg");
+        ImageIcon img=new ImageIcon(beer.getBeerImage());
         img.setImage(img.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
         JLabel showImg=new JLabel(img);
         infoBox.add(showImg);
