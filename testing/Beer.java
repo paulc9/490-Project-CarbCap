@@ -25,6 +25,15 @@ public class Beer implements Serializable{
         this.avgRateExists = false;
     }
 
+    public Beer(String name, String bDate){
+        this.beerName = name;
+        setBottleDate(bDate);
+        this.ready = false;
+        this.warning = false;
+        this.plateaued = false;
+        this.avgRateExists = false;
+    }
+
     public Beer(String type, double volume){
         this.beerType = type;
         this.desiredVolume = volume;

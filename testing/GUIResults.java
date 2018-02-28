@@ -349,45 +349,55 @@ public class GUIResults extends JPanel implements ActionListener{
 
     public void emailNotify(){
         String imageName=System.getProperty("user.dir")+"\\images\\"+currentBeer.getBeerImage()+".jpg";
+        String email = CarbCap.properties.getProperty("email");
+        String error = "Error sending email. Check to make sure you are connected online and the email in the options page is correct.";
         // Email ready notification
         if(currentBeer.getCurrentVolume() >= currentBeer.getDesiredVolume() && currentBeer.readyCheck() == false)
         {
-            try {  
-                String subject = "Your Beer is Ready";
-                String content = "Hello there, your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is ready!!!";
-                sentmail(subject, content, imageName);
-                currentBeer.readyLogged();
-            } catch (Exception ex) {
-                Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        	if (!(email == null || email == "")){
+		        try {  
+		            String subject = "Your Beer is Ready";
+		            String content = "Hello there, your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is ready!!!";
+		            sentmail(subject, content, imageName, email);
+		        } catch (Exception ex) {
+		            Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, error);
+		        }
+		    }
+            currentBeer.readyLogged();
         }
 
         // Email warning notification
         else if(currentBeer.getCurrentVolume() > 4.1 && currentBeer.warningCheck() == false)
         {
-            try{
-                String subject = "Beer Warning";
-                String content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and is in danger of bursting!";
-                sentmail(subject, content, imageName);
-                currentBeer.warningLogged();
-            } catch (Exception ex){
-                Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        	if (!(email == null || email == "")){
+		        try{
+		            String subject = "Beer Warning";
+		            String content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and is in danger of bursting!";
+		            sentmail(subject, content, imageName, email);
+		        } catch (Exception ex){
+		            Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, error);
+
+		        }
+		    }
+            currentBeer.warningLogged();
         }
 
         // Email plateaued notification
         else if(currentBeer.plateauedCheck() == false)
         {
-            if(currentBeer.weekPlateaued() == true){
+            if(currentBeer.weekPlateaued() == true && !(email == null || email == "")){
                 try{
                     String subject = "Beer Plateaued";
                     String content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and will likely not carbonate much more.";
-                    sentmail(subject, content, imageName);
-                    currentBeer.plateauedLogged();
+                    sentmail(subject, content, imageName, email);
                 } catch (Exception ex){
                     Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, error);
                 }
             }
+            currentBeer.plateauedLogged();
         }
     }
 
@@ -456,7 +466,7 @@ public class GUIResults extends JPanel implements ActionListener{
 
 
 
-    public void sentmail(String subject, String content, String image) throws MessagingException, Exception
+    public void sentmail(String subject, String content, String image, String email) throws MessagingException, Exception
     {
         Properties props = new Properties();                    
         props.setProperty("mail.transport.protocol", "smtp");   
@@ -469,7 +479,7 @@ public class GUIResults extends JPanel implements ActionListener{
         props.setProperty("mail.smtp.socketFactory.port", smtpPort);
         Session session = Session.getInstance(props);
         session.setDebug(true);   
-        MimeMessage message = createMimeMessage(session, "carbcap490@gmail.com", currentBeer.getEmail(), subject, content, image);
+        MimeMessage message = createMimeMessage(session, "carbcap490@gmail.com", email, subject, content, image);
         Transport transport = session.getTransport();
         transport.connect("carbcap490@gmail.com", "Comp4900");
         transport.sendMessage(message, message.getAllRecipients());

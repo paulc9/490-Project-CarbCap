@@ -33,7 +33,7 @@ public class InputPage extends JPanel implements ActionListener{
 	JLabel panel1_Text, beerLabel, bottleDate, emailLabel, panel2_Text, beerListLabel, panel3_Text, panel4_Text, beerTypeLabel, volumeLabel;
 	JTextField beerLabelIn, volumeIn, beerTypeIn, emailIn;
 	JComboBox beerList;
-	JButton button1, button2, savePresetButton;
+	JButton button1, button2, savePresetButton, backButton;
 	JPanel mainPanel, panel1, panel2, panel3, panel4, container;
 	Box box1, box1_2, box2, box4;
 	org.jdatepicker.impl.UtilDateModel model;
@@ -59,7 +59,7 @@ public class InputPage extends JPanel implements ActionListener{
 		box2 = Box.createHorizontalBox();
 		box4 = Box.createHorizontalBox();
 
-		this.setLayout(new BorderLayout());
+		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		panel1.setLayout(new BoxLayout(panel1, BoxLayout.PAGE_AXIS));
 		panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
@@ -82,6 +82,12 @@ public class InputPage extends JPanel implements ActionListener{
 		mainPanel.add(Box.createVerticalGlue());
 		mainPanel.add(panel4);
 
+		backButton = new JButton("Back to tracking page");
+		backButton.setPreferredSize(CarbCap.buttonSize);
+		backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		backButton.addActionListener(this);
+		mainPanel.add(backButton);
+
 		makePanel1();
 		makePanel2();
 		makePanel3();
@@ -100,7 +106,7 @@ public class InputPage extends JPanel implements ActionListener{
 		p = new Properties();
         datePanel = new JDatePanelImpl(model, p);
         bottleDateIn = new JDatePickerImpl(datePanel, new DateLabelFormatter());
-       	emailIn = new JTextField(15);
+       	//emailIn = new JTextField(15);
 
 		panel1_Text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         bottleDateIn.setBounds(220, 350, 120, 30);
@@ -110,7 +116,7 @@ public class InputPage extends JPanel implements ActionListener{
 		emailLabel.setFont(CarbCap.labelFont);
 		bottleDateIn.setMaximumSize(bottleDateIn.getPreferredSize());
 		beerLabelIn.setMaximumSize(beerLabelIn.getPreferredSize());
-		emailIn.setMaximumSize(emailIn.getPreferredSize());
+		//emailIn.setMaximumSize(emailIn.getPreferredSize());
 
 		panel1.add(panel1_Text);
 		box1.add(Box.createRigidArea(CarbCap.edgeSpace));
@@ -124,11 +130,12 @@ public class InputPage extends JPanel implements ActionListener{
 		box1.add(Box.createRigidArea(CarbCap.edgeSpace));
 		panel1.add(Box.createRigidArea(CarbCap.boxSpace));
 		panel1.add(box1);
-
+/*
 		box1_2.add(emailLabel);
 		box1_2.add(Box.createRigidArea(CarbCap.space));
 		box1_2.add(emailIn);
 		panel1.add(box1_2);
+*/
 	}
 
 	public void makePanel2(){
@@ -221,7 +228,10 @@ public class InputPage extends JPanel implements ActionListener{
 
 	public void actionPerformed(ActionEvent e){
 		Object action = e.getSource();
-		if ((JButton) action == savePresetButton){
+		if((JButton) action == backButton){
+			pages.show(container, "Tracking");
+		}
+		else if ((JButton) action == savePresetButton){
 			try{
 				Double check = Double.parseDouble(volumeIn.getText());
 				if (beerTypeIn.getText().isEmpty() == true){
@@ -238,7 +248,7 @@ public class InputPage extends JPanel implements ActionListener{
 			}
 		}
 		else if (!errorCheck(action)){
-			currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText(), emailIn.getText());
+			currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText()/*, emailIn.getText()*/);
 			if ((JButton) action == button1){
 				currentBeer.setType((String) beerList.getSelectedItem());
 				beerIndex = beerList.getSelectedIndex();
@@ -263,7 +273,7 @@ public class InputPage extends JPanel implements ActionListener{
 
 	public Boolean errorCheck(Object action){
 		Boolean beerLabelEmpty, bottleDateEmpty, emailEmpty, beerTypeEmpty, volumeEmpty, error;
-		beerLabelEmpty = bottleDateEmpty = emailEmpty = beerTypeEmpty = volumeEmpty = error = false;
+		beerLabelEmpty = bottleDateEmpty =/* emailEmpty =*/ beerTypeEmpty = volumeEmpty = error = false;
 		StringBuilder message = new StringBuilder("Please input the following missing information to select this option:\n");
 		if (beerLabelIn.getText().isEmpty() == true){
 			beerLabelEmpty = true;
@@ -273,10 +283,12 @@ public class InputPage extends JPanel implements ActionListener{
 			bottleDateEmpty = true;
 			error = true;
 		}
+/*
 		if (emailIn.getText().isEmpty() == true){
 			emailEmpty = true;
 			error = true;
 		}
+*/
 		if (beerTypeIn.getText().isEmpty() == true)			// No error, since empty beer type means "Custom" will be used instead
 			beerTypeEmpty = true;
 		if (volumeIn.getText().isEmpty() == true)
@@ -285,8 +297,10 @@ public class InputPage extends JPanel implements ActionListener{
 			message.append("- Beer label\n");
 		if (bottleDateEmpty)
 			message.append("- Bottle date\n");
+/*
 		if (emailEmpty)
 			message.append("- E-mail for notification\n");
+*/
 		if ((JButton) action == button1){
 			if (error){
 				JOptionPane.showMessageDialog(this, message);
@@ -318,8 +332,14 @@ public class InputPage extends JPanel implements ActionListener{
 		beerLabelIn.setText("");
 		volumeIn.setText("");
 		beerTypeIn.setText("");
-		bottleDateIn.getJFormattedTextField().setText("");
-		emailIn.setText("");
+		Calendar today = Calendar.getInstance();
+		DateLabelFormatter df = new DateLabelFormatter();
+		try {
+			bottleDateIn.getJFormattedTextField().setText(df.valueToString(today));
+		} catch (ParseException e){
+			bottleDateIn.getJFormattedTextField().setText("");
+		}
+		//emailIn.setText("");
 	}
 
 	// needed for calendar date selection

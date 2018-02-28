@@ -218,6 +218,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 			public void actionPerformed(ActionEvent e)
 			{
 			    results.setPage(beer, trackedBeers, index);
+			    results.updatePage();
 			    pages.show(container, "Results");
 			}
 		});
