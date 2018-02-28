@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.net.URL;
 import java.io.*;
-import java.net.MalformedURLException;
 /**
  *
  * @author Administrator
