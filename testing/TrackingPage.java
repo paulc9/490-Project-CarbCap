@@ -101,15 +101,23 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 	public void makePanel3(){
 		newBeerButton = new JButton("Create new beer");
+		helpButton = new JButton("Open help guide");
 		optionsButton = new JButton("Options");
+
+		newBeerButton.setToolTipText("Create a new beer to keep track of");
+		helpButton.setToolTipText("Open the CarbCap help guide PDF");
+		optionsButton.setToolTipText("Adjust notification settings, change preset beers list");
 		newBeerButton.addActionListener(this);
 		optionsButton.addActionListener(this);
+		helpButton.addActionListener(this);
 
 		//newBeerButton.setPreferredSize(CarbCap.buttonSize);
 		//optionsButton.setPreferredSize(CarbCap.buttonSize);
 
 		box3.add(Box.createRigidArea(CarbCap.edgeSpace));
 		box3.add(newBeerButton);
+		box3.add(Box.createHorizontalGlue());
+		box3.add(helpButton);
 		box3.add(Box.createHorizontalGlue());
 		box3.add(optionsButton);
 		box3.add(Box.createRigidArea(CarbCap.edgeSpace));
@@ -121,6 +129,14 @@ public class TrackingPage extends JPanel implements ActionListener{
 		if ((JButton) action == newBeerButton){
 			input.clearFields();
 			pages.show(container, "Input");
+		}
+		else if ((JButton) action == helpButton){
+			try{
+				File help = new File("CarbCap user guide.pdf");
+				Desktop.getDesktop().open(help);
+			} catch (Exception error){
+				JOptionPane.showMessageDialog(this, "Error opening help guide.");
+			}
 		}
 		else if ((JButton) action == optionsButton){
 			OptionsPage optionsPage = new OptionsPage();
@@ -176,7 +192,14 @@ public class TrackingPage extends JPanel implements ActionListener{
 		panel.add(infoBox);
 
 		//URL url = this.getClass().getClassLoader().getResource("images/" + beer.getBeerImage() + ".jpg");
-        ImageIcon img=new ImageIcon(beer.getBeerImage());
+		File check = new File(beer.getBeerImage());
+		ImageIcon img;
+        if (!(check.exists())){
+            img = new ImageIcon("images/no_image.png");
+        }
+        else{
+            img = new ImageIcon(beer.getBeerImage());
+        }
         img.setImage(img.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
         JLabel showImg=new JLabel(img);
         infoBox.add(showImg);

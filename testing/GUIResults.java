@@ -269,7 +269,14 @@ public class GUIResults extends JPanel implements ActionListener{
         currentBeer = beer;
 
         //URL url = this.getClass().getClassLoader().getResource("images/"+currentBeer.getBeerImage()+".jpg");
-        ImageIcon img=new ImageIcon(currentBeer.getBeerImage());
+        File check = new File(currentBeer.getBeerImage());
+        ImageIcon img;
+        if (!(check.exists())){
+            img = new ImageIcon("images/no_image.png");
+        }
+        else{
+            img = new ImageIcon(currentBeer.getBeerImage());
+        }
         img.setImage(img.getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT));
         JLabel showImg=new JLabel(img);
         imgPanel.add(showImg);

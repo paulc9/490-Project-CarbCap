@@ -253,7 +253,7 @@ public class InputPage extends JPanel implements ActionListener{
 			pages.show(container, "Tracking");
 		}
 		else if ((JButton) action == imageButton){
-			final JFileChooser fc = new JFileChooser(new File(System.getProperty("user.home")));
+			final JFileChooser fc = new JFileChooser("images/");
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg");
 			fc.setFileFilter(filter);
 
