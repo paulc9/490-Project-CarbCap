@@ -35,16 +35,17 @@ public class CarbCap extends JFrame implements Serializable{
 	static Font titleFont, labelFont;
 	static Border border, raised, padding;
 	static Dimension space, boxSpace, edgeSpace, buttonSize;
-	static int width, height;
-	static String PROPERTIES_PATH = "options.properties";
+	static int width, height;								// width and height of JFrame window
+	static String PROPERTIES_PATH = "options.properties";	// path for options page values such as notification setings
 	static Properties properties;
+	static double DANGER_LEVEL = 4.1;						// CO2 Danger level for bottle bursting
 	JPanel container;
 	InputPage input;
 	Newpage confirm;
 	GUIResults results;
 	TrackingPage tracking;
 	SplashPage splash;
-	static DecimalFormat df;
+	static DecimalFormat df;								// number of decimal places shown
 
 
 	public CarbCap(){

@@ -37,6 +37,10 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.chart.plot.*;
+import org.jfree.ui.RectangleAnchor;
+import org.jfree.ui.TextAnchor;
+import org.jfree.chart.renderer.AbstractRenderer;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -361,7 +365,7 @@ public class GUIResults extends JPanel implements ActionListener{
         // Email ready notification
         if(currentBeer.getCurrentVolume() >= currentBeer.getDesiredVolume() && currentBeer.readyCheck() == false)
         {
-        	if (!(email == null || email == "")){
+        	if (!(email == null || email.isEmpty())){
 		        try {  
 		            String subject = "Your Beer is Ready";
 		            String content = "Hello there, your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is ready!!!";
@@ -375,9 +379,9 @@ public class GUIResults extends JPanel implements ActionListener{
         }
 
         // Email warning notification
-        else if(currentBeer.getCurrentVolume() > 4.1 && currentBeer.warningCheck() == false)
+        else if(currentBeer.getCurrentVolume() > CarbCap.DANGER_LEVEL && currentBeer.warningCheck() == false)
         {
-        	if (!(email == null || email == "")){
+        	if (!(email == null || email.isEmpty())){
 		        try{
 		            String subject = "Beer Warning";
 		            String content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and is in danger of bursting!";
@@ -394,7 +398,7 @@ public class GUIResults extends JPanel implements ActionListener{
         // Email plateaued notification
         else if(currentBeer.plateauedCheck() == false)
         {
-            if(currentBeer.weekPlateaued() == true && !(email == null || email == "")){
+            if(currentBeer.weekPlateaued() == true && !(email == null || email.isEmpty())){
                 try{
                     String subject = "Beer Plateaued";
                     String content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and will likely not carbonate much more.";
@@ -441,12 +445,33 @@ public class GUIResults extends JPanel implements ActionListener{
             createDataset(),
             PlotOrientation.VERTICAL,
             true,true,false);
-        NumberAxis num = (NumberAxis)lineChart.getCategoryPlot().getRangeAxis();
-        lineChart.getCategoryPlot().getRangeAxis().setRange(low * 0.95, high * 1.05);
+        //NumberAxis num = (NumberAxis)lineChart.getCategoryPlot().getRangeAxis();
+        CategoryPlot chart = lineChart.getCategoryPlot();
+        chart.getRangeAxis().setRange(low * 0.80, high * 1.20);
+        chart.getRenderer().setSeriesPaint(0, Color.BLUE);
+        chart.getRenderer().setSeriesStroke(0, new BasicStroke(2.5f));
+
+        double desiredVol = currentBeer.getDesiredVolume();
+        ValueMarker danger = createMarker(CarbCap.DANGER_LEVEL, Color.RED, "Danger level for bursting!");
+        ValueMarker finish = createMarker(desiredVol, Color.GREEN, "Finished carbonation level = " + desiredVol);
+
+        chart.addRangeMarker(danger);
+        chart.addRangeMarker(finish);
+
         chartPanel = new ChartPanel(lineChart);
         //chartPanel.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
         //chartPanel.setVisible(true);
         thePanel4.add(chartPanel, BorderLayout.CENTER);
+    }
+
+    private ValueMarker createMarker(double value, Color color, String message){
+        ValueMarker marker = new ValueMarker(value);
+        marker.setPaint(color);
+        marker.setStroke(new BasicStroke(2.5f));
+        marker.setLabel(message);
+        marker.setLabelAnchor(RectangleAnchor.LEFT);
+        marker.setLabelTextAnchor(TextAnchor.TOP_LEFT);
+        return marker;
     }
 
     private DefaultCategoryDataset createDataset(){
