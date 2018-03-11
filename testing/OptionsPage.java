@@ -14,6 +14,7 @@ public class OptionsPage extends JPanel implements ActionListener{
 	Box presetBox, listBox, presetButtonsBox;
 	JComboBox presetList;
 	JButton add, edit, delete, test;
+	JCheckBox emailNotify;
 	BeerArray presetBeers;
 	Beer beer;
 	DefaultComboBoxModel model;
@@ -54,6 +55,15 @@ public class OptionsPage extends JPanel implements ActionListener{
 		emailIn = new JTextField(15);
 		emailIn.setText(CarbCap.properties.getProperty("email"));
 
+		emailNotify = new JCheckBox("Enable notification");
+		String emailNotifyCheck = "";
+		emailNotifyCheck = CarbCap.properties.getProperty("emailNotify");
+		if(emailNotifyCheck != null && emailNotifyCheck.equals("true"))
+			emailNotify.setSelected(true);
+		else
+			emailNotify.setSelected(false);
+
+		notifyPanel.add(emailNotify);
 		notifyPanel.add(emailLabel);
 		notifyPanel.add(emailIn);
 	}
@@ -241,6 +251,10 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 	public void saveProperties(){
 		CarbCap.properties.setProperty("email", emailIn.getText());
+		if(emailNotify.isSelected())
+			CarbCap.properties.setProperty("emailNotify", "true");
+		else
+			CarbCap.properties.setProperty("emailNotify", "false");
 		try{
 			CarbCap.properties.store(new FileOutputStream(CarbCap.PROPERTIES_PATH), null);
 		} catch (IOException e){

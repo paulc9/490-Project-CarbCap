@@ -256,6 +256,7 @@ public class InputPage extends JPanel implements ActionListener{
 			final JFileChooser fc = new JFileChooser("images/");
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg");
 			fc.setFileFilter(filter);
+			fc.setAccessory(new FileChooserThumbnail(fc));
 
 			int ret = fc.showOpenDialog(this);
 

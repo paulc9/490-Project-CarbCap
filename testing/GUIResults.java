@@ -40,7 +40,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.chart.plot.*;
 import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
-import org.jfree.chart.renderer.AbstractRenderer;
+import org.jfree.util.ShapeUtilities;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -51,7 +52,7 @@ import javax.mail.internet.MimeMultipart;
 
 public class GUIResults extends JPanel implements ActionListener{
 
-    JPanel thePanel, thePanel2, thePanel3, thePanel4, container, imgPanel;
+    JPanel thePanel, thePanel2, thePanel3, thePanel4, container, imgPanel, innerImgPanel;
     ChartPanel chartPanel;
     // Data name labels
     JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, /*graphImgLabel,*/ labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
@@ -85,6 +86,7 @@ public class GUIResults extends JPanel implements ActionListener{
         thePanel3 = new JPanel();
         thePanel4 = new JPanel();
         imgPanel = new JPanel();
+        innerImgPanel = new JPanel();
 
         topBox = Box.createHorizontalBox();
         theBox = Box.createHorizontalBox();
@@ -94,8 +96,9 @@ public class GUIResults extends JPanel implements ActionListener{
         thePanel2.setLayout(new GridLayout(8, 2));
         thePanel4.setLayout(new BorderLayout());
 
-        font = new Font("Helvetica", Font.PLAIN, 17);
+        innerImgPanel.setBorder(CarbCap.raised);
 
+        font = new Font("Helvetica", Font.PLAIN, 17);
 
         labelName = new JLabel("Name", SwingConstants.CENTER);
         labelCurrentPSI = new JLabel("Current PSI", SwingConstants.CENTER);
@@ -269,7 +272,7 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
     public void setPage(Beer beer){
-        imgPanel.removeAll();
+        innerImgPanel.removeAll();
         currentBeer = beer;
 
         //URL url = this.getClass().getClassLoader().getResource("images/"+currentBeer.getBeerImage()+".jpg");
@@ -283,7 +286,8 @@ public class GUIResults extends JPanel implements ActionListener{
         }
         img.setImage(img.getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT));
         JLabel showImg=new JLabel(img);
-        imgPanel.add(showImg);
+        innerImgPanel.add(showImg);
+        imgPanel.add(innerImgPanel);
 
         valName.setText(currentBeer.getName());
         valCurrentPSI.setText("" + currentBeer.getCurrentPSI());
@@ -344,9 +348,9 @@ public class GUIResults extends JPanel implements ActionListener{
                 currentBeer.adjustAvgVolRate();
                 currentBeer.adjustReadyDate();
                 //currentBeer.saveCurrentBeerStateToFile();
-                saveUpdatedBeer();
-                emailNotify();
+                notifyCheck();
                 updatePage();
+                saveUpdatedBeer();
             } catch(NumberFormatException exx) {
                 JOptionPane.showMessageDialog(this, "Input error. Please enter a whole integer for PSI."); 
             }
@@ -358,57 +362,59 @@ public class GUIResults extends JPanel implements ActionListener{
         }
     }
 
-    public void emailNotify(){
-        String imageName=System.getProperty("user.dir")+"\\images\\"+currentBeer.getBeerImage()+".jpg";
+    public void notifyCheck(){
+        String imageName = currentBeer.getBeerImage();
         String email = CarbCap.properties.getProperty("email");
         String error = "Error sending email. Check to make sure you are connected online and the email in the options page is correct.";
-        // Email ready notification
+        String subject = null;
+        String content = null;
+        Boolean sendMail = false;
+        Boolean emailNotify = false;
+
+        if(CarbCap.properties.getProperty("emailNotify").equals("true"))
+            emailNotify = true;
+
+        // Ready notification
         if(currentBeer.getCurrentVolume() >= currentBeer.getDesiredVolume() && currentBeer.readyCheck() == false)
         {
-        	if (!(email == null || email.isEmpty())){
-		        try {  
-		            String subject = "Your Beer is Ready";
-		            String content = "Hello there, your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is ready!!!";
-		            sentmail(subject, content, imageName, email);
-		        } catch (Exception ex) {
-		            Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(this, error);
-		        }
+        	if (emailNotify == true){
+	           subject = "Your Beer is Ready";
+	           content = "Hello there, your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is ready!!!";
+               sendMail = true;
 		    }
             currentBeer.readyLogged();
         }
 
-        // Email warning notification
+        // Warning notification
         else if(currentBeer.getCurrentVolume() > CarbCap.DANGER_LEVEL && currentBeer.warningCheck() == false)
         {
-        	if (!(email == null || email.isEmpty())){
-		        try{
-		            String subject = "Beer Warning";
-		            String content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and is in danger of bursting!";
-		            sentmail(subject, content, imageName, email);
-		        } catch (Exception ex){
-		            Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(this, error);
-
-		        }
+        	if (emailNotify == true){
+                subject = "Beer Warning";
+                content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and is in danger of bursting!";
+	            sendMail = true;
 		    }
             currentBeer.warningLogged();
         }
 
-        // Email plateaued notification
-        else if(currentBeer.plateauedCheck() == false)
+        // Plateaued notification
+        else if(currentBeer.plateauedCheck() == false && currentBeer.weekPlateaued() == true)
         {
-            if(currentBeer.weekPlateaued() == true && !(email == null || email.isEmpty())){
-                try{
-                    String subject = "Beer Plateaued";
-                    String content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and will likely not carbonate much more.";
-                    sentmail(subject, content, imageName, email);
-                } catch (Exception ex){
-                    Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(this, error);
-                }
+            if (emailNotify == true){
+                subject = "Beer Plateaued";
+                content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and will likely not carbonate much more.";
+                sendMail = true;
             }
             currentBeer.plateauedLogged();
+        }
+
+        // Email notification
+        if (sendMail == true){
+            try {  
+                sentmail(subject, content, imageName, email);
+            } catch (Exception ex) {
+                Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, error);
+            }
         }
     }
 
@@ -447,9 +453,14 @@ public class GUIResults extends JPanel implements ActionListener{
             true,true,false);
         //NumberAxis num = (NumberAxis)lineChart.getCategoryPlot().getRangeAxis();
         CategoryPlot chart = lineChart.getCategoryPlot();
+        LineAndShapeRenderer renderer = (LineAndShapeRenderer) chart.getRenderer();
         chart.getRangeAxis().setRange(low * 0.80, high * 1.20);
-        chart.getRenderer().setSeriesPaint(0, Color.BLUE);
-        chart.getRenderer().setSeriesStroke(0, new BasicStroke(2.5f));
+        renderer.setSeriesPaint(0, Color.BLUE);
+        renderer.setSeriesStroke(0, new BasicStroke(2.5f));
+        //chart.getRenderer().setSeriesShapesVisible(0, true);
+        //Shape cross = ShapeUtilities.createDiagonalCross(3, 1);
+        //chart.getRenderer().setSeriesShape(0, cross);
+        renderer.setSeriesShapesVisible(0, true);
 
         double desiredVol = currentBeer.getDesiredVolume();
         ValueMarker danger = createMarker(CarbCap.DANGER_LEVEL, Color.RED, "Danger level for bursting!");
@@ -477,6 +488,14 @@ public class GUIResults extends JPanel implements ActionListener{
     private DefaultCategoryDataset createDataset(){
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         int results = currentBeer.getTrackingArrayList().size();
+
+        // At normal window size, a maximum of 10 dates fit without being cut off.
+        // Because the if statement at the end may or may not add the most recent data depending on whether it's
+        // already included or not, the interval must be adjusted so that at most 9 dates are in the dataset before then.
+        Double getInterval = results / 9.0;
+
+        int interval = (int)Math.ceil(getInterval);
+        int lastDataIndex = 0;
         ArrayList<Beer.TrackingObject> beer = currentBeer.getTrackingArrayList();
         if (results == 0){
             low = 0.0;
@@ -484,13 +503,20 @@ public class GUIResults extends JPanel implements ActionListener{
         }
         else
             low = high = beer.get(0).getVolume();
-        for(int i = 0; i < results; i++){
+        for(int i = 0; i < results; i = i + interval){
             double vol = beer.get(i).getVolume();
             dataset.addValue(vol, "Volumes CO2", beer.get(i).getDateString());
             if (low > vol)
                 low = vol;
             if (high < vol)
                 high = vol;
+            lastDataIndex = i;
+        }
+
+        // Add the most recent result to the chart if it hasn't been added
+        if(results > 0 && lastDataIndex != (results - 1)){
+        	int current = results - 1;
+        	dataset.addValue(beer.get(current).getVolume(), "Volumes CO2", beer.get(current).getDateString());
         }
         return dataset;
     }
