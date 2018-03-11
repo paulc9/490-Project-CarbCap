@@ -39,7 +39,7 @@ public class FileChooserThumbnail extends JComponent implements PropertyChangeLi
     File file = null;
 
     public FileChooserThumbnail(JFileChooser fc) {
-        setPreferredSize(new Dimension(100, 50));
+        setPreferredSize(new Dimension(200, -1));
         fc.addPropertyChangeListener(this);
     }
 
@@ -51,9 +51,9 @@ public class FileChooserThumbnail extends JComponent implements PropertyChangeLi
 
         ImageIcon tmpIcon = new ImageIcon(file.getPath());
         if (tmpIcon != null) {
-            if (tmpIcon.getIconWidth() > 90) {
+            if (tmpIcon.getIconWidth() > 160) {
                 thumbnail = new ImageIcon(tmpIcon.getImage().
-                                          getScaledInstance(90, -1,
+                                          getScaledInstance(160, -1,
                                                       Image.SCALE_DEFAULT));
             } else {
                 thumbnail = tmpIcon;
