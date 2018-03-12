@@ -77,16 +77,7 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
 
         currentBeer = beer;
 
-        //URL url = this.getClass().getClassLoader().getResource(currentBeer.getBeerImage());
-        File check = new File(currentBeer.getBeerImage());
-        if (!(check.exists())){
-            img = new ImageIcon("images/no_image.png");
-        }
-        else{
-            img = new ImageIcon(currentBeer.getBeerImage());
-        }
-        img.setImage(img.getImage().getScaledInstance(Newpage.width, Newpage.height, Image.SCALE_DEFAULT));
-        showImg=new JLabel(img);
+        showImg = Util.showBeerImage(currentBeer, Newpage.width, Newpage.height);
         theBox.add(showImg);
 
         volume.setText("Desired CO2 volume: " + currentBeer.getDesiredVolume());

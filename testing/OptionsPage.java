@@ -10,8 +10,9 @@ import java.util.*;
 public class OptionsPage extends JPanel implements ActionListener{
 
 	JPanel notifyPanel, presetPanel, creditsPanel;
+	JLabel showImg;
 	JTextField emailIn, presetVolume, typeIn, volumeIn;
-	Box presetBox, listBox, presetButtonsBox;
+	Box presetBox, imageBox, listBox, presetButtonsBox;
 	JComboBox presetList;
 	JButton add, edit, delete, test;
 	JCheckBox emailNotify;
@@ -70,6 +71,7 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 	public void makePresetPanel(){
 		presetBox = Box.createHorizontalBox();
+		imageBox = Box.createVerticalBox();
 		listBox = Box.createVerticalBox();
 		presetButtonsBox = Box.createVerticalBox();
 
@@ -84,18 +86,32 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 		presetVolume = new JTextField(15);
 		presetVolume.setEditable(false);
-		beer = (Beer) presetList.getSelectedItem();
 		presetVolume.setMaximumSize(presetList.getPreferredSize());
-		presetVolume.setText("Volume: " + beer.getDesiredVolume());
+
+		beer = (Beer) presetList.getSelectedItem();
+		showImg = Util.showBeerImage(beer, 100, -1);
+		imageBox.add(showImg);
+
+		if (beer != null)
+			presetVolume.setText("Volume: " + beer.getDesiredVolume());
+		else
+			presetVolume.setText("No preset beers");
 		listBox.add(presetVolume);
 
 		presetList.addActionListener (new ActionListener () {
 			public void actionPerformed(ActionEvent e) {
+				imageBox.removeAll();
+
 				beer = (Beer) presetList.getSelectedItem();
+				showImg = Util.showBeerImage(beer, 100, -1);
 				if (beer != null)
 			    	presetVolume.setText("Volume: " + beer.getDesiredVolume());
 			    else
 			    	presetVolume.setText("No preset beers");
+
+			    imageBox.add(showImg);
+			    imageBox.revalidate();
+			    imageBox.repaint();
 			    listBox.revalidate();
 				listBox.repaint();
 			}
@@ -117,8 +133,10 @@ public class OptionsPage extends JPanel implements ActionListener{
 		presetButtonsBox.add(delete);
 		presetButtonsBox.add(test);
 
+		presetBox.add(imageBox);
+		presetBox.add(Box.createHorizontalGlue());
 		presetBox.add(listBox);
-		presetBox.add(Box.createRigidArea(CarbCap.space));
+		//presetBox.add(Box.createRigidArea(CarbCap.space));
 		presetBox.add(Box.createHorizontalGlue());
 		presetBox.add(presetButtonsBox);
 

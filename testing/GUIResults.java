@@ -275,17 +275,7 @@ public class GUIResults extends JPanel implements ActionListener{
         innerImgPanel.removeAll();
         currentBeer = beer;
 
-        //URL url = this.getClass().getClassLoader().getResource("images/"+currentBeer.getBeerImage()+".jpg");
-        File check = new File(currentBeer.getBeerImage());
-        ImageIcon img;
-        if (!(check.exists())){
-            img = new ImageIcon("images/no_image.png");
-        }
-        else{
-            img = new ImageIcon(currentBeer.getBeerImage());
-        }
-        img.setImage(img.getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT));
-        JLabel showImg=new JLabel(img);
+        JLabel showImg = Util.showBeerImage(currentBeer, 200, 200);
         innerImgPanel.add(showImg);
         imgPanel.add(innerImgPanel);
 

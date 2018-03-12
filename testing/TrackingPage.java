@@ -191,17 +191,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		
 		panel.add(infoBox);
 
-		//URL url = this.getClass().getClassLoader().getResource("images/" + beer.getBeerImage() + ".jpg");
-		File check = new File(beer.getBeerImage());
-		ImageIcon img;
-        if (!(check.exists())){
-            img = new ImageIcon("images/no_image.png");
-        }
-        else{
-            img = new ImageIcon(beer.getBeerImage());
-        }
-        img.setImage(img.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
-        JLabel showImg=new JLabel(img);
+        JLabel showImg = Util.showBeerImage(beer, 100, -1);
         infoBox.add(showImg);
 
         infoBox.add(Box.createHorizontalGlue());
