@@ -55,7 +55,7 @@ public class GUIResults extends JPanel implements ActionListener{
     JPanel thePanel, thePanel2, thePanel3, thePanel4, container, imgPanel, innerImgPanel;
     ChartPanel chartPanel;
     // Data name labels
-    JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, /*graphImgLabel,*/ labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
+    JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
     // Data value labels
     JLabel valName, valCurrentPSI, valReadyDate, valManualPSI, valBeerType, valBottleDate, valCurrentVol, valDesiredVol, valVolPerDay;
     JButton buttonDelBeer, buttonEnter, buttonBack;
@@ -75,8 +75,6 @@ public class GUIResults extends JPanel implements ActionListener{
     public static void main(String[] args) {
         new GUIResults();
     }
-
-
 
 
 
@@ -113,14 +111,7 @@ public class GUIResults extends JPanel implements ActionListener{
 
         psiInput = new JTextField(10);
         psiInput.setMaximumSize( psiInput.getPreferredSize() );
-/*
-        URL url = this.getClass().getClassLoader().getResource("images/graph.jpg");
-        graphImg = new ImageIcon(url);
-        Image image = graphImg.getImage(); // transform it
-        Image newimg = image.getScaledInstance(320, 165,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-        graphImg = new ImageIcon(newimg);  // transform it back
-        graphImgLabel = new JLabel(graphImg);
-*/
+
         buttonDelBeer = new JButton("Delete Beer");
         buttonDelBeer.setToolTipText("Delete Current Beer Data");
         buttonDelBeer.addActionListener(this);
@@ -322,7 +313,6 @@ public class GUIResults extends JPanel implements ActionListener{
                     System.err.println(x);
                 }
                 */
-                //input.clearFields();
                 trackedBeers.remove(trackedBeersIndex);
                 saveTrackedBeers();
                 tracking.setBeerArray(trackedBeers);
@@ -400,7 +390,7 @@ public class GUIResults extends JPanel implements ActionListener{
         // Email notification
         if (sendMail == true){
             try {  
-                sentmail(subject, content, imageName, email);
+                Util.sentmail(subject, content, imageName, email);
             } catch (Exception ex) {
                 Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, error);
@@ -447,9 +437,6 @@ public class GUIResults extends JPanel implements ActionListener{
         chart.getRangeAxis().setRange(low * 0.80, high * 1.20);
         renderer.setSeriesPaint(0, Color.BLUE);
         renderer.setSeriesStroke(0, new BasicStroke(2.5f));
-        //chart.getRenderer().setSeriesShapesVisible(0, true);
-        //Shape cross = ShapeUtilities.createDiagonalCross(3, 1);
-        //chart.getRenderer().setSeriesShape(0, cross);
         renderer.setSeriesShapesVisible(0, true);
 
         double desiredVol = currentBeer.getDesiredVolume();
@@ -479,9 +466,11 @@ public class GUIResults extends JPanel implements ActionListener{
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         int results = currentBeer.getTrackingArrayList().size();
 
-        // At normal window size, a maximum of 10 dates fit without being cut off.
-        // Because the if statement at the end may or may not add the most recent data depending on whether it's
-        // already included or not, the interval must be adjusted so that at most 9 dates are in the dataset before then.
+        /* 
+            At normal window size, a maximum of 10 dates fit without being cut off.
+            Because the if statement at the end may or may not add the most recent data depending on whether it's
+            already included or not, the interval must be adjusted so that at most 9 dates are in the dataset before then.
+        */
         Double getInterval = results / 9.0;
 
         int interval = (int)Math.ceil(getInterval);
@@ -509,50 +498,6 @@ public class GUIResults extends JPanel implements ActionListener{
         	dataset.addValue(beer.get(current).getVolume(), "Volumes CO2", beer.get(current).getDateString());
         }
         return dataset;
-    }
-
-
-
-
-    public void sentmail(String subject, String content, String image, String email) throws MessagingException, Exception
-    {
-        Properties props = new Properties();                    
-        props.setProperty("mail.transport.protocol", "smtp");   
-        props.setProperty("mail.smtp.host", "smtp.gmail.com");   
-        props.setProperty("mail.smtp.auth", "true"); 
-        final String smtpPort = "465";
-        props.setProperty("mail.smtp.port", smtpPort);
-        props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.setProperty("mail.smtp.socketFactory.fallback", "false");
-        props.setProperty("mail.smtp.socketFactory.port", smtpPort);
-        Session session = Session.getInstance(props);
-        session.setDebug(true);   
-        MimeMessage message = createMimeMessage(session, "carbcap490@gmail.com", email, subject, content, image);
-        Transport transport = session.getTransport();
-        transport.connect("carbcap490@gmail.com", "Comp4900");
-        transport.sendMessage(message, message.getAllRecipients());
-        transport.close();
-    }  
-    public MimeMessage createMimeMessage(Session session, String sendMail, String receiveMail, String subject, String content, String image) throws Exception 
-    {
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(sendMail, "CarbCap", "UTF-8"));
-        message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiveMail, "", "UTF-8"));
-        message.setSubject(subject, "UTF-8");
-        MimeBodyPart imageName = new MimeBodyPart();
-        DataHandler dh = new DataHandler(new FileDataSource(image));
-        imageName.setDataHandler(dh);
-        imageName.setContentID("beer image");
-        MimeBodyPart text = new MimeBodyPart();
-        text.setContent(content, "text/html;charset=UTF-8");
-        MimeMultipart mailBody= new MimeMultipart();
-        mailBody.addBodyPart(text);
-        mailBody.addBodyPart(imageName);
-        mailBody.setSubType("related"); 
-        message.setContent(mailBody);
-        message.setSentDate(new Date());
-        message.saveChanges();
-        return message;
     }
 
     public void saveNewBeer(){
