@@ -76,7 +76,7 @@ public class Util{
 
         Path currentBeerImgDir = Paths.get(f.getParent());
 
-        if (imagesDir.toAbsolutePath().equals(currentBeerImgDir))
+        if (imagesDir.toAbsolutePath().equals(currentBeerImgDir.toAbsolutePath()))
             return true;
         return false;
     }
@@ -96,6 +96,7 @@ public class Util{
 
         try{
             Files.copy(source, destination);
+            System.out.println("Image copied to images directory");
             return destination.toString();
         } catch (IOException e){
             System.out.println("Error copying image to images directory.");

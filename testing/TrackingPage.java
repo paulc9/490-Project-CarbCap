@@ -239,9 +239,18 @@ public class TrackingPage extends JPanel implements ActionListener{
 		delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				trackedBeers.remove(index);
-			    saveTrackedBeers();
-			    displayTrackedBeers();
+				final ImageIcon BeerIcon = new ImageIcon("images/Beer Icon.png");
+            	int n = JOptionPane.showConfirmDialog(
+                    TrackingPage.this,
+                    "Are you sure you want to delete your " + beer.getType() + " beer  \"" + beer.getName() + "\"?",
+                    "Delete Confirmation",
+                    JOptionPane.YES_NO_OPTION, 2,
+                    BeerIcon);
+            	if (n == 0){
+					trackedBeers.remove(index);
+				    saveTrackedBeers();
+				    displayTrackedBeers();
+				}
 			}
 		});
 		
