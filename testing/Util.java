@@ -17,6 +17,16 @@ import javax.activation.FileDataSource;
 
 import java.nio.file.*;
 
+import twitter4j.DirectMessage;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+
+import twitter4j.auth.AccessToken;
+
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
+
 public class Util{
 
 /*
@@ -97,7 +107,7 @@ public class Util{
 	/*
 		Functions for sending email.
 	*/
-	public static void sentmail(String subject, String content, String image, String email) throws MessagingException, Exception
+	public static void sendMail(String subject, String content, String image, String email) throws MessagingException, Exception
     {
         Properties props = new Properties();                    
         props.setProperty("mail.transport.protocol", "smtp");   
@@ -138,5 +148,39 @@ public class Util{
         message.saveChanges();
         return message;
     }
+
+
+    /*
+        Functions for sending messages direct messages/posting status via Twitter.
+    */
+
+    public static void sendTwitterDirectMessage(String consumerkey, String consumerSecret, String twitterToken, String twitterSecret, String directMessage, String twitterName) throws TwitterException
+    {
+        ConfigurationBuilder  builder=new ConfigurationBuilder();
+        builder.setOAuthConsumerKey(consumerkey);
+        builder.setOAuthConsumerSecret(consumerSecret);
+        Configuration configuration=builder.build();
+        TwitterFactory factory=new TwitterFactory(configuration);
+        Twitter twitter=factory.getInstance();
+        //System.out.println("key:" + twitter.getConfiguration().getOAuthConsumerKey());
+        //System.out.println("secret: " + twitter.getConfiguration().getOAuthConsumerSecret());
+        //twitter.setOAuthConsumer(consumerkey,consumerSecret);
+        AccessToken accessToken=new AccessToken(twitterToken,twitterSecret);
+        twitter.setOAuthAccessToken(accessToken);
+        DirectMessage Message=twitter.sendDirectMessage(twitterName,directMessage);
+    }
+
+    public static void postStatus(String consumerKey, String consumerSecret, String twitterToken, String twitterSecret, String statusMessage) throws TwitterException
+    {
+        ConfigurationBuilder builder=new ConfigurationBuilder();
+        builder.setOAuthConsumerKey(consumerKey);
+        builder.setOAuthConsumerSecret(consumerSecret);
+        Configuration configuration=builder.build();
+        TwitterFactory factory=new TwitterFactory(configuration);
+        Twitter twitter=factory.getInstance();
+        AccessToken accessToken=new AccessToken(twitterToken,twitterSecret);
+        twitter.setOAuthAccessToken(accessToken);
+        twitter.updateStatus(statusMessage);  
+    }        
 
 }

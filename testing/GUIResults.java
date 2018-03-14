@@ -340,11 +340,21 @@ public class GUIResults extends JPanel implements ActionListener{
         String error = "Error sending email. Check to make sure you are connected online and the email in the options page is correct.";
         String subject = null;
         String content = null;
+        String twitterMsg = null;
+
         Boolean sendMail = false;
         Boolean emailNotify = false;
+        Boolean sendTwitterDirect = false;
+        Boolean twitterDirectNotify = false;
+        Boolean sendTwitterStatus = false;
+        Boolean twitterStatusNotify = false;
 
         if(CarbCap.properties.getProperty("emailNotify").equals("true"))
             emailNotify = true;
+        if(CarbCap.properties.getProperty("twitterDirectNotify").equals("true"))
+            twitterDirectNotify = true;
+        if(CarbCap.properties.getProperty("twitterStatusNotify").equals("true"))
+            twitterStatusNotify = true;
 
         // Ready notification
         if(currentBeer.getCurrentVolume() >= currentBeer.getDesiredVolume() && currentBeer.readyCheck() == false)
@@ -354,6 +364,13 @@ public class GUIResults extends JPanel implements ActionListener{
 	           content = "Hello there, your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is ready!!!";
                sendMail = true;
 		    }
+            if (twitterDirectNotify == true || twitterStatusNotify == true){
+                twitterMsg = "Your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is ready!";
+                if (twitterDirectNotify == true)
+                    sendTwitterDirect = true;
+                if (twitterStatusNotify == true)
+                    sendTwitterStatus = true;
+            }
             currentBeer.readyLogged();
         }
 
@@ -365,6 +382,13 @@ public class GUIResults extends JPanel implements ActionListener{
                 content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and is in danger of bursting!";
 	            sendMail = true;
 		    }
+            if (twitterDirectNotify == true || twitterStatusNotify == true){
+                twitterMsg = "Danger! Your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" may burst soon!";
+                if (twitterDirectNotify == true)
+                    sendTwitterDirect = true;
+                if (twitterStatusNotify == true)
+                    sendTwitterStatus = true;
+            }
             currentBeer.warningLogged();
         }
 
@@ -376,16 +400,49 @@ public class GUIResults extends JPanel implements ActionListener{
                 content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and will likely not carbonate much more.";
                 sendMail = true;
             }
+            if (twitterDirectNotify == true || twitterStatusNotify == true){
+                twitterMsg = "Your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level" + CarbCap.df.format(currentBeer.getCurrentVolume()) + ".";
+                if (twitterDirectNotify == true)
+                    sendTwitterDirect = true;
+                if (twitterStatusNotify == true)
+                    sendTwitterStatus = true;
+            }
             currentBeer.plateauedLogged();
         }
 
         // Email notification
         if (sendMail == true){
             try {  
-                Util.sentmail(subject, content, imageName, email);
+                Util.sendMail(subject, content, imageName, email);
             } catch (Exception ex) {
                 Logger.getLogger(GUIResults.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, error);
+            }
+        }
+
+        // Twitter notifications
+        if (sendTwitterDirect == true || sendTwitterStatus == true){
+            String consumerKey = "lJaFS429trpWFn1rruYrvUhAG";
+            String consumerSecret = "hTE43Bf1bLCy7EZr8qgwLqBqXpUcCzv4AWvP439noPZyv4xESu";  
+            String twitterToken = "972273167367471104-Fh4N1omEdTWWSriGK7Qb4IeaAgVoQ9Y";
+            String twitterSecret = "LWvlmcmmu81m62kI70IkRnQycahapw1NkiUG34IVJ6XP5";
+            String twitterName = CarbCap.properties.getProperty("twitterUsername");
+
+            if (sendTwitterDirect == true){
+                try{
+                    Util.sendTwitterDirectMessage(consumerKey, consumerSecret, twitterToken, twitterSecret, twitterMsg, twitterName);
+                } catch (Exception ex){
+                    System.out.println("There's been an error sending the Twitter direct message from the results page!");
+                }
+            }
+
+            if (sendTwitterStatus == true){
+                twitterMsg = twitterMsg.concat(" @" + twitterName);
+                try{
+                    Util.postStatus(consumerKey, consumerSecret, twitterToken, twitterSecret, twitterMsg);
+                } catch (Exception ex){
+                    System.out.println("There's been an error posting the Twitter status message from the results page!");
+                }
             }
         }
     }

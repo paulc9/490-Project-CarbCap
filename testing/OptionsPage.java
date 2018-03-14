@@ -13,11 +13,11 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 	JPanel notifyPanel, presetPanel, creditsPanel;
 	JLabel showImg;
-	JTextField emailIn, presetVolume, typeIn, volumeIn, imageIn;
+	JTextField emailIn, twitterIn, presetVolume, typeIn, volumeIn, imageIn;
 	Box presetBox, imageBox, listBox, presetButtonsBox;
 	JComboBox presetList;
 	JButton add, edit, delete, test;
-	JCheckBox emailNotify;
+	JCheckBox emailNotify, twitterDirectNotify, twitterStatusNotify;
 	BeerArray presetBeers;
 	Beer beer;
 	DefaultComboBoxModel model;
@@ -28,7 +28,7 @@ public class OptionsPage extends JPanel implements ActionListener{
 		creditsPanel = new JPanel();
 
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		notifyPanel.setLayout(new GridLayout(1, 2));
+		notifyPanel.setLayout(new GridLayout(3, 3));
 		presetPanel.setLayout(new GridBagLayout());
 		creditsPanel.setLayout(new BoxLayout(creditsPanel, BoxLayout.Y_AXIS));
 
@@ -55,20 +55,42 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 	public void makeNotifyPanel(){
 		JLabel emailLabel = new JLabel("Email");
+		JLabel twitterLabel = new JLabel("Twitter username");
 		emailIn = new JTextField(15);
 		emailIn.setText(CarbCap.properties.getProperty("email"));
+		twitterIn = new JTextField(15);
+		twitterIn.setText(CarbCap.properties.getProperty("twitterUsername"));
 
-		emailNotify = new JCheckBox("Enable notification");
-		String emailNotifyCheck = "";
-		emailNotifyCheck = CarbCap.properties.getProperty("emailNotify");
-		if(emailNotifyCheck != null && emailNotifyCheck.equals("true"))
+		emailNotify = new JCheckBox("Enable");
+		twitterDirectNotify = new JCheckBox("Enable Direct Msg");
+		twitterStatusNotify = new JCheckBox("Enable Status Notify");
+		String notifyCheck = "";
+
+		notifyCheck = CarbCap.properties.getProperty("emailNotify");
+		if(notifyCheck != null && notifyCheck.equals("true"))
 			emailNotify.setSelected(true);
 		else
 			emailNotify.setSelected(false);
 
+		notifyCheck = CarbCap.properties.getProperty("twitterDirectNotify");
+		if(notifyCheck != null && notifyCheck.equals("true"))
+			twitterDirectNotify.setSelected(true);
+		else
+			twitterDirectNotify.setSelected(false);
+
+		notifyCheck = CarbCap.properties.getProperty("twitterStatusNotify");
+		if(notifyCheck != null && notifyCheck.equals("true"))
+			twitterStatusNotify.setSelected(true);
+		else
+			twitterStatusNotify.setSelected(false);
+
 		notifyPanel.add(emailNotify);
 		notifyPanel.add(emailLabel);
 		notifyPanel.add(emailIn);
+		notifyPanel.add(twitterDirectNotify);
+		notifyPanel.add(twitterLabel);
+		notifyPanel.add(twitterIn);
+		notifyPanel.add(twitterStatusNotify);
 	}
 
 	public void makePresetPanel(){
@@ -326,14 +348,31 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 	public void saveProperties(){
 		CarbCap.properties.setProperty("email", emailIn.getText());
+		CarbCap.properties.setProperty("twitterUsername", twitterIn.getText());
+
+
 		if(emailNotify.isSelected())
 			CarbCap.properties.setProperty("emailNotify", "true");
 		else
 			CarbCap.properties.setProperty("emailNotify", "false");
+
+
+		if(twitterDirectNotify.isSelected())
+			CarbCap.properties.setProperty("twitterDirectNotify", "true");
+		else
+			CarbCap.properties.setProperty("twitterDirectNotify", "false");
+
+
+		if(twitterStatusNotify.isSelected())
+			CarbCap.properties.setProperty("twitterStatusNotify", "true");
+		else
+			CarbCap.properties.setProperty("twitterStatusNotify", "false");
+
+
 		try{
 			CarbCap.properties.store(new FileOutputStream(CarbCap.PROPERTIES_PATH), null);
 		} catch (IOException e){
-			
+			System.out.println("There's been an error with storing the properties file in the options page!");
 		}
 	}
 
