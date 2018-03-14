@@ -15,12 +15,14 @@ import javax.mail.internet.MimeMultipart;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 
+import java.nio.file.*;
+
 public class Util{
 
 /*
 	Returns a JLabel with the image of the beer given to it.
 	If the file specified by the beer's image string doesn't exist,
-	a "No Image Available" picture will appear instead. Otherwise,
+	a "No Image Found" picture will appear instead. Otherwise,
 	the label will have text saying no image was set (if the string is empty)
 	or the beer is null (if the beer objec doesn't exist).
 */
@@ -50,6 +52,51 @@ public class Util{
 	    return showImg;
 	}
 
+
+    /*
+        Functions for checking if image selected exists in images directory
+        and copying image to images directory.
+    */
+    public static Boolean checkImageDirectory(Beer beer){
+        Path imagesDir = Paths.get("images");
+        File f = new File(beer.getBeerImage());
+
+        if (!f.exists())
+            return true;
+
+        Path currentBeerImgDir = Paths.get(f.getParent());
+
+        if (imagesDir.toAbsolutePath().equals(currentBeerImgDir))
+            return true;
+        return false;
+    }
+
+    public static String copyToImageDir(Beer beer){
+        Path source = Paths.get(beer.getBeerImage());
+        Path destination = Paths.get("images/" + source.toFile().getName());
+
+        // Splits file name into name and extension so that (i) can be added for duplicates and extension can be added after.
+        String[] split = source.toFile().getName().split("\\.(?=[^\\.]+$)");
+
+        int i = 1;
+        while(destination.toFile().exists()){
+            destination = Paths.get("images/" + split[0] + " (" + i + ")." + split[1]);
+            i++;
+        }
+
+        try{
+            Files.copy(source, destination);
+            return destination.toString();
+        } catch (IOException e){
+            System.out.println("Error copying image to images directory.");
+            return beer.getBeerImage();
+        }
+    }
+
+
+	/*
+		Functions for sending email.
+	*/
 	public static void sentmail(String subject, String content, String image, String email) throws MessagingException, Exception
     {
         Properties props = new Properties();                    
@@ -91,4 +138,5 @@ public class Util{
         message.saveChanges();
         return message;
     }
+
 }

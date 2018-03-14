@@ -26,8 +26,6 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartFactory;
@@ -42,12 +40,6 @@ import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
 import org.jfree.util.ShapeUtilities;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
-
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMultipart;
 
 
 public class GUIResults extends JPanel implements ActionListener{

@@ -6,12 +6,14 @@ import javax.swing.BorderFactory;
 import javax.swing.border.*;
 import javax.swing.UIManager;
 import java.util.*;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class OptionsPage extends JPanel implements ActionListener{
 
 	JPanel notifyPanel, presetPanel, creditsPanel;
 	JLabel showImg;
-	JTextField emailIn, presetVolume, typeIn, volumeIn;
+	JTextField emailIn, presetVolume, typeIn, volumeIn, imageIn;
 	Box presetBox, imageBox, listBox, presetButtonsBox;
 	JComboBox presetList;
 	JButton add, edit, delete, test;
@@ -178,12 +180,25 @@ public class OptionsPage extends JPanel implements ActionListener{
 				try{
 					Double check = Double.parseDouble(volumeIn.getText());
 					Beer addedBeer;
+
 					if (typeIn.getText().isEmpty() == true){
 						addedBeer = new Beer(check);
 					}
 					else{
 						addedBeer = new Beer(typeIn.getText(), check);
 					}
+
+					if (imageIn.getText().isEmpty() == true){
+						addedBeer.setBeerImage("images/beer_10.jpg");
+					}
+					else{
+						addedBeer.setBeerImage(imageIn.getText());
+					}
+
+					if(Util.checkImageDirectory(addedBeer) == false){
+			            addedBeer.setBeerImage(Util.copyToImageDir(addedBeer));
+			        }
+
 					presetBeers.beerArray.add(addedBeer);
 					model.addElement(addedBeer);
 					//makeComboBox();
@@ -200,12 +215,25 @@ public class OptionsPage extends JPanel implements ActionListener{
 				try{
 					Double check = Double.parseDouble(volumeIn.getText());
 					Beer editedBeer;
+
 					if (typeIn.getText().isEmpty() == true){
 						editedBeer = new Beer(check);
 					}
 					else{
 						editedBeer = new Beer(typeIn.getText(), check);
 					}
+
+					if (imageIn.getText().isEmpty() == true){
+						editedBeer.setBeerImage("images/beer_10.jpg");
+					}
+					else{
+						editedBeer.setBeerImage(imageIn.getText());
+					}
+
+					if(Util.checkImageDirectory(editedBeer) == false){
+			            editedBeer.setBeerImage(Util.copyToImageDir(editedBeer));
+			        }
+
 					presetBeers.beerArray.set(index, editedBeer);
 					model.removeElementAt(index);
 					model.insertElementAt(editedBeer, index);
@@ -234,21 +262,45 @@ public class OptionsPage extends JPanel implements ActionListener{
 */
 	public JPanel makeDialogPanel(Boolean edit, Beer editBeer){
 		JPanel ret = new JPanel();
-
 		ret.setLayout(new BoxLayout(ret, BoxLayout.PAGE_AXIS));
+
+		JButton imageChoose = new JButton("Choose image");
+
 		Box typeBox = Box.createHorizontalBox();
 		Box volBox = Box.createHorizontalBox();
+		Box imageBox = Box.createHorizontalBox();
 
 		typeIn = new JTextField(10);
 		volumeIn = new JTextField(10);
+		imageIn = new JTextField(10);
 
 		typeIn.setMaximumSize(typeIn.getPreferredSize());
 		volumeIn.setMaximumSize(volumeIn.getPreferredSize());
+		imageIn.setMaximumSize(imageIn.getPreferredSize());
 
 		if(edit == true){
 			typeIn.setText(editBeer.getType());
 			volumeIn.setText("" + editBeer.getDesiredVolume());
+			imageIn.setText(editBeer.getBeerImage());
 		}
+
+		imageChoose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+			    final JFileChooser fc = new JFileChooser("images/");
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg");
+				fc.setFileFilter(filter);
+				fc.setAccessory(new FileChooserThumbnail(fc));
+
+				int ret = fc.showOpenDialog(OptionsPage.this);
+
+				if (ret == JFileChooser.APPROVE_OPTION){
+					File file = fc.getSelectedFile();
+
+					imageIn.setText(file.getPath());
+				}
+			}
+		});
 
 		typeBox.add(new JLabel("Beer type name  "));
 		typeBox.add(typeIn);
@@ -256,8 +308,13 @@ public class OptionsPage extends JPanel implements ActionListener{
 		volBox.add(new JLabel("Desired CO2 volume  "));
 		volBox.add(volumeIn);
 
+		imageBox.add(new JLabel("Beer image  "));
+		imageBox.add(imageIn);
+		imageBox.add(imageChoose);
+
 		ret.add(typeBox);
 		ret.add(volBox);
+		ret.add(imageBox);
 
 		return ret;
 	}

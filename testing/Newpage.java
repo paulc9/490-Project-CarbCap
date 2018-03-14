@@ -130,44 +130,12 @@ public class Newpage extends JPanel implements ActionListener, Serializable{
         if ((JButton) action == back)
             pages.show(container, "Input");
         else if((JButton) action == next){
-            if(checkImageDirectory() == false){
-                copyToImageDir();
+            if(Util.checkImageDirectory(currentBeer) == false){
+                currentBeer.setBeerImage(Util.copyToImageDir(currentBeer));
             }
             results.setPage(currentBeer);
             results.saveNewBeer();
             pages.show(container, "Results");
-        }
-    }
-
-    public Boolean checkImageDirectory(){
-        Path imagesDir = Paths.get("images");
-        File f = new File(currentBeer.getBeerImage());
-
-        Path currentBeerImgDir = Paths.get(f.getParent());
-
-        if (imagesDir.toAbsolutePath().equals(currentBeerImgDir))
-            return true;
-        return false;
-    }
-
-    public void copyToImageDir(){
-        Path source = Paths.get(currentBeer.getBeerImage());
-        Path destination = Paths.get("images/" + source.toFile().getName());
-
-        // Splits file name into name and extension so that (i) can be added for duplicates and extension can be added after.
-        String[] split = source.toFile().getName().split("\\.(?=[^\\.]+$)");
-
-        int i = 1;
-        while(destination.toFile().exists()){
-            destination = Paths.get("images/" + split[0] + " (" + i + ")." + split[1]);
-            i++;
-        }
-
-        try{
-            Files.copy(source, destination);
-            currentBeer.setBeerImage(destination.toString());
-        } catch (IOException e){
-            System.out.println("Error copying image to images directory.");
         }
     }
 }
