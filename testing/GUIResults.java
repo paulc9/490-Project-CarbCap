@@ -273,6 +273,8 @@ public class GUIResults extends JPanel implements ActionListener{
         valBottleDate.setText(currentBeer.getBottleDateString());
         dateCounter = Calendar.getInstance();
 
+        psiInput.setText("");
+
         thePanel.revalidate();
         thePanel.repaint();
         drawGraph();

@@ -11,7 +11,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class OptionsPage extends JPanel implements ActionListener{
 
-	JPanel notifyPanel, presetPanel, creditsPanel;
+	JPanel notifyPanel, emailPanel, twitterPanel, presetPanel, creditsPanel;
+	JTabbedPane notifyTabPane;
 	JLabel showImg;
 	JTextField emailIn, twitterIn, presetVolume, typeIn, volumeIn, imageIn;
 	Box presetBox, imageBox, listBox, presetButtonsBox;
@@ -21,6 +22,8 @@ public class OptionsPage extends JPanel implements ActionListener{
 	BeerArray presetBeers;
 	Beer beer;
 	DefaultComboBoxModel model;
+	final String TWITTER_ICON = "images/twitter-icon.png";
+	final String EMAIL_ICON = "images/email-icon.png";
 
 	public OptionsPage(){
 		notifyPanel = new JPanel();
@@ -28,13 +31,13 @@ public class OptionsPage extends JPanel implements ActionListener{
 		creditsPanel = new JPanel();
 
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		notifyPanel.setLayout(new GridLayout(3, 3));
+		notifyPanel.setLayout(new GridLayout(1, 1));
 		presetPanel.setLayout(new GridBagLayout());
 		creditsPanel.setLayout(new BoxLayout(creditsPanel, BoxLayout.Y_AXIS));
 
 		this.setBorder(CarbCap.padding);
 
-		TitledBorder title = BorderFactory.createTitledBorder("Notification Settings");
+		TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Notification Settings");
 		notifyPanel.setBorder(new CompoundBorder(title, CarbCap.padding));
 
 		TitledBorder title2 = BorderFactory.createTitledBorder("Preset Beers List");
@@ -54,16 +57,38 @@ public class OptionsPage extends JPanel implements ActionListener{
 	}
 
 	public void makeNotifyPanel(){
+
+		notifyTabPane = new JTabbedPane();
+		ImageIcon twitterIcon = new ImageIcon(TWITTER_ICON);
+		Image image = twitterIcon.getImage().getScaledInstance(20, -1, Image.SCALE_DEFAULT);
+		twitterIcon = new ImageIcon(image);
+		ImageIcon emailIcon = new ImageIcon(EMAIL_ICON);
+		image = emailIcon.getImage().getScaledInstance(20, -1, Image.SCALE_DEFAULT);
+		emailIcon = new ImageIcon(image);
+
+		emailPanel = createEmailPanel();
+		notifyTabPane.addTab("Email", emailIcon, emailPanel);
+		notifyTabPane.setMnemonicAt(0, KeyEvent.VK_1);
+
+		twitterPanel = createTwitterPanel();
+		notifyTabPane.addTab("Twitter", twitterIcon, twitterPanel);
+		notifyTabPane.setMnemonicAt(1, KeyEvent.VK_2);
+
+		notifyPanel.add(notifyTabPane);
+	}
+
+	public JPanel createEmailPanel(){
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		panel.setBorder(CarbCap.padding);
+
 		JLabel emailLabel = new JLabel("Email");
-		JLabel twitterLabel = new JLabel("Twitter username");
+
 		emailIn = new JTextField(15);
 		emailIn.setText(CarbCap.properties.getProperty("email"));
-		twitterIn = new JTextField(15);
-		twitterIn.setText(CarbCap.properties.getProperty("twitterUsername"));
 
 		emailNotify = new JCheckBox("Enable");
-		twitterDirectNotify = new JCheckBox("Enable Direct Msg");
-		twitterStatusNotify = new JCheckBox("Enable Status Notify");
 		String notifyCheck = "";
 
 		notifyCheck = CarbCap.properties.getProperty("emailNotify");
@@ -71,6 +96,33 @@ public class OptionsPage extends JPanel implements ActionListener{
 			emailNotify.setSelected(true);
 		else
 			emailNotify.setSelected(false);
+
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.gridx = 0;
+		c.gridy = 0;
+		panel.add(emailNotify, c);
+		c.gridx++;
+		panel.add(emailLabel, c);
+		c.gridx++;
+		panel.add(emailIn, c);
+
+		return panel;
+	}
+
+	public JPanel createTwitterPanel(){
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(0, 3));
+		panel.setBorder(CarbCap.padding);
+
+		JLabel twitterLabel = new JLabel("Twitter username");
+
+		twitterIn = new JTextField(15);
+		twitterIn.setText(CarbCap.properties.getProperty("twitterUsername"));
+
+		twitterDirectNotify = new JCheckBox("Enable Direct Msg");
+		twitterStatusNotify = new JCheckBox("Enable Status Notify");
+		String notifyCheck = "";
 
 		notifyCheck = CarbCap.properties.getProperty("twitterDirectNotify");
 		if(notifyCheck != null && notifyCheck.equals("true"))
@@ -84,13 +136,12 @@ public class OptionsPage extends JPanel implements ActionListener{
 		else
 			twitterStatusNotify.setSelected(false);
 
-		notifyPanel.add(emailNotify);
-		notifyPanel.add(emailLabel);
-		notifyPanel.add(emailIn);
-		notifyPanel.add(twitterDirectNotify);
-		notifyPanel.add(twitterLabel);
-		notifyPanel.add(twitterIn);
-		notifyPanel.add(twitterStatusNotify);
+		panel.add(twitterDirectNotify);
+		panel.add(twitterLabel);
+		panel.add(twitterIn);
+		panel.add(twitterStatusNotify);
+
+		return panel;
 	}
 
 	public void makePresetPanel(){
@@ -268,8 +319,17 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 		else if ((JButton) action == delete){
 			int index = presetList.getSelectedIndex();
-			presetBeers.beerArray.remove(index);
-			model.removeElementAt(index);
+			final ImageIcon BeerIcon = new ImageIcon("images/Beer Icon.png");
+        	int n = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete preset beer \"" + presetBeers.beerArray.get(index).getType() + "\" with desired CO2 level " + presetBeers.beerArray.get(index).getDesiredVolume() + "?",
+                "Delete Confirmation",
+                JOptionPane.YES_NO_OPTION, 2,
+                BeerIcon);
+        	if (n == 0){
+				presetBeers.beerArray.remove(index);
+				model.removeElementAt(index);
+			}
 		}
 
 // For debugging purposes, make sure preset beer array is same as one in combo box model

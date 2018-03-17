@@ -63,7 +63,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		panel3.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		mainPanel.setBorder(CarbCap.padding);
-		panel1.setBorder(new CompoundBorder(CarbCap.border, CarbCap.padding));
+		panel1.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 		panel2.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 		panel3.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 
@@ -226,6 +226,7 @@ public class TrackingPage extends JPanel implements ActionListener{
         buttonBox.add(moreInfo);
         buttonBox.add(delete);
         infoBox.add(buttonBox);
+
         // More info button action
         moreInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
@@ -235,6 +236,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 			    pages.show(container, "Results");
 			}
 		});
+
 		// Delete button action
 		delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
@@ -242,7 +244,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 				final ImageIcon BeerIcon = new ImageIcon("images/Beer Icon.png");
             	int n = JOptionPane.showConfirmDialog(
                     TrackingPage.this,
-                    "Are you sure you want to delete your " + beer.getType() + " beer  \"" + beer.getName() + "\"?",
+                    "Are you sure you want to delete your " + beer.getType() + " beer \"" + beer.getName() + "\"?",
                     "Delete Confirmation",
                     JOptionPane.YES_NO_OPTION, 2,
                     BeerIcon);
@@ -253,6 +255,13 @@ public class TrackingPage extends JPanel implements ActionListener{
 				}
 			}
 		});
+
+		JProgressBar progress = new JProgressBar(0, (int)(beer.getDesiredVolume() * 10000));
+		progress.setValue((int)beer.getCurrentVolume() * 10000);
+		progress.setStringPainted(true);
+
+		panel.add(Box.createRigidArea(new Dimension(0, 10)));
+		panel.add(progress);
 		
 		insideScrollPane.add(panel);
 		insideScrollPane.revalidate();

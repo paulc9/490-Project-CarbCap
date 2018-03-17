@@ -159,3 +159,9 @@ public class CarbCap extends JFrame implements Serializable{
 
 //JFreeChart Graph library
 //Website: http://www.jfree.org/jfreechart/
+
+/*
+	Copyright things to check:
+	Notification images used on options page (Twitter, Email, etc.)
+	Images used for preset beers
+*/
