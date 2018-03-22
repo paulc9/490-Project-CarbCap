@@ -10,10 +10,12 @@ public class Beer implements Serializable{
     private double desiredVolume, currentVolume, avgVolRate;
     private String beerType, beerName, beerImage, email;
     private Calendar bottleDate, trackingDate, readyDate;
-    private Boolean ready, warning, plateaued, avgRateExists;
+    private Boolean ready, warning, plateaued, avgRateExists, imageCopy;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
     private ArrayList<TrackingObject>  trackingArray = new ArrayList<TrackingObject>();
     //color
+/*
+    Unused now that mail is in options page - may remove after further testing
 
     public Beer(String name, String bDate, String mail){
         this.beerName = name;
@@ -23,7 +25,9 @@ public class Beer implements Serializable{
         this.warning = false;
         this.plateaued = false;
         this.avgRateExists = false;
+        this.imageChanged = false;
     }
+*/
 
     public Beer(String name, String bDate){
         this.beerName = name;
@@ -32,6 +36,7 @@ public class Beer implements Serializable{
         this.warning = false;
         this.plateaued = false;
         this.avgRateExists = false;
+        this.imageCopy = false;
     }
 
     public Beer(String type, double volume){
@@ -46,7 +51,9 @@ public class Beer implements Serializable{
         this.beerImage = "beer_10";
     }
 
-    public Beer(){};
+    public Beer(){
+        this.imageCopy = false;
+    }
 
     public void setBeerImage(String i){this.beerImage=i;}
     public String getBeerImage(){return this.beerImage;}
@@ -83,6 +90,13 @@ public class Beer implements Serializable{
 
     public void setDesiredVolume(double vol){this.desiredVolume = vol;}
     public double getDesiredVolume(){return this.desiredVolume;}
+
+    /*
+        imageCopy is used for preset beers, to flag which images are not
+        in the images folder and thus need to be copied there
+    */
+    public void setImageCopy(Boolean value){this.imageCopy = value;}
+    public Boolean getImageCopy(){return this.imageCopy;}
 
     /*
         Converts psi and Fahrenheit temp to the CO2 carbonation in beer.

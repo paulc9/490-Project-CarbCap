@@ -261,6 +261,7 @@ public class OptionsPage extends JPanel implements ActionListener{
 						addedBeer = new Beer(typeIn.getText(), check);
 					}
 
+					addedBeer.setImageCopy(false);
 					if (imageIn.getText().isEmpty() == true){
 						addedBeer.setBeerImage("images/beer_10.jpg");
 					}
@@ -269,7 +270,7 @@ public class OptionsPage extends JPanel implements ActionListener{
 					}
 
 					if(Util.checkImageDirectory(addedBeer) == false){
-			            addedBeer.setBeerImage(Util.copyToImageDir(addedBeer));
+						addedBeer.setImageCopy(true);
 			        }
 
 					presetBeers.beerArray.add(addedBeer);
@@ -296,6 +297,7 @@ public class OptionsPage extends JPanel implements ActionListener{
 						editedBeer = new Beer(typeIn.getText(), check);
 					}
 
+					editedBeer.setImageCopy(false);
 					if (imageIn.getText().isEmpty() == true){
 						editedBeer.setBeerImage("images/beer_10.jpg");
 					}
@@ -304,7 +306,7 @@ public class OptionsPage extends JPanel implements ActionListener{
 					}
 
 					if(Util.checkImageDirectory(editedBeer) == false){
-			            editedBeer.setBeerImage(Util.copyToImageDir(editedBeer));
+						editedBeer.setImageCopy(true);
 			        }
 
 					presetBeers.beerArray.set(index, editedBeer);
@@ -344,21 +346,20 @@ public class OptionsPage extends JPanel implements ActionListener{
 */
 	public JPanel makeDialogPanel(Boolean edit, Beer editBeer){
 		JPanel ret = new JPanel();
-		ret.setLayout(new BoxLayout(ret, BoxLayout.PAGE_AXIS));
+		ret.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 
 		JButton imageChoose = new JButton("Choose image");
 
-		Box typeBox = Box.createHorizontalBox();
-		Box volBox = Box.createHorizontalBox();
-		Box imageBox = Box.createHorizontalBox();
+		typeIn = new JTextField(15);
+		volumeIn = new JTextField(15);
+		imageIn = new JTextField(15);
 
-		typeIn = new JTextField(10);
-		volumeIn = new JTextField(10);
-		imageIn = new JTextField(10);
+		//typeIn.setMaximumSize(typeIn.getPreferredSize());
+		//volumeIn.setMaximumSize(volumeIn.getPreferredSize());
+		//imageIn.setMaximumSize(imageIn.getPreferredSize());
 
-		typeIn.setMaximumSize(typeIn.getPreferredSize());
-		volumeIn.setMaximumSize(volumeIn.getPreferredSize());
-		imageIn.setMaximumSize(imageIn.getPreferredSize());
+		imageChoose.setPreferredSize(new Dimension(120, imageIn.getPreferredSize().height));
 
 		if(edit == true){
 			typeIn.setText(editBeer.getType());
@@ -384,24 +385,40 @@ public class OptionsPage extends JPanel implements ActionListener{
 			}
 		});
 
-		typeBox.add(new JLabel("Beer type name  "));
-		typeBox.add(typeIn);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(0, 0, 0, 10);
+		c.gridx = 0;
+		c.gridy = 0;
 
-		volBox.add(new JLabel("Desired CO2 volume  "));
-		volBox.add(volumeIn);
+		ret.add(new JLabel("Beer type name  "), c);
+		c.gridx++;
+		ret.add(typeIn, c);
 
-		imageBox.add(new JLabel("Beer image  "));
-		imageBox.add(imageIn);
-		imageBox.add(imageChoose);
+		c.gridx = 0;
+		c.gridy++;
+		ret.add(new JLabel("Desired CO2 volume  "), c);
+		c.gridx++;
+		ret.add(volumeIn, c);
 
-		ret.add(typeBox);
-		ret.add(volBox);
-		ret.add(imageBox);
+		c.gridx = 0;
+		c.gridy++;
+		ret.add(new JLabel("Beer image  "), c);
+		c.gridx++;
+		ret.add(imageIn, c);
+		c.gridx = 4;
+		ret.add(imageChoose, c);
 
 		return ret;
 	}
 
 	public void saveSettings(){
+		for(int i = 0; i < presetBeers.beerArray.size(); i++){
+			Beer update = presetBeers.beerArray.get(i);
+			if(update.getImageCopy() == true){
+				update.setBeerImage(Util.copyToImageDir(update));
+				presetBeers.beerArray.set(i, update);
+			}
+		}
 		presetBeers.savePresetBeers();
 		saveProperties();
 	}

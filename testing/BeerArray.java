@@ -1,3 +1,6 @@
+/*
+	Used for preset beers
+*/
 import java.util.*;
 import java.io.*;
 
@@ -67,7 +70,7 @@ public class BeerArray implements Serializable{
 
 	public void savePresetBeers(){
 		try{
-			 //Saving of object in a file
+			//Saving of object in a file
             FileOutputStream file = new FileOutputStream("savedPresetBeers.ser");
             ObjectOutputStream out = new ObjectOutputStream(file);
 

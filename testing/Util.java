@@ -65,7 +65,7 @@ public class Util{
 
     /*
         Functions for checking if image selected exists in images directory
-        and copying image to images directory.
+        and copying image to images directory if the above is false.
     */
     public static Boolean checkImageDirectory(Beer beer){
         Path imagesDir = Paths.get("images");
@@ -84,6 +84,7 @@ public class Util{
     public static String copyToImageDir(Beer beer){
         Path source = Paths.get(beer.getBeerImage());
         Path destination = Paths.get("images/" + source.toFile().getName());
+        String image = beer.getBeerImage();
 
         // Splits file name into name and extension so that (i) can be added for duplicates and extension can be added after.
         String[] split = source.toFile().getName().split("\\.(?=[^\\.]+$)");
@@ -96,10 +97,10 @@ public class Util{
 
         try{
             Files.copy(source, destination);
-            System.out.println("Image copied to images directory");
+            System.out.println("Image " + image + " copied to images directory");
             return destination.toString();
         } catch (IOException e){
-            System.out.println("Error copying image to images directory.");
+            System.out.println("Error copying image " + image + " to images directory.");
             return beer.getBeerImage();
         }
     }

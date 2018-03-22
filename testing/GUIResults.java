@@ -351,11 +351,11 @@ public class GUIResults extends JPanel implements ActionListener{
         Boolean sendTwitterStatus = false;
         Boolean twitterStatusNotify = false;
 
-        if(CarbCap.properties.getProperty("emailNotify").equals("true"))
+        if(CarbCap.properties.getProperty("emailNotify", "").equals("true"))
             emailNotify = true;
-        if(CarbCap.properties.getProperty("twitterDirectNotify").equals("true"))
+        if(CarbCap.properties.getProperty("twitterDirectNotify", "").equals("true"))
             twitterDirectNotify = true;
-        if(CarbCap.properties.getProperty("twitterStatusNotify").equals("true"))
+        if(CarbCap.properties.getProperty("twitterStatusNotify", "").equals("true"))
             twitterStatusNotify = true;
 
         // Ready notification
