@@ -60,10 +60,10 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 		notifyTabPane = new JTabbedPane();
 		ImageIcon twitterIcon = new ImageIcon(TWITTER_ICON);
-		Image image = twitterIcon.getImage().getScaledInstance(20, -1, Image.SCALE_DEFAULT);
+		Image image = twitterIcon.getImage().getScaledInstance(36, -1, Image.SCALE_DEFAULT);
 		twitterIcon = new ImageIcon(image);
 		ImageIcon emailIcon = new ImageIcon(EMAIL_ICON);
-		image = emailIcon.getImage().getScaledInstance(20, -1, Image.SCALE_DEFAULT);
+		image = emailIcon.getImage().getScaledInstance(40, -1, Image.SCALE_DEFAULT);
 		emailIcon = new ImageIcon(image);
 
 		emailPanel = createEmailPanel();
@@ -112,11 +112,12 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 	public JPanel createTwitterPanel(){
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(0, 4));
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 		panel.setBorder(CarbCap.padding);
 
 		JLabel twitterLabel = new JLabel("Twitter username");
-		JLabel symbol = new JLabel("@", JLabel.RIGHT);
+		JLabel symbol = new JLabel("@");
 
 		twitterIn = new JTextField(15);
 		twitterIn.setText(CarbCap.properties.getProperty("twitterUsername"));
@@ -137,11 +138,24 @@ public class OptionsPage extends JPanel implements ActionListener{
 		else
 			twitterStatusNotify.setSelected(false);
 
-		panel.add(twitterDirectNotify);
-		panel.add(twitterLabel);
-		panel.add(symbol);
-		panel.add(twitterIn);
-		panel.add(twitterStatusNotify);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.3;
+		c.gridx = 0;
+		c.gridy = 0;
+		panel.add(twitterDirectNotify, c);
+		c.gridx++;
+		c.insets = new Insets(0, 20, 0, 20);
+		panel.add(twitterLabel, c);
+		c.gridx++;
+		c.insets = new Insets(0, 0, 0, 0);
+		c.anchor = GridBagConstraints.LINE_END;
+		panel.add(symbol, c);
+		c.anchor = GridBagConstraints.CENTER;
+		c.gridx++;
+		panel.add(twitterIn, c);
+		c.gridx = 0;
+		c.gridy = 1;
+		panel.add(twitterStatusNotify, c);
 
 		return panel;
 	}
