@@ -162,6 +162,8 @@ public class OptionsPage extends JPanel implements ActionListener{
 		presetVolume = new JTextField(15);
 		presetVolume.setEditable(false);
 		presetVolume.setMaximumSize(presetList.getPreferredSize());
+		presetVolume.setBackground(CarbCap.background);
+		presetVolume.setForeground(CarbCap.text);
 
 		beer = (Beer) presetList.getSelectedItem();
 		showImg = Util.showBeerImage(beer, 100, -1);

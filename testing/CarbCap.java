@@ -39,6 +39,8 @@ public class CarbCap extends JFrame implements Serializable{
 	static String PROPERTIES_PATH = "options.properties";	// path for options page values such as notification setings
 	static Properties properties;
 	static double DANGER_LEVEL = 4.1;						// CO2 Danger level for bottle bursting
+	static Color text = new Color(242, 191, 37);
+	static Color background = new Color(75, 87, 97);
 	JPanel container;
 	InputPage input;
 	Newpage confirm;
@@ -66,7 +68,7 @@ public class CarbCap extends JFrame implements Serializable{
 
 	// creating colors, borders, fonts, box sizes, etc.
 	public void styling(){
-		UIManager.put("Label.foreground", new Color(228, 125, 0));
+		setUIDefaults();
 
 		border = BorderFactory.createLineBorder(Color.black);
 		raised = BorderFactory.createRaisedBevelBorder();
@@ -74,6 +76,8 @@ public class CarbCap extends JFrame implements Serializable{
 
 		titleFont = new Font("Helvetica", Font.PLAIN, 26);
 		labelFont = new Font("Helvetica", Font.PLAIN, 22);
+
+		getContentPane().setBackground(Color.gray);
 
 		space = new Dimension(15, 0);
 		boxSpace = new Dimension(0, 30);
@@ -83,6 +87,20 @@ public class CarbCap extends JFrame implements Serializable{
 		df = new DecimalFormat("#.0000");
 	}
 
+	// setting up default colors for component backgrounds, text, etc.
+	public void setUIDefaults(){
+		UIManager.put("Label.foreground", text);
+		UIManager.put("CheckBox.foreground", text);
+		UIManager.put("OptionPane.foreground", text);
+		UIManager.put("OptionPane.messageForeground", text);
+		UIManager.put("TitledBorder.titleColor", text);
+
+		UIManager.put("Panel.background", background);
+		UIManager.put("CheckBox.background", background);
+		UIManager.put("OptionPane.background", background);
+	}
+
+	// load user settings
 	public void loadProperties(){
 		properties = new Properties();
 		try{

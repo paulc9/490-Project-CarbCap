@@ -91,9 +91,11 @@ public class TrackingPage extends JPanel implements ActionListener{
 	public void makePanel2(){
 		scrollPane = new JScrollPane();
 		insideScrollPane = new JPanel();
-		scrollPane.setPreferredSize(new Dimension(this.getWidth(), (int)(CarbCap.height - CarbCap.height * 0.5)));
+		scrollPane.setPreferredSize(new Dimension(this.getWidth(), (int)(CarbCap.height * 0.6)));
 		insideScrollPane.setLayout(new BoxLayout(insideScrollPane, BoxLayout.PAGE_AXIS));
+		insideScrollPane.setBackground(Color.gray.brighter());
 		scrollPane.setViewportView(insideScrollPane);
+		scrollPane.getViewport().setBackground(insideScrollPane.getBackground());
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		panel2.add(scrollPane);
@@ -174,6 +176,9 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 	public void displayNoBeersMessage(){
 		noBeersText = new JLabel("No tracked beers found");
+		noBeersText.setFont(CarbCap.labelFont);
+		noBeersText.setAlignmentX(Component.CENTER_ALIGNMENT);
+
 		insideScrollPane.add(noBeersText);
 		insideScrollPane.revalidate();
 		insideScrollPane.repaint();
@@ -181,14 +186,32 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 	public void addBeerPanel(Beer beer, int index){
 		JPanel panel = new JPanel();
+		JPanel titleBox = new JPanel();
 		Box infoBox = Box.createHorizontalBox();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS)/*new FlowLayout()*/);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		panel.setMinimumSize(new Dimension(scrollPane.getViewport().getSize().width, 200));
 		//panel.setPreferredSize(new Dimension(scrollPane.getViewport().getSize().width, 200));
-		panel.setBorder(new CompoundBorder(CarbCap.border, CarbCap.padding));
-
+		panel.setBorder(new CompoundBorder(CarbCap.padding, BorderFactory.createLineBorder(Color.black.brighter(), 3)));
+		panel.setBackground(Color.gray.brighter());
 		//panel.add(new JLabel("added label"));
-		
+		JLabel title = new JLabel("<html><b>" + beer.getName() + "</b></html>");
+		title.setFont(CarbCap.titleFont);
+		titleBox.setBackground(new Color(16, 156, 147));
+		titleBox.setOpaque(true);
+		titleBox.setLayout(new GridBagLayout());
+		Dimension d = new Dimension(titleBox.getPreferredSize().width, title.getPreferredSize().height);
+		titleBox.setPreferredSize(d);
+		d = new Dimension(titleBox.getMaximumSize().width, title.getPreferredSize().height);
+		titleBox.setMaximumSize(d);
+		GridBagConstraints c = new GridBagConstraints();
+		//c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 0;
+		titleBox.add(title, c);
+		panel.add(titleBox);
+
+		infoBox.setOpaque(true);
+		infoBox.setBackground(Color.gray.darker().darker());
 		panel.add(infoBox);
 
         JLabel showImg = Util.showBeerImage(beer, 100, -1);
@@ -260,7 +283,6 @@ public class TrackingPage extends JPanel implements ActionListener{
 		progress.setValue((int)beer.getCurrentVolume() * 10000);
 		progress.setStringPainted(true);
 
-		panel.add(Box.createRigidArea(new Dimension(0, 10)));
 		panel.add(progress);
 		
 		insideScrollPane.add(panel);
