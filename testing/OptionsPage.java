@@ -112,10 +112,11 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 	public JPanel createTwitterPanel(){
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(0, 3));
+		panel.setLayout(new GridLayout(0, 4));
 		panel.setBorder(CarbCap.padding);
 
 		JLabel twitterLabel = new JLabel("Twitter username");
+		JLabel symbol = new JLabel("@", JLabel.RIGHT);
 
 		twitterIn = new JTextField(15);
 		twitterIn.setText(CarbCap.properties.getProperty("twitterUsername"));
@@ -138,6 +139,7 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 		panel.add(twitterDirectNotify);
 		panel.add(twitterLabel);
+		panel.add(symbol);
 		panel.add(twitterIn);
 		panel.add(twitterStatusNotify);
 

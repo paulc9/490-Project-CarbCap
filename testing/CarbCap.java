@@ -94,10 +94,20 @@ public class CarbCap extends JFrame implements Serializable{
 		UIManager.put("OptionPane.foreground", text);
 		UIManager.put("OptionPane.messageForeground", text);
 		UIManager.put("TitledBorder.titleColor", text);
+		UIManager.put("TabbedPane.foreground", text);
 
 		UIManager.put("Panel.background", background);
 		UIManager.put("CheckBox.background", background);
 		UIManager.put("OptionPane.background", background);
+		UIManager.put("TabbedPane.background", new Color(117, 136, 150));
+
+		UIManager.put("TabbedPane.contentAreaColor", background.darker());
+		UIManager.put("TabbedPane.light", background);
+		UIManager.put("TabbedPane.selected", background);
+		UIManager.put("TabbedPane.borderHightlightColor", new Color(152, 177, 197));
+		UIManager.put("TabbedPane.darkShadow", background.darker().darker());
+		UIManager.put("TabbedPane.selectHighlight", background.darker());
+		UIManager.put("TabbedPane.contentBorderInsets", new Insets(1, 1, 3, 3));
 	}
 
 	// load user settings
@@ -152,6 +162,11 @@ public class CarbCap extends JFrame implements Serializable{
 			tracking.loadTrackedBeers();
 		}
 		tracking.displayTrackedBeers();
+
+		/* Uncomment this to show app with UI properties *//*
+		UIManagerDefaults c = new UIManagerDefaults();
+		c.createAndShowGUI();
+		/**/
 
 		/* Show splash page *//*
 		pages.show(container, "Splash");
