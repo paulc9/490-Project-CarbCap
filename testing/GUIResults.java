@@ -424,24 +424,18 @@ public class GUIResults extends JPanel implements ActionListener{
 
         // Twitter notifications
         if (sendTwitterDirect == true || sendTwitterStatus == true){
-            String consumerKey = "lJaFS429trpWFn1rruYrvUhAG";
-            String consumerSecret = "hTE43Bf1bLCy7EZr8qgwLqBqXpUcCzv4AWvP439noPZyv4xESu";  
-            String twitterToken = "972273167367471104-Fh4N1omEdTWWSriGK7Qb4IeaAgVoQ9Y";
-            String twitterSecret = "LWvlmcmmu81m62kI70IkRnQycahapw1NkiUG34IVJ6XP5";
-            String twitterName = CarbCap.properties.getProperty("twitterUsername");
-
             if (sendTwitterDirect == true){
                 try{
-                    Util.sendTwitterDirectMessage(consumerKey, consumerSecret, twitterToken, twitterSecret, twitterMsg, twitterName);
+                    Util.sendTwitterDirectMessage(twitterMsg);
                 } catch (Exception ex){
                     System.out.println("There's been an error sending the Twitter direct message from the results page!");
                 }
             }
 
             if (sendTwitterStatus == true){
-                twitterMsg = twitterMsg.concat(" @" + twitterName);
+                twitterMsg = twitterMsg.concat(" @" + CarbCap.properties.getProperty("twitterUsername"));
                 try{
-                    Util.postStatus(consumerKey, consumerSecret, twitterToken, twitterSecret, twitterMsg);
+                    Util.postStatus(twitterMsg);
                 } catch (Exception ex){
                     System.out.println("There's been an error posting the Twitter status message from the results page!");
                 }

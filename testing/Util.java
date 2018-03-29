@@ -29,6 +29,12 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class Util{
 
+//  Keys needed for Twitter notifications
+    static String consumerKey = "gbSdUOCLNWr9FCQ14c2vlEF2t";
+    static String consumerSecret = "QBgH6TgCRLL0S5LupIwlEvbE3cqNZVMtWmH9GGxoq3kOvxJ74f";  
+    static String twitterToken = "978010248307814400-bJ2szl9L7CIZkarCybjhvB2rHwQpB6w";
+    static String twitterSecret = "V0jIU93gwpQmMX3X18PDeak4HfP7xz8awTBIuIws69VcB";
+
 /*
 	Returns a JLabel with the image of the beer given to it.
 	If the file specified by the beer's image string doesn't exist,
@@ -156,23 +162,24 @@ public class Util{
         Functions for sending messages direct messages/posting status via Twitter.
     */
 
-    public static void sendTwitterDirectMessage(String consumerkey, String consumerSecret, String twitterToken, String twitterSecret, String directMessage, String twitterName) throws TwitterException
+    public static void sendTwitterDirectMessage(String directMessage) throws TwitterException
     {
+        String twitterName = CarbCap.properties.getProperty("twitterUsername");
         ConfigurationBuilder  builder=new ConfigurationBuilder();
-        builder.setOAuthConsumerKey(consumerkey);
+        builder.setOAuthConsumerKey(consumerKey);
         builder.setOAuthConsumerSecret(consumerSecret);
         Configuration configuration=builder.build();
         TwitterFactory factory=new TwitterFactory(configuration);
         Twitter twitter=factory.getInstance();
         //System.out.println("key:" + twitter.getConfiguration().getOAuthConsumerKey());
         //System.out.println("secret: " + twitter.getConfiguration().getOAuthConsumerSecret());
-        //twitter.setOAuthConsumer(consumerkey,consumerSecret);
+        //twitter.setOAuthConsumer(consumerKey,consumerSecret);
         AccessToken accessToken=new AccessToken(twitterToken,twitterSecret);
         twitter.setOAuthAccessToken(accessToken);
         DirectMessage Message=twitter.sendDirectMessage(twitterName,directMessage);
     }
 
-    public static void postStatus(String consumerKey, String consumerSecret, String twitterToken, String twitterSecret, String statusMessage) throws TwitterException
+    public static void postStatus(String statusMessage) throws TwitterException
     {
         ConfigurationBuilder builder=new ConfigurationBuilder();
         builder.setOAuthConsumerKey(consumerKey);
