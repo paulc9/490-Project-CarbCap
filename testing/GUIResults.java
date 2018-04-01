@@ -53,7 +53,6 @@ public class GUIResults extends JPanel implements ActionListener{
     JButton buttonDelBeer, buttonEnter, buttonBack;
     ImageIcon graphImg;
     JTextField psiInput;
-    Font font;
     TrackingPage tracking;
     CardLayout pages;
     Box topBox, theBox;
@@ -87,8 +86,6 @@ public class GUIResults extends JPanel implements ActionListener{
         thePanel4.setLayout(new BorderLayout());
 
         innerImgPanel.setBorder(CarbCap.raised);
-
-        font = new Font("Helvetica", Font.PLAIN, 17);
 
         labelName = new JLabel("Name", SwingConstants.CENTER);
         labelCurrentPSI = new JLabel("Current PSI", SwingConstants.CENTER);
@@ -127,28 +124,28 @@ public class GUIResults extends JPanel implements ActionListener{
         valVolPerDay = new JLabel();
 
 
-        labelName.setFont(font);
-        labelCurrentPSI.setFont(font);
-        labelReadyDate.setFont(font);
-        labelGraph.setFont(font);
-        buttonDelBeer.setFont(font);
-        labelBeerType.setFont(font);
-        labelManualPSI.setFont(font);
-        labelBottleDate.setFont(font);
-        labelCurrentVol.setFont(font);
-        labelVolPerDay.setFont(font);
-        labelDesiredVol.setFont(font);
-        buttonEnter.setFont(font);
+        labelName.setFont(CarbCap.font);
+        labelCurrentPSI.setFont(CarbCap.font);
+        labelReadyDate.setFont(CarbCap.font);
+        labelGraph.setFont(CarbCap.font);
+        buttonDelBeer.setFont(CarbCap.font);
+        labelBeerType.setFont(CarbCap.font);
+        labelManualPSI.setFont(CarbCap.font);
+        labelBottleDate.setFont(CarbCap.font);
+        labelCurrentVol.setFont(CarbCap.font);
+        labelVolPerDay.setFont(CarbCap.font);
+        labelDesiredVol.setFont(CarbCap.font);
+        buttonEnter.setFont(CarbCap.font);
 
-        valName.setFont(font);
-        valCurrentPSI.setFont(font);
-        valReadyDate.setFont(font);
-        valManualPSI.setFont(font);
-        valBeerType.setFont(font);
-        valBottleDate.setFont(font);
-        valCurrentVol.setFont(font);
-        valDesiredVol.setFont(font);
-        valVolPerDay.setFont(font);
+        valName.setFont(CarbCap.font);
+        valCurrentPSI.setFont(CarbCap.font);
+        valReadyDate.setFont(CarbCap.font);
+        valManualPSI.setFont(CarbCap.font);
+        valBeerType.setFont(CarbCap.font);
+        valBottleDate.setFont(CarbCap.font);
+        valCurrentVol.setFont(CarbCap.font);
+        valDesiredVol.setFont(CarbCap.font);
+        valVolPerDay.setFont(CarbCap.font);
 
         valName.setForeground(Color.BLACK);
         valCurrentPSI.setForeground(Color.BLACK);

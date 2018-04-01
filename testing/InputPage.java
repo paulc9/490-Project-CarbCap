@@ -48,6 +48,7 @@ public class InputPage extends JPanel implements ActionListener{
 	Beer currentBeer;
 	int beerIndex;
 	BeerArray presetBeers;
+	DefaultComboBoxModel CBmodel;
 
 	public InputPage(){
 		mainPanel = new JPanel();
@@ -146,17 +147,15 @@ public class InputPage extends JPanel implements ActionListener{
 		panel2_Text = new JLabel("Select a beer type from the drop-down menu below for an existing/preset beer", SwingConstants.CENTER);
 		beerListLabel = new JLabel("Beer type", SwingConstants.CENTER);
 
-		File presetFile = new File("savedPresetBeers.ser");
+		/*File presetFile = new File("savedPresetBeers.ser");
 		if (presetFile.exists())
 			presetBeers = BeerArray.loadPresetBeers();
 		else{
 			presetBeers = new BeerArray();
 			presetBeers.savePresetBeers();
 		}
+		*/
 		beerList = new JComboBox();
-		for(Beer beer: presetBeers.beerArray)
-			beerList.addItem(beer.getType());
-		//String[] beerStrings = {"Beer 1", "Beer 2", "Beer 3", "Beer 4"};
 		button1 = new JButton("Ok");
 
 		panel2_Text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
@@ -247,6 +246,15 @@ public class InputPage extends JPanel implements ActionListener{
 		container = main;
 	}
 
+	public void showPresetComboBox(){
+		presetBeers = BeerArray.loadPresetBeers();
+		CBmodel = new DefaultComboBoxModel();
+		for(Beer listBeer: presetBeers.beerArray)
+			CBmodel.addElement(listBeer);
+		beerList.setModel(CBmodel);
+		beerList.setRenderer(new BeerComboBoxRenderer());
+	}
+
 	public void actionPerformed(ActionEvent e){
 		Object action = e.getSource();
 		if((JButton) action == backButton){
@@ -283,13 +291,12 @@ public class InputPage extends JPanel implements ActionListener{
 			}
 		}
 		else if (!errorCheck(action)){
-			currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText()/*, emailIn.getText()*/);
+			currentBeer = new Beer(beerLabelIn.getText(), bottleDateIn.getJFormattedTextField().getText());
 			if ((JButton) action == button1){
-				currentBeer.setType((String) beerList.getSelectedItem());
-				beerIndex = beerList.getSelectedIndex();
-				currentBeer.setDesiredPSI(presetBeers.beerArray.get(beerIndex).getDesiredPSI());
-				currentBeer.setDesiredVolume(presetBeers.beerArray.get(beerIndex).getDesiredVolume());
-				currentBeer.setBeerImage(presetBeers.beerArray.get(beerIndex).getBeerImage());
+				Beer selectedBeer = (Beer)beerList.getSelectedItem();
+				currentBeer.setType(selectedBeer.getType());
+				currentBeer.setDesiredVolume(selectedBeer.getDesiredVolume());
+				currentBeer.setBeerImage(selectedBeer.getBeerImage());
 			}
 			else{
 				if (beerTypeIn.getText().isEmpty())

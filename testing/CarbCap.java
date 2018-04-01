@@ -32,8 +32,8 @@ import java.io.*;
 public class CarbCap extends JFrame implements Serializable{
 
 	CardLayout pages;
-	static Font titleFont, labelFont;
-	static Border border, raised, padding;
+	static Font titleFont, labelFont, font;
+	static Border border, raised, lowered, padding;
 	static Dimension space, boxSpace, edgeSpace, buttonSize;
 	static int width, height;								// width and height of JFrame window
 	static String PROPERTIES_PATH = "options.properties";	// path for options page values such as notification setings
@@ -72,10 +72,12 @@ public class CarbCap extends JFrame implements Serializable{
 
 		border = BorderFactory.createLineBorder(Color.black);
 		raised = BorderFactory.createRaisedBevelBorder();
+		lowered = BorderFactory.createLoweredBevelBorder();
 		padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 
 		titleFont = new Font("Helvetica", Font.PLAIN, 26);
 		labelFont = new Font("Helvetica", Font.PLAIN, 22);
+		font = new Font("Helvetica", Font.PLAIN, 17);
 
 		getContentPane().setBackground(Color.gray);
 
@@ -95,11 +97,14 @@ public class CarbCap extends JFrame implements Serializable{
 		UIManager.put("OptionPane.messageForeground", text);
 		UIManager.put("TitledBorder.titleColor", text);
 		UIManager.put("TabbedPane.foreground", text);
+		UIManager.put("ProgressBar.foreground", new Color(216, 167, 19));
+		UIManager.put("ProgressBar.selectionForeground", Color.black);
 
 		UIManager.put("Panel.background", background);
 		UIManager.put("CheckBox.background", background);
 		UIManager.put("OptionPane.background", background);
 		UIManager.put("TabbedPane.background", new Color(117, 136, 150));
+		UIManager.put("ProgressBar.selectionBackground", background);
 
 		UIManager.put("TabbedPane.contentAreaColor", background.darker());
 		UIManager.put("TabbedPane.light", background);
@@ -156,7 +161,11 @@ public class CarbCap extends JFrame implements Serializable{
 		container.add(tracking, "Tracking");
 		container.add(splash, "Splash");
 
-
+		File presetFile = new File("savedPresetBeers.ser");
+		if (!presetFile.exists()){
+			BeerArray presetBeers = new BeerArray();
+			presetBeers.savePresetBeers();
+		}
 		File tmpFile = new File("savedBeers.ser");
 		if(tmpFile.exists()){
 			tracking.loadTrackedBeers();
