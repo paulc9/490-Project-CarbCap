@@ -29,7 +29,7 @@ import java.io.*;
 
 public class TrackingPage extends JPanel implements ActionListener{
 
-	JPanel mainPanel, panel1, panel2, panel3, insideScrollPane, container;
+	JPanel mainPanel, panel1, titlePanel, panel2, panel3, insideScrollPane, container;
 	JLabel panel1_Text, noBeersText;
 	JButton newBeerButton, optionsButton, helpButton;
 	Box box3;
@@ -48,34 +48,52 @@ public class TrackingPage extends JPanel implements ActionListener{
 	public TrackingPage(){
 		mainPanel = new JPanel();
 		panel1 = new JPanel();
+		titlePanel = new JPanel();
 		panel2 = new JPanel();
 		panel3 = new JPanel();
 
-		box3 = Box.createHorizontalBox();
-
 		this.setLayout(new BorderLayout());
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+		mainPanel.setLayout(new GridBagLayout());
 		panel1.setLayout(new BoxLayout(panel1, BoxLayout.PAGE_AXIS));
+		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.PAGE_AXIS));
 		panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
-		panel3.setLayout(new BoxLayout(panel3, BoxLayout.PAGE_AXIS));
+		panel3.setLayout(new GridBagLayout());
 		panel1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		titlePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel2.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel3.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		mainPanel.setBorder(CarbCap.padding);
 		panel1.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
+		titlePanel.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 		panel2.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 		panel3.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 
-		mainPanel.add(panel1);
-		mainPanel.add(Box.createVerticalGlue());
-		mainPanel.add(panel2);
-		mainPanel.add(Box.createVerticalGlue());
-		mainPanel.add(panel3);
-
 		makePanel1();
+		makeTitlePanel();
 		makePanel2();
 		makePanel3();
+
+		GridBagConstraints c = new GridBagConstraints();
+
+		c.gridx = 0;
+		c.gridy = 0;
+		c.fill = GridBagConstraints.BOTH;
+		c.weighty = 0.2;
+		mainPanel.add(panel1);
+		c.gridx++;
+		mainPanel.add(titlePanel);
+		c.gridx = 0;
+		c.gridy++;
+		c.insets = new Insets(10, 0, 0, 0);
+		c.weighty = 0.8;
+		c.weightx = 0.05;
+		//mainPanel.add(Box.createVerticalGlue());
+		mainPanel.add(panel3, c);
+		c.weightx = 0.95;
+		c.gridx++;
+		//mainPanel.add(Box.createVerticalGlue());
+		mainPanel.add(panel2, c);
 
 		trackedBeers = null;
 
@@ -83,9 +101,16 @@ public class TrackingPage extends JPanel implements ActionListener{
 	}
 
 	public void makePanel1(){
-		panel1_Text = new JLabel("List of tracked beers");
-		panel1_Text.setFont(CarbCap.titleFont);
-		panel1.add(panel1_Text);
+		ImageIcon img = new ImageIcon("images/carbcap2.png");
+		img.setImage(img.getImage().getScaledInstance(-1, 100, Image.SCALE_DEFAULT));
+		JLabel imgLabel = new JLabel(img);
+		panel1.add(imgLabel);
+	}
+
+	public void makeTitlePanel(){
+		JLabel title = new JLabel("List of Tracked Beers");
+		title.setFont(title.getFont().deriveFont(Font.BOLD | Font.ITALIC, 50f));
+		titlePanel.add(title);
 	}
 
 	public void makePanel2(){
@@ -102,9 +127,9 @@ public class TrackingPage extends JPanel implements ActionListener{
 	}
 
 	public void makePanel3(){
-		newBeerButton = new JButton("Create new beer");
-		helpButton = new JButton("Open help guide");
-		optionsButton = new JButton("Options");
+		newBeerButton = new JButton("Create new beer", new ImageIcon("images/newBeer_3.png"));
+		helpButton = new JButton("Open help guide", new ImageIcon("images/guide.png"));
+		optionsButton = new JButton("Options", new ImageIcon("images/settings.png"));
 
 		newBeerButton.setToolTipText("Create a new beer to keep track of");
 		helpButton.setToolTipText("Open the CarbCap help guide PDF");
@@ -112,24 +137,41 @@ public class TrackingPage extends JPanel implements ActionListener{
 		newBeerButton.addActionListener(this);
 		optionsButton.addActionListener(this);
 		helpButton.addActionListener(this);
+		newBeerButton.setIconTextGap(6);
+		helpButton.setIconTextGap(6);
+		optionsButton.setIconTextGap(7);
+		newBeerButton.setHorizontalAlignment(SwingConstants.LEFT);
+		helpButton.setHorizontalAlignment(SwingConstants.LEFT);
+		optionsButton.setHorizontalAlignment(SwingConstants.LEFT);
 
 		//newBeerButton.setPreferredSize(CarbCap.buttonSize);
 		//optionsButton.setPreferredSize(CarbCap.buttonSize);
 
-		box3.add(Box.createRigidArea(CarbCap.edgeSpace));
-		box3.add(newBeerButton);
-		box3.add(Box.createHorizontalGlue());
-		box3.add(helpButton);
-		box3.add(Box.createHorizontalGlue());
-		box3.add(optionsButton);
-		box3.add(Box.createRigidArea(CarbCap.edgeSpace));
-		panel3.add(box3);
+		//box3.add(Box.createRigidArea(CarbCap.edgeSpace));
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.ipady = 0;
+		panel3.add(newBeerButton, c);
+		c.gridy++;
+		panel3.add(Box.createVerticalGlue(), c);
+		c.gridy++;
+		panel3.add(helpButton, c);
+		c.gridy++;
+		panel3.add(Box.createVerticalGlue(), c);
+		c.gridy++;
+		panel3.add(optionsButton, c);
+		//box3.add(Box.createRigidArea(CarbCap.edgeSpace));
 	}
 
 	public void actionPerformed(ActionEvent e){
 		Object action = e.getSource();
 		if ((JButton) action == newBeerButton){
 			input.clearFields();
+			input.showPresetComboBox();
 			pages.show(container, "Input");
 		}
 		else if ((JButton) action == helpButton){
@@ -187,13 +229,13 @@ public class TrackingPage extends JPanel implements ActionListener{
 	public void addBeerPanel(Beer beer, int index){
 		JPanel panel = new JPanel();
 		JPanel titleBox = new JPanel();
-		Box infoBox = Box.createHorizontalBox();
+		JPanel middleBox = new JPanel();
+
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		panel.setMinimumSize(new Dimension(scrollPane.getViewport().getSize().width, 200));
-		//panel.setPreferredSize(new Dimension(scrollPane.getViewport().getSize().width, 200));
 		panel.setBorder(new CompoundBorder(CarbCap.padding, BorderFactory.createLineBorder(Color.black.brighter(), 3)));
 		panel.setBackground(Color.gray.brighter());
-		//panel.add(new JLabel("added label"));
+
 		JLabel title = new JLabel("<html><b>" + beer.getName() + "</b></html>");
 		title.setFont(CarbCap.titleFont);
 		titleBox.setBackground(new Color(16, 156, 147));
@@ -203,52 +245,100 @@ public class TrackingPage extends JPanel implements ActionListener{
 		titleBox.setPreferredSize(d);
 		d = new Dimension(titleBox.getMaximumSize().width, title.getPreferredSize().height);
 		titleBox.setMaximumSize(d);
+
 		GridBagConstraints c = new GridBagConstraints();
-		//c.fill = GridBagConstraints.HORIZONTAL;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 0;
 		titleBox.add(title, c);
 		panel.add(titleBox);
 
-		infoBox.setOpaque(true);
-		infoBox.setBackground(Color.gray.darker().darker());
-		panel.add(infoBox);
+		middleBox.setBackground(Color.gray.darker().darker());
+		middleBox.setBorder(CarbCap.padding);
+		panel.add(middleBox);
 
+		middleBox.setLayout(new GridBagLayout());
+		GridBagConstraints mc = new GridBagConstraints();
+
+		mc.fill = GridBagConstraints.HORIZONTAL;
+		mc.gridx = 0;
+		mc.gridy = 0;
+		mc.weightx = 0.15;
         JLabel showImg = Util.showBeerImage(beer, 100, -1);
-        infoBox.add(showImg);
+        middleBox.add(showImg, mc);
 
-        infoBox.add(Box.createHorizontalGlue());
+        JPanel detailsPanel = new JPanel();
+        detailsPanel.setLayout(new GridBagLayout());
+        detailsPanel.setBackground(Color.gray.darker().darker());
 
-        Box info1 = Box.createVerticalBox();
-        JLabel beerName = new JLabel("Name: " + beer.getName());
-        JLabel beerType = new JLabel("Type: " + beer.getType());
-        info1.add(beerName);
-        info1.add(beerType);
-        infoBox.add(info1);
+        JLabel typeLabel = new JLabel("Type: ");
+        JLabel currentLabel = new JLabel("Current CO2 Level: ");
+        JLabel desiredLabel = new JLabel("Desired CO2 Level: ");
+        JLabel estimatedLabel = new JLabel("Estimated ready date: ");
+        JLabel typeVal = new JLabel(beer.getType());
+        JLabel currentVal = new JLabel(CarbCap.df.format(beer.getCurrentVolume()));
+        JLabel desiredVal = new JLabel(CarbCap.df.format(beer.getDesiredVolume()));
+        JLabel estimatedVal = new JLabel(beer.getReadyDateString());
 
-        beerName.setFont(CarbCap.labelFont);
-        beerType.setFont(CarbCap.labelFont);
+        typeLabel.setFont(CarbCap.font);
+        currentLabel.setFont(CarbCap.font);
+		desiredLabel.setFont(CarbCap.font);
+		estimatedLabel.setFont(CarbCap.font);
+		typeVal.setFont(CarbCap.font);
+		currentVal.setFont(CarbCap.font);
+		desiredVal.setFont(CarbCap.font);
+		estimatedVal.setFont(CarbCap.font);
 
-        infoBox.add(Box.createHorizontalGlue());
+		c.anchor = GridBagConstraints.LINE_END;
+		c.gridx = 0;
+		c.gridy = 0;
+		detailsPanel.add(typeLabel, c);
+		c.gridy++;
+		detailsPanel.add(currentLabel, c);
+		c.gridy++;
+		detailsPanel.add(desiredLabel, c);
+		c.gridy++;
+		detailsPanel.add(estimatedLabel, c);
 
-        Box info2 = Box.createVerticalBox();
-        JLabel currentVolume = new JLabel("Current CO2: " + CarbCap.df.format(beer.getCurrentVolume()));
-        JLabel readyDate = new JLabel("Estimated ready date: " + beer.getReadyDateString());
-        info2.add(currentVolume);
-        info2.add(readyDate);
-        infoBox.add(info2);
+		c.gridy = 0;
+		c.gridx++;
+		c.anchor = GridBagConstraints.LINE_START;
+		detailsPanel.add(typeVal, c);
+		c.gridy++;
+		detailsPanel.add(currentVal, c);
+		c.gridy++;
+		detailsPanel.add(desiredVal, c);
+		c.gridy++;
+		detailsPanel.add(estimatedVal, c);
 
-        currentVolume.setFont(CarbCap.labelFont);
-        readyDate.setFont(CarbCap.labelFont);
+		mc.gridx++;
+		mc.weightx = 0.7;
+		middleBox.add(detailsPanel, mc);
 
-        infoBox.add(Box.createHorizontalGlue());
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridBagLayout());
+        buttonPanel.setBackground(Color.gray.darker().darker());
 
-        Box buttonBox = Box.createVerticalBox();
         JButton moreInfo = new JButton("More info");
         JButton delete = new JButton("Delete");
-        buttonBox.add(moreInfo);
-        buttonBox.add(delete);
-        infoBox.add(buttonBox);
+
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.weighty = 1;
+        buttonPanel.add(moreInfo, c);
+        c.gridy++;
+        c.weighty = 0.2;
+        buttonPanel.add(Box.createVerticalGlue(), c);
+        c.gridy++;
+        c.weighty = 1;
+        buttonPanel.add(delete, c);
+
+        mc.gridx++;
+        mc.weightx = 0.15;
+        middleBox.add(buttonPanel, mc);
 
         // More info button action
         moreInfo.addActionListener(new ActionListener() {
