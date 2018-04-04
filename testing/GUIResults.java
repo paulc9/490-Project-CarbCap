@@ -85,6 +85,7 @@ public class GUIResults extends JPanel implements ActionListener{
         thePanel2.setLayout(new GridLayout(8, 2));
         thePanel4.setLayout(new BorderLayout());
 
+        thePanel.setBorder(CarbCap.padding);
         innerImgPanel.setBorder(CarbCap.raised);
 
         labelName = new JLabel("Name", SwingConstants.CENTER);

@@ -29,6 +29,7 @@ import java.io.*;
 
 public class TrackingPage extends JPanel implements ActionListener{
 
+	Box box;
 	JPanel mainPanel, panel1, titlePanel, panel2, panel3, insideScrollPane, container;
 	JLabel panel1_Text, noBeersText;
 	JButton newBeerButton, optionsButton, helpButton;
@@ -54,20 +55,23 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 		this.setLayout(new BorderLayout());
 		mainPanel.setLayout(new GridBagLayout());
-		panel1.setLayout(new BoxLayout(panel1, BoxLayout.PAGE_AXIS));
-		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.PAGE_AXIS));
+		panel1.setLayout(new GridLayout(1, 1));
+		titlePanel.setLayout(new GridLayout(1, 1));
 		panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
 		panel3.setLayout(new GridBagLayout());
 		panel1.setAlignmentX(Component.CENTER_ALIGNMENT);
-		titlePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//titlePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel2.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel3.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		mainPanel.setBorder(CarbCap.padding);
-		panel1.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
+		//mainPanel.setBorder(CarbCap.padding);
+		panel1.setBorder(CarbCap.raised);
 		titlePanel.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 		panel2.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 		panel3.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
+
+		box = Box.createHorizontalBox();
+		box.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 
 		makePanel1();
 		makeTitlePanel();
@@ -80,12 +84,15 @@ public class TrackingPage extends JPanel implements ActionListener{
 		c.gridy = 0;
 		c.fill = GridBagConstraints.BOTH;
 		c.weighty = 0.2;
-		mainPanel.add(panel1);
+		c.weightx = 0.05;
+		mainPanel.add(panel1, c);
 		c.gridx++;
-		mainPanel.add(titlePanel);
+		c.weightx = 0.95;
+		c.anchor = GridBagConstraints.CENTER;
+		mainPanel.add(titlePanel, c);
 		c.gridx = 0;
 		c.gridy++;
-		c.insets = new Insets(10, 0, 0, 0);
+		//c.insets = new Insets(10, 0, 0, 0);
 		c.weighty = 0.8;
 		c.weightx = 0.05;
 		//mainPanel.add(Box.createVerticalGlue());
@@ -101,8 +108,8 @@ public class TrackingPage extends JPanel implements ActionListener{
 	}
 
 	public void makePanel1(){
-		ImageIcon img = new ImageIcon("images/carbcap2.png");
-		img.setImage(img.getImage().getScaledInstance(-1, 100, Image.SCALE_DEFAULT));
+		ImageIcon img = new ImageIcon("images/carbcap5.png");
+		img.setImage(img.getImage().getScaledInstance(-1, (int)(CarbCap.height * 0.2), Image.SCALE_SMOOTH));
 		JLabel imgLabel = new JLabel(img);
 		panel1.add(imgLabel);
 	}
@@ -110,6 +117,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 	public void makeTitlePanel(){
 		JLabel title = new JLabel("List of Tracked Beers");
 		title.setFont(title.getFont().deriveFont(Font.BOLD | Font.ITALIC, 50f));
+		title.setHorizontalAlignment(JLabel.CENTER);
 		titlePanel.add(title);
 	}
 
@@ -156,12 +164,12 @@ public class TrackingPage extends JPanel implements ActionListener{
 		c.weighty = 1;
 		c.ipady = 0;
 		panel3.add(newBeerButton, c);
-		c.gridy++;
-		panel3.add(Box.createVerticalGlue(), c);
+		//c.gridy++;
+		//panel3.add(Box.createVerticalGlue(), c);
 		c.gridy++;
 		panel3.add(helpButton, c);
-		c.gridy++;
-		panel3.add(Box.createVerticalGlue(), c);
+		//c.gridy++;
+		//panel3.add(Box.createVerticalGlue(), c);
 		c.gridy++;
 		panel3.add(optionsButton, c);
 		//box3.add(Box.createRigidArea(CarbCap.edgeSpace));
@@ -241,13 +249,13 @@ public class TrackingPage extends JPanel implements ActionListener{
 		titleBox.setBackground(new Color(16, 156, 147));
 		titleBox.setOpaque(true);
 		titleBox.setLayout(new GridBagLayout());
-		Dimension d = new Dimension(titleBox.getPreferredSize().width, title.getPreferredSize().height);
+		/*Dimension d = new Dimension(titleBox.getPreferredSize().width, title.getPreferredSize().height);
 		titleBox.setPreferredSize(d);
 		d = new Dimension(titleBox.getMaximumSize().width, title.getPreferredSize().height);
-		titleBox.setMaximumSize(d);
+		titleBox.setMaximumSize(d);*/
 
 		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
+		//c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 0;
 		titleBox.add(title, c);

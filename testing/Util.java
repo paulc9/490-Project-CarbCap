@@ -57,7 +57,7 @@ public class Util{
 					img = new ImageIcon("images/no_image.png");
 				else
 					img = new ImageIcon(beer.getBeerImage());
-				img.setImage(img.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
+				img.setImage(img.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
 				showImg = new JLabel(img);
 			}
 		}
