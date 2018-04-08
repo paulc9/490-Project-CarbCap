@@ -246,7 +246,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 		JLabel title = new JLabel("<html><b>" + beer.getName() + "</b></html>");
 		title.setFont(CarbCap.titleFont);
-		titleBox.setBackground(new Color(16, 156, 147));
+		titleBox.setBackground(CarbCap.panelTitle);
 		titleBox.setOpaque(true);
 		titleBox.setLayout(new GridBagLayout());
 		/*Dimension d = new Dimension(titleBox.getPreferredSize().width, title.getPreferredSize().height);

@@ -32,7 +32,7 @@ import java.io.*;
 public class CarbCap extends JFrame implements Serializable{
 
 	CardLayout pages;
-	static Font titleFont, labelFont, font;
+	static Font titleFont, labelFont, font, errorFont;
 	static Border border, raised, lowered, padding;
 	static Dimension space, boxSpace, edgeSpace, buttonSize;
 	static int width, height;								// width and height of JFrame window
@@ -41,6 +41,8 @@ public class CarbCap extends JFrame implements Serializable{
 	static double DANGER_LEVEL = 4.1;						// CO2 Danger level for bottle bursting
 	static Color text = new Color(242, 191, 37);
 	static Color background = new Color(75, 87, 97);
+	static Color panelTitle = new Color(16, 156, 147);
+	static Color errorColor = new Color(247, 108, 108);
 	JPanel container;
 	InputPage input;
 	Newpage confirm;
@@ -75,9 +77,10 @@ public class CarbCap extends JFrame implements Serializable{
 		lowered = BorderFactory.createLoweredBevelBorder();
 		padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 
-		titleFont = new Font("Helvetica", Font.PLAIN, 26);
+		titleFont = new Font("Helvetica", Font.BOLD, 26);
 		labelFont = new Font("Helvetica", Font.PLAIN, 22);
 		font = new Font("Helvetica", Font.PLAIN, 17);
+		errorFont = new Font("Helvetica", Font.BOLD, 18);
 
 		getContentPane().setBackground(Color.gray);
 
@@ -99,12 +102,14 @@ public class CarbCap extends JFrame implements Serializable{
 		UIManager.put("TabbedPane.foreground", text);
 		UIManager.put("ProgressBar.foreground", new Color(216, 167, 19));
 		UIManager.put("ProgressBar.selectionForeground", Color.black);
+		UIManager.put("RadioButton.foreground", text);
 
 		UIManager.put("Panel.background", background);
 		UIManager.put("CheckBox.background", background);
 		UIManager.put("OptionPane.background", background);
 		UIManager.put("TabbedPane.background", new Color(117, 136, 150));
 		UIManager.put("ProgressBar.selectionBackground", background);
+		UIManager.put("RadioButton.background", background);
 
 		UIManager.put("TabbedPane.contentAreaColor", background.darker());
 		UIManager.put("TabbedPane.light", background);
@@ -187,7 +192,7 @@ public class CarbCap extends JFrame implements Serializable{
 		/* */
 
 		add(container);
-		//this.setResizable(false);
+		this.setResizable(false);
 
 	}
 
