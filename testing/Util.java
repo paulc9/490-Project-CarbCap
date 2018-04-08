@@ -37,29 +37,15 @@ public class Util{
 
 /*
 	Returns a JLabel with the image of the beer given to it.
-	If the file specified by the beer's image string doesn't exist,
-	a "No Image Found" picture will appear instead. Otherwise,
-	the label will have text saying no image was set (if the string is empty)
-	or the beer is null (if the beer objec doesn't exist).
+    If the beer isn't null, the beer's image path will be used
+    in the showImage function, else a string saying the beer 
+    is null will be returned.
 */
 	public static JLabel showBeerImage(Beer beer, int width, int height){
 		JLabel showImg = new JLabel();
 
 		if (beer != null){
-			if(beer.getBeerImage().isEmpty() || beer.getBeerImage() == null){
-				showImg = new JLabel("No image set");
-			}
-			else{
-				ImageIcon img;
-				File check = new File(beer.getBeerImage());
-
-				if(!(check.exists()))
-					img = new ImageIcon("images/no_image.png");
-				else
-					img = new ImageIcon(beer.getBeerImage());
-				img.setImage(img.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
-				showImg = new JLabel(img);
-			}
+			showImg = showImage(beer.getBeerImage(), width, height);
 		}
 	    else{
 	    	showImg = new JLabel("Beer null");
@@ -67,6 +53,33 @@ public class Util{
 
 	    return showImg;
 	}
+
+/*
+    Returns a JLabel with the image of the path string given to it.
+    If the string is empty, a label with "no image set" will
+    be returned; else, the label will have a "No image found"
+    picture (if the path doesn't exist) or the picture specified by
+    the path.
+*/
+    public static JLabel showImage(String path, int width, int height){
+        JLabel showImg = new JLabel();
+        if (path.isEmpty() || path == null){
+            showImg = new JLabel("No image set");
+        }
+        else{
+            ImageIcon img;
+            File check = new File(path);
+
+            if(!(check.exists()))
+                img = new ImageIcon("images/no_image.png");
+            else
+                img = new ImageIcon(path);
+            img.setImage(img.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
+            showImg = new JLabel(img);
+        }
+
+        return showImg;
+    }
 
 
     /*
