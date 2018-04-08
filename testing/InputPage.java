@@ -37,7 +37,7 @@ public class InputPage extends JPanel implements ActionListener{
 		   customTitle, beerTypeCustomLabel, volumeCustomLabel, volumeCustomError, imageLabel;
 	JTextField beerNameIn, volumePresetIn, volumeCustomIn, beerTypeIn, imagePathIn;
 	JComboBox beerList;
-	JButton button1, button2, savePresetButton, backButton, okButton, imageButton;
+	JButton savePresetButton, backButton, okButton, imageButton;
 	JRadioButton presetButton, customButton;
 	ButtonGroup group;
 	JPanel mainPanel, imagePanel, startPanel, presetCustomContainer, presetPanel, presetImage, customPanel, customImage, buttonPanel, container;
@@ -54,6 +54,7 @@ public class InputPage extends JPanel implements ActionListener{
 	BeerArray presetBeers;
 	DefaultComboBoxModel CBmodel;
 	CardLayout panelSwitch;
+	Dimension errorSize;
 
 	public InputPage(){
 		mainPanel = new JPanel();
@@ -75,13 +76,18 @@ public class InputPage extends JPanel implements ActionListener{
 		buttonPanel.setLayout(new GridLayout(1, 3, CarbCap.width/12, 0));
 
 		mainPanel.setBorder(CarbCap.padding);
-		imagePanel.setBorder(CarbCap.raised);
-		startPanel.setBorder(CarbCap.border);
+		imagePanel.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
+		startPanel.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 		presetCustomContainer.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 		buttonPanel.setBorder(new CompoundBorder(CarbCap.raised, BorderFactory.createEmptyBorder(10, CarbCap.width/6, 10, CarbCap.width/6)));
 		//customPanel.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 		//startPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		presetCustomContainer.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		imagePanel.setBackground(Color.gray.darker().darker());
+		startPanel.setBackground(Color.gray.darker().darker());
+		buttonPanel.setBackground(Color.gray.darker().darker());
+		presetCustomContainer.setBackground(Color.gray.darker().darker());
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -93,21 +99,27 @@ public class InputPage extends JPanel implements ActionListener{
 		c.gridx = 0;
 		c.gridy = 0;
 		c.weightx = 0.1;
-		c.weighty = 0.1;
+		c.weighty = 0;
 		c.fill = GridBagConstraints.BOTH;
 		mainPanel.add(imagePanel, c);
+
 		c.gridx++;
 		c.weightx = 0.9;
+		//c.insets = new Insets(0, 10, 0, 0);
 		mainPanel.add(startPanel, c);
+
 		c.weighty = 1;
 		c.gridwidth = 2;
 		c.gridx = 0;
-		c.insets = new Insets(20, 0, 0, 0);
+		//c.insets = new Insets(20, 0, 0, 0);
 		c.gridy++;
 		mainPanel.add(presetCustomContainer, c);
+
 		c.gridy++;
 		c.weighty = 0;
-		mainPanel.add(new JLabel("Fields marked with * are required"), c);
+		c.insets = new Insets(10, 0, 0, 0);
+		mainPanel.add(new JLabel("Fields marked with * are required", SwingConstants.CENTER), c);
+
 		c.gridy++;
 		mainPanel.add(buttonPanel, c);
 
@@ -116,10 +128,18 @@ public class InputPage extends JPanel implements ActionListener{
 
 	public void makeImagePanel(){
 		ImageIcon img = new ImageIcon("images/newBeer_3.png");
-		img.setImage(img.getImage().getScaledInstance(-1, (int)(CarbCap.height * 0.2), Image.SCALE_SMOOTH));
+		img.setImage(img.getImage().getScaledInstance(-1, (int)(CarbCap.height * 0.15), Image.SCALE_SMOOTH));
 		JLabel imgLabel = new JLabel(img);
 
-		imagePanel.add(new JLabel("Input page"));
+		JLabel text = new JLabel("New Beer");
+
+		imgLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		text.setFont(new Font("Helvetica", Font.BOLD, 20));
+		//text.setBackground(CarbCap.panelTitle);
+		//text.setOpaque(true);
+
+		imagePanel.add(text);
 		imagePanel.add(imgLabel);
 	}
 
@@ -157,22 +177,17 @@ public class InputPage extends JPanel implements ActionListener{
 		bottleDateError.setForeground(CarbCap.errorColor);
 		inputTypeError.setForeground(CarbCap.errorColor);
 
-		FontMetrics fm = inputTypeError.getFontMetrics(inputTypeError.getFont());
-	    int w = fm.stringWidth("Input type selection required");	// Uses longest string in error message column as basis for error JLabel dimensions
-	    int h = fm.getHeight();
-	    Dimension size = new Dimension(w, h);
-
-	    beerNameError.setMinimumSize(size);
-		beerNameError.setPreferredSize(size);
-		bottleDateError.setMinimumSize(size);
-		bottleDateError.setPreferredSize(size);
-	    inputTypeError.setMinimumSize(size);
-	    inputTypeError.setPreferredSize(size);
+		Dimension size = Util.limitComponentDimensions(inputTypeError, "Input type selection required", 0);
+	    Util.limitComponent(beerNameError, size);
+		Util.limitComponent(bottleDateError, size);
+	    Util.limitComponent(inputTypeError, size);
 
 		presetButton = new JRadioButton("Preset");
 		customButton = new JRadioButton("Custom");
 		presetButton.setFont(CarbCap.font);
 		customButton.setFont(CarbCap.font);
+		presetButton.setBackground(Color.gray.darker().darker());
+		customButton.setBackground(Color.gray.darker().darker());
 		group = new ButtonGroup();
 		group.add(presetButton);
 		group.add(customButton);
@@ -248,9 +263,10 @@ public class InputPage extends JPanel implements ActionListener{
 		presetCustomContainer.setLayout(panelSwitch);
 		JPanel noSelectionPanel = new JPanel();
 		noSelectionPanel.add(new JLabel("No input type selected"));
+		noSelectionPanel.setBackground(Color.gray.darker().darker());
 
-		makePresetPanel();
 		makeCustomPanel();
+		makePresetPanel();
 
 		presetCustomContainer.add(noSelectionPanel, "None");
 		presetCustomContainer.add(presetPanel, "Preset");
@@ -260,13 +276,16 @@ public class InputPage extends JPanel implements ActionListener{
 	public void makePresetPanel(){
 		presetPanel = new JPanel();
 		presetPanel.setLayout(new GridBagLayout());
+		presetPanel.setBackground(Color.gray.darker().darker());
 
-		presetTitle = new JLabel("Select a beer type from the drop-down menu below for an existing/preset beer", SwingConstants.CENTER);
+		presetTitle = new JLabel("Select a beer type from the drop-down menu below for a preset beer", SwingConstants.CENTER);
 		beerTypePresetLabel = new JLabel("Beer type*", SwingConstants.CENTER);
 		beerList = new JComboBox();
-		button1 = new JButton("Ok");
 		volumePresetLabel = new JLabel("Final CO2 volume", SwingConstants.CENTER);
-		volumePresetIn = new JTextField(7);
+		volumePresetIn = new JTextField(20);
+
+		JLabel empty = new JLabel(" ");
+		Util.limitComponent(empty, errorSize);
 
 		volumePresetIn.setEditable(false);
 
@@ -275,23 +294,29 @@ public class InputPage extends JPanel implements ActionListener{
    		titleBox.setLayout(new GridBagLayout());
    		titleBox.add(presetTitle);
 
+   		JPanel infoBox = new JPanel();
+   		infoBox.setLayout(new GridBagLayout());
+   		infoBox.setBackground(Color.gray.darker().darker());
+
    		presetImage = new JPanel();
+   		presetImage.setLayout(new BorderLayout());
    		presetImage.setBorder(CarbCap.raised);
 
 		presetTitle.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-		beerTypePresetLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		//beerTypePresetLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+
 		presetTitle.setFont(CarbCap.titleFont);
 		beerTypePresetLabel.setFont(CarbCap.labelFont);
-		beerList.setMaximumSize(beerList.getPreferredSize());
-		button1.setPreferredSize(CarbCap.buttonSize);
-		button1.addActionListener(this);
+		volumePresetLabel.setFont(CarbCap.labelFont);
+
+		//beerList.setMaximumSize(beerList.getPreferredSize());
 
 		beerList.addActionListener (new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				presetImage.removeAll();
 
 				Beer beer = (Beer) beerList.getSelectedItem();
-				JLabel showImg = Util.showBeerImage(beer, 100, -1);
+				JLabel showImg = Util.showBeerImage(beer, -1, presetImage.getHeight() * 3 / 4);
 				if (beer != null)
 			    	volumePresetIn.setText("Volume: " + beer.getDesiredVolume());
 			    else
@@ -310,54 +335,64 @@ public class InputPage extends JPanel implements ActionListener{
 		c.gridx = 0;
 		c.gridy = 0;
 		c.weightx = 1;
-		c.weighty = 0.1;
-		c.gridwidth = 4;
+		c.weighty = 0;
+		c.gridwidth = 2;
 		c.fill = GridBagConstraints.BOTH;
 		presetPanel.add(titleBox, c);
 
+		GridBagConstraints inner = new GridBagConstraints();
+		inner.gridx = 0;
+		inner.gridy = 0;
+		inner.weightx = 0;
+		inner.weighty = 0.33;
+		inner.insets = new Insets(0, 0, 0, 10);
+		infoBox.add(beerTypePresetLabel, inner);
+
+		inner.gridy++;
+		infoBox.add(volumePresetLabel, inner);
+
+		inner.gridy++;
+		infoBox.add(new JLabel(" "), inner);
+
+		inner.gridy = 0;
+		inner.gridx++;
+		inner.fill = GridBagConstraints.HORIZONTAL;
+		inner.weightx = 0.1;
+		infoBox.add(beerList, inner);
+
+		inner.gridy++;
+		infoBox.add(volumePresetIn, inner);
+
+		inner.gridy = 0;
+		inner.gridx++;
+		inner.weightx = 0.2;
+		inner.insets = new Insets(0, 0, 0, 23);
+		infoBox.add(empty, inner);
+
 		c.gridy++;
+		c.insets = new Insets(10, 0, 0, 0);
 		c.gridwidth = 1;
-		c.weightx = 0.1;
-		c.weighty = 0.3;
-		presetPanel.add(beerTypePresetLabel, c);
-
-		c.gridy++;
-		presetPanel.add(volumePresetLabel, c);
+		c.weighty = 1;
+		c.weightx = 0;
+		presetPanel.add(infoBox, c);
 
 		c.gridx++;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridy = 1;
-		c.weightx = 0.1;
-		presetPanel.add(beerList, c);
-
-		c.gridy++;
-		presetPanel.add(volumePresetIn, c);
-
-		c.gridx++;
-		c.gridy = 1;
-		c.weightx = 0.3;
-		presetPanel.add(new JLabel(" "), c);
-
-		c.gridx++;
-		c.weightx = 0.6;
-		c.gridheight = 2;
-		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1;
 		presetPanel.add(presetImage, c);
 	}
 
 	public void makeCustomPanel(){
 		customPanel = new JPanel();
 		customPanel.setLayout(new GridBagLayout());
+		customPanel.setBackground(Color.gray.darker().darker());
 
 		customTitle = new JLabel("Type in the following info for a custom beer", SwingConstants.CENTER);
-		volumeCustomLabel = new JLabel("Final CO2 volume*");
-		volumeCustomIn = new JTextField(7);
-		beerTypeCustomLabel = new JLabel("Beer type");
-		beerTypeIn = new JTextField(15);
-		savePresetButton = new JButton("Save info as preset");
-		button2 = new JButton("Ok");
-		imageLabel = new JLabel("Beer image");
-		imagePathIn = new JTextField(15);
+		volumeCustomLabel = new JLabel("Final CO2 volume*", SwingConstants.CENTER);
+		volumeCustomIn = new JTextField(20);
+		beerTypeCustomLabel = new JLabel("Beer type", SwingConstants.CENTER);
+		beerTypeIn = new JTextField(20);
+		imageLabel = new JLabel("Beer image", SwingConstants.CENTER);
+		imagePathIn = new JTextField(20);
 		imageButton = new JButton("Choose image");
 
 		volumeCustomError = new JLabel(" ", SwingConstants.CENTER);
@@ -367,10 +402,16 @@ public class InputPage extends JPanel implements ActionListener{
    		titleBox.setLayout(new GridBagLayout());
    		titleBox.add(customTitle);
 
+   		JPanel infoBox = new JPanel();
+   		infoBox.setLayout(new GridBagLayout());
+   		infoBox.setBackground(Color.gray.darker().darker());
+
    		customImage = new JPanel();
+   		customImage.setLayout(new BorderLayout());
    		customImage.setBorder(CarbCap.raised);
 
 		customTitle.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+
 		customTitle.setFont(CarbCap.titleFont);
 		beerTypeCustomLabel.setFont(CarbCap.labelFont);
 		volumeCustomLabel.setFont(CarbCap.labelFont);
@@ -382,60 +423,70 @@ public class InputPage extends JPanel implements ActionListener{
 		imagePathIn.setMaximumSize(imagePathIn.getPreferredSize());
 		button2.setPreferredSize(CarbCap.buttonSize);
 		imageButton.setPreferredSize(CarbCap.buttonSize);*/
-		savePresetButton.addActionListener(this);
-		button2.addActionListener(this);
 		imageButton.addActionListener(this);
+
+		Dimension size = Util.limitComponentDimensions(volumeCustomLabel, "Final CO2 Volume*", 0);
+		Util.limitComponent(beerTypeCustomLabel, size);
+		Util.limitComponent(volumeCustomLabel, size);
+		Util.limitComponent(imageLabel, size);
+
+		errorSize = Util.limitComponentDimensions(volumeCustomError, "Must type in decimal/", 1);
+		Util.limitComponent(volumeCustomError, errorSize);
 
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
 		c.weightx = 1;
-		c.weighty = 0.1;
-		c.gridwidth = 4;
+		c.weighty = 0;
+		c.gridwidth = 2;
 		c.fill = GridBagConstraints.BOTH;
 		customPanel.add(titleBox, c);
 
+		GridBagConstraints inner = new GridBagConstraints();
+		inner.gridx = 0;
+		inner.gridy = 0;
+		inner.weightx = 0;
+		inner.weighty = 0.33;
+		inner.insets = new Insets(0, 0, 0, 10);
+		infoBox.add(beerTypeCustomLabel, inner);
+
+		inner.gridy++;
+		infoBox.add(volumeCustomLabel, inner);
+
+		inner.gridy++;
+		infoBox.add(imageLabel, inner);
+
+		inner.gridy = 0;
+		inner.gridx++;
+		inner.weightx = 0.9;
+		infoBox.add(beerTypeIn, inner);
+
+		inner.gridy++;
+		infoBox.add(volumeCustomIn, inner);
+
+		inner.gridy++;
+		infoBox.add(imagePathIn, inner);
+
+		inner.gridy = 0;
+		inner.gridx++;
+		inner.weightx = 0.1;
+		infoBox.add(new JLabel(" "), inner);
+
+		inner.gridy++;
+		infoBox.add(volumeCustomError, inner);
+
+		inner.gridy++;
+		infoBox.add(imageButton, inner);
+
 		c.gridy++;
+		c.insets = new Insets(10, 0, 0, 0);
 		c.gridwidth = 1;
-		c.weightx = 0.1;
-		c.weighty = 0.3;
-		customPanel.add(beerTypeCustomLabel, c);
-
-		c.gridy++;
-		customPanel.add(volumeCustomLabel, c);
-
-		c.gridy++;
-		customPanel.add(imageLabel, c);
+		c.weighty = 1;
+		c.weightx = 0;
+		customPanel.add(infoBox, c);
 
 		c.gridx++;
-		c.gridy = 1;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.1;
-		customPanel.add(beerTypeIn, c);
-
-		c.gridy++;
-		customPanel.add(volumeCustomIn, c);
-
-		c.gridy++;
-		customPanel.add(imagePathIn, c);
-
-		c.gridx++;
-		c.gridy = 1;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.3;
-		customPanel.add(new JLabel(" "), c);
-
-		c.gridy++;
-		customPanel.add(volumeCustomError, c);
-
-		c.gridy++;
-		customPanel.add(imageButton, c);
-
-		c.gridx++;
-		c.gridy = 1;
-		c.weightx = 0.6;
-		c.gridheight = 3;
-		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1;
 		customPanel.add(customImage, c);
 	}
 
@@ -477,7 +528,7 @@ public class InputPage extends JPanel implements ActionListener{
 		beerList.setRenderer(new BeerComboBoxRenderer());
 
 		Beer beer = (Beer) beerList.getSelectedItem();
-		JLabel showImg = Util.showBeerImage(beer, 100, -1);
+		JLabel showImg = Util.showBeerImage(beer, -1, presetImage.getHeight() * 3 / 4);
 		if (beer != null)
 	    	volumePresetIn.setText("Volume: " + beer.getDesiredVolume());
 	    else
@@ -509,7 +560,7 @@ public class InputPage extends JPanel implements ActionListener{
 
 				imagePathIn.setText(file.getPath());
 				customImage.removeAll();
-				customImage.add(Util.showImage(file.getPath(), 100, -1));
+				customImage.add(Util.showImage(file.getPath(), -1, customImage.getHeight() * 3 / 4));
 
 				customImage.revalidate();
 				customImage.repaint();
@@ -585,7 +636,7 @@ public class InputPage extends JPanel implements ActionListener{
 
 		if(customButton.isSelected() == true){
 			if (volumeCustomIn.getText().isEmpty() == true){
-				volumeCustomError.setText("Must type in decimal/non-decimal number");
+				volumeCustomError.setText("<html>Must type in decimal/<br>non-decimal number</html>");
 				error = true;
 			}
 			else{
@@ -593,7 +644,7 @@ public class InputPage extends JPanel implements ActionListener{
 					Double check = Double.parseDouble(volumeCustomIn.getText());
 					volumeCustomError.setText(" ");
 				} catch (NumberFormatException e){
-					volumeCustomError.setText("Invalid decimal/non-decimal number");
+					volumeCustomError.setText("<html>Invalid decimal/<br>non-decimal number</html>");
 					error = true;
 				}
 			}

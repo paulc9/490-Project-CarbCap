@@ -135,7 +135,9 @@ public class TrackingPage extends JPanel implements ActionListener{
 	}
 
 	public void makePanel3(){
-		newBeerButton = new JButton("Create new beer", new ImageIcon("images/newBeer_3.png"));
+		ImageIcon img = new ImageIcon("images/newBeer_3.png");
+		img.setImage(img.getImage().getScaledInstance(-1, 71, Image.SCALE_SMOOTH));
+		newBeerButton = new JButton("Create new beer", img);
 		helpButton = new JButton("Open help guide", new ImageIcon("images/guide.png"));
 		optionsButton = new JButton("Options", new ImageIcon("images/settings.png"));
 

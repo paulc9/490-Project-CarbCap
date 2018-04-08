@@ -81,6 +81,33 @@ public class Util{
         return showImg;
     }
 
+/*
+    Returns a dimension object used to limit the size of JLabels in 
+    GridBayLayouts. Usually used with limitLabel function after.
+    String must be the longest string to be used in the column. If there
+    are line breaks in the JLabel, then type the number of breaks in numNewlines;
+    else, type 0. If there are line breaks, then the string must only be the longest
+    line in the JLabel.
+*/
+    public static Dimension limitComponentDimensions(JComponent component, String string, int numNewlines){
+        FontMetrics fm = component.getFontMetrics(component.getFont());
+        int w = fm.stringWidth(string);
+        int h = fm.getHeight();
+        if(numNewlines > 0){
+            int newH = h * (numNewlines + 1);
+            h = newH;
+        }
+        return new Dimension(w, h);
+    }
+
+/*
+    Limits the size of the JLabel provided using the given dimension
+    object. 
+*/
+    public static void limitComponent(JComponent component, Dimension size){
+        component.setMinimumSize(size);
+        component.setPreferredSize(size);
+    }
 
     /*
         Functions for checking if image selected exists in images directory
