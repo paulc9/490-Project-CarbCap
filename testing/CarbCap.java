@@ -45,7 +45,7 @@ public class CarbCap extends JFrame implements Serializable{
 	static Color errorColor = new Color(247, 108, 108);
 	JPanel container;
 	InputPage input;
-	Newpage confirm;
+	//Newpage confirm;
 	GUIResults results;
 	TrackingPage tracking;
 	SplashPage splash;
@@ -149,19 +149,19 @@ public class CarbCap extends JFrame implements Serializable{
 		container.setLayout(pages);
 
 		input = new InputPage();
-		confirm = new Newpage();
+		//confirm = new Newpage();
 		results = new GUIResults();
 		tracking = new TrackingPage();
 		splash = new SplashPage();
 
-		input.linkPages(tracking, confirm, pages, container);
-		confirm.linkPages(input, results, pages, container);
+		input.linkPages(tracking, results, pages, container);
+		//confirm.linkPages(input, results, pages, container);
 		results.linkPages(tracking, pages, container);
 		tracking.linkPages(input, results, pages, container);
 		splash.linkPages(tracking, pages, container);
 
 		container.add(input, "Input");
-		container.add(confirm, "Confirm");
+		//container.add(confirm, "Confirm");
 		container.add(results, "Results");
 		container.add(tracking, "Tracking");
 		container.add(splash, "Splash");

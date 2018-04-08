@@ -47,7 +47,8 @@ public class InputPage extends JPanel implements ActionListener{
 	JDatePanelImpl datePanel;
 	JDatePickerImpl bottleDateIn;
 	TrackingPage tracking;
-	Newpage confirm;
+	//Newpage confirm;
+	GUIResults results;
 	CardLayout pages;
 	Beer currentBeer;
 	int beerIndex;
@@ -512,9 +513,10 @@ public class InputPage extends JPanel implements ActionListener{
 		buttonPanel.add(okButton);
 	}
 
-	public void linkPages(TrackingPage back, Newpage next, CardLayout change, JPanel main){
+	public void linkPages(TrackingPage back, /*Newpage*/GUIResults next, CardLayout change, JPanel main){
 		tracking = back;
-		confirm = next;
+		results = next;
+		//confirm = next;
 		pages = change;
 		container = main;
 	}
@@ -604,8 +606,35 @@ public class InputPage extends JPanel implements ActionListener{
 					currentBeer.setBeerImage(imagePathIn.getText());
 			}
 			currentBeer.setReadyDate(21);
+			/*
 			confirm.setPage(currentBeer);
 			pages.show(container, "Confirm");
+			*/
+			ImageIcon img;
+			File check = new File(currentBeer.getBeerImage());
+            if(!(check.exists()))
+                img = new ImageIcon("images/no_image.png");
+            else
+                img = new ImageIcon(currentBeer.getBeerImage());
+            img.setImage(img.getImage().getScaledInstance(-1, 200, Image.SCALE_SMOOTH));
+			int n = JOptionPane.showConfirmDialog(
+				InputPage.this,
+				"<html>Is this the beer you want to track?<br>" +
+					"- Beer name: " + currentBeer.getName() + "<br>" +
+					"- Beer type: " + currentBeer.getType() + "<br>" +
+					"- Final CO2 volume: " + currentBeer.getDesiredVolume() + "<br>" +
+					"- Bottle date: " + currentBeer.getBottleDateString() + "</html>",
+				"Beer Confirmation",
+				JOptionPane.YES_NO_OPTION, 2,
+				img);
+			if (n == 0){
+				if(Util.checkImageDirectory(currentBeer) == false){
+                	currentBeer.setBeerImage(Util.copyToImageDir(currentBeer));
+            	}
+            	results.setPage(currentBeer);
+				results.saveNewBeer();
+				pages.show(container, "Results");
+			}
 
 		}
 	}
