@@ -32,8 +32,8 @@ import java.io.*;
 public class CarbCap extends JFrame implements Serializable{
 
 	CardLayout pages;
-	static Font titleFont, labelFont;
-	static Border border, raised, padding;
+	static Font titleFont, labelFont, font, infoFont, errorFont;
+	static Border border, raised, lowered, padding;
 	static Dimension space, boxSpace, edgeSpace, buttonSize;
 	static int width, height;								// width and height of JFrame window
 	static String PROPERTIES_PATH = "options.properties";	// path for options page values such as notification setings
@@ -41,9 +41,12 @@ public class CarbCap extends JFrame implements Serializable{
 	static double DANGER_LEVEL = 4.1;						// CO2 Danger level for bottle bursting
 	static Color text = new Color(242, 191, 37);
 	static Color background = new Color(75, 87, 97);
+	static Color altBackground = Color.gray.darker().darker();
+	static Color panelTitle = new Color(16, 156, 147);
+	static Color errorColor = new Color(247, 108, 108);
 	JPanel container;
 	InputPage input;
-	Newpage confirm;
+	//Newpage confirm;
 	GUIResults results;
 	TrackingPage tracking;
 	SplashPage splash;
@@ -72,10 +75,14 @@ public class CarbCap extends JFrame implements Serializable{
 
 		border = BorderFactory.createLineBorder(Color.black);
 		raised = BorderFactory.createRaisedBevelBorder();
+		lowered = BorderFactory.createLoweredBevelBorder();
 		padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 
-		titleFont = new Font("Helvetica", Font.PLAIN, 26);
+		titleFont = new Font("Helvetica", Font.BOLD, 26);
 		labelFont = new Font("Helvetica", Font.PLAIN, 22);
+		font = new Font("Helvetica", Font.PLAIN, 17);
+		infoFont = new Font("Helvetica", Font.PLAIN, 16);
+		errorFont = new Font("Helvetica", Font.BOLD, 18);
 
 		getContentPane().setBackground(Color.gray);
 
@@ -95,11 +102,16 @@ public class CarbCap extends JFrame implements Serializable{
 		UIManager.put("OptionPane.messageForeground", text);
 		UIManager.put("TitledBorder.titleColor", text);
 		UIManager.put("TabbedPane.foreground", text);
+		UIManager.put("ProgressBar.foreground", new Color(216, 167, 19));
+		UIManager.put("ProgressBar.selectionForeground", Color.black);
+		UIManager.put("RadioButton.foreground", text);
 
 		UIManager.put("Panel.background", background);
 		UIManager.put("CheckBox.background", background);
 		UIManager.put("OptionPane.background", background);
 		UIManager.put("TabbedPane.background", new Color(117, 136, 150));
+		UIManager.put("ProgressBar.selectionBackground", background);
+		UIManager.put("RadioButton.background", background);
 
 		UIManager.put("TabbedPane.contentAreaColor", background.darker());
 		UIManager.put("TabbedPane.light", background);
@@ -139,24 +151,28 @@ public class CarbCap extends JFrame implements Serializable{
 		container.setLayout(pages);
 
 		input = new InputPage();
-		confirm = new Newpage();
+		//confirm = new Newpage();
 		results = new GUIResults();
 		tracking = new TrackingPage();
 		splash = new SplashPage();
 
-		input.linkPages(tracking, confirm, pages, container);
-		confirm.linkPages(input, results, pages, container);
+		input.linkPages(tracking, results, pages, container);
+		//confirm.linkPages(input, results, pages, container);
 		results.linkPages(tracking, pages, container);
 		tracking.linkPages(input, results, pages, container);
 		splash.linkPages(tracking, pages, container);
 
 		container.add(input, "Input");
-		container.add(confirm, "Confirm");
+		//container.add(confirm, "Confirm");
 		container.add(results, "Results");
 		container.add(tracking, "Tracking");
 		container.add(splash, "Splash");
 
-
+		File presetFile = new File("savedPresetBeers.ser");
+		if (!presetFile.exists()){
+			BeerArray presetBeers = new BeerArray();
+			presetBeers.savePresetBeers();
+		}
 		File tmpFile = new File("savedBeers.ser");
 		if(tmpFile.exists()){
 			tracking.loadTrackedBeers();
@@ -168,17 +184,17 @@ public class CarbCap extends JFrame implements Serializable{
 		c.createAndShowGUI();
 		/**/
 
-		/* Show splash page *//*
+		/* Show splash page */
 		pages.show(container, "Splash");
 		splash.changePage();
 		/* */
 
-		/* Skip splash page */
+		/* Skip splash page *//*
 		pages.show(container, "Tracking");
 		/* */
 
 		add(container);
-		//this.setResizable(false);
+		this.setResizable(false);
 
 	}
 

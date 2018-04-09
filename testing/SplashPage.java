@@ -57,7 +57,7 @@ public class SplashPage extends JPanel{
         carbCapLable = new JLabel("CarbCap", SwingConstants.CENTER);
         letsBrewLable = new JLabel("Let's Get Brewin'", SwingConstants.CENTER);
         img = new JLabel();
-        LargeBeer = new ImageIcon("images/Large Beer.png");
+        LargeBeer = new ImageIcon("images/splash.gif");
         box1 = box2 = box3 = Box.createVerticalBox();
 
         this.setLayout(new BorderLayout());
@@ -74,6 +74,7 @@ public class SplashPage extends JPanel{
         letsBrewLable.setFont(CarbCap.labelFont);
         img.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
+        LargeBeer.setImage(LargeBeer.getImage().getScaledInstance(CarbCap.width * 3/5, CarbCap.height * 4/5, Image.SCALE_DEFAULT));
         img.setIcon(LargeBeer);
         box1.add(img);
         box2.add(carbCapLable);
@@ -93,24 +94,25 @@ public class SplashPage extends JPanel{
         mainPanel.add(box2);
         mainPanel.add(box3);
 
-        this.add(mainPanel);
+        this.add(mainPanel); 
+        this.changePage();
     }
 
     public void linkPages(TrackingPage track, CardLayout change, JPanel main){
-    	tracking = track;
-    	pages = change;
-    	container = main;
+        tracking = track;
+        pages = change;
+        container = main;
     }
 
     public void changePage(){
-    	ActionListener taskPerformer = new ActionListener(){
-      		public void actionPerformed(ActionEvent evt) {
-        		pages.show(container, "Tracking");
-      		}
-    	};
-    	Timer timer = new Timer(3000, taskPerformer);
-    	timer.setRepeats(false);
-    	timer.start();
+        ActionListener taskPerformer = new ActionListener(){
+            public void actionPerformed(ActionEvent evt) {
+                pages.show(container, "Tracking");
+            }
+        };
+        Timer timer = new Timer(6000, taskPerformer);
+        timer.setRepeats(false);
+        timer.start();
     }
 
     public static void main (String[] args){

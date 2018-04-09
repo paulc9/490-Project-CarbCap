@@ -37,29 +37,15 @@ public class Util{
 
 /*
 	Returns a JLabel with the image of the beer given to it.
-	If the file specified by the beer's image string doesn't exist,
-	a "No Image Found" picture will appear instead. Otherwise,
-	the label will have text saying no image was set (if the string is empty)
-	or the beer is null (if the beer objec doesn't exist).
+    If the beer isn't null, the beer's image path will be used
+    in the showImage function, else a string saying the beer 
+    is null will be returned.
 */
-	public static JLabel showBeerImage(Beer beer, int width, int height){
+	public static JLabel showBeerImage(Beer beer, int width, int height, int scaleType){
 		JLabel showImg = new JLabel();
 
 		if (beer != null){
-			if(beer.getBeerImage().isEmpty() || beer.getBeerImage() == null){
-				showImg = new JLabel("No image set");
-			}
-			else{
-				ImageIcon img;
-				File check = new File(beer.getBeerImage());
-
-				if(!(check.exists()))
-					img = new ImageIcon("images/no_image.png");
-				else
-					img = new ImageIcon(beer.getBeerImage());
-				img.setImage(img.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
-				showImg = new JLabel(img);
-			}
+			showImg = showImage(beer.getBeerImage(), width, height, scaleType);
 		}
 	    else{
 	    	showImg = new JLabel("Beer null");
@@ -68,6 +54,68 @@ public class Util{
 	    return showImg;
 	}
 
+    public static JLabel showBeerImage(Beer beer, int width, int height){
+        return showBeerImage(beer, width, height, Image.SCALE_SMOOTH);
+    }
+
+/*
+    Returns a JLabel with the image of the path string given to it.
+    If the string is empty, a label with "no image set" will
+    be returned; else, the label will have a "No image found"
+    picture (if the path doesn't exist) or the picture specified by
+    the path.
+*/
+    public static JLabel showImage(String path, int width, int height, int scaleType){
+        JLabel showImg = new JLabel();
+        if (path.isEmpty() || path == null){
+            showImg = new JLabel("No image set");
+        }
+        else{
+            ImageIcon img;
+            File check = new File(path);
+
+            if(!(check.exists()))
+                img = new ImageIcon("images/no_image.png");
+            else
+                img = new ImageIcon(path);
+            img.setImage(img.getImage().getScaledInstance(width, height, scaleType));
+            showImg = new JLabel(img);
+        }
+
+        return showImg;
+    }
+
+    public static JLabel showImage(String path, int width, int height){
+        return showImage(path, width, height, Image.SCALE_SMOOTH);
+    }
+
+/*
+    Returns a dimension object used to limit the size of JLabels in 
+    GridBayLayouts. Usually used with limitLabel function after.
+    String must be the longest string to be used in the column. If there
+    are line breaks in the JLabel, then type the number of breaks in numNewlines;
+    else, type 0. If there are line breaks, then the string must only be the longest
+    line in the JLabel.
+*/
+    public static Dimension limitComponentDimensions(JComponent component, String string, int numNewlines){
+        FontMetrics fm = component.getFontMetrics(component.getFont());
+        int w = fm.stringWidth(string);
+        int h = fm.getHeight();
+        if(numNewlines > 0){
+            int newH = h * (numNewlines + 1);
+            h = newH;
+        }
+        return new Dimension(w, h);
+    }
+
+/*
+    Limits the size of the JLabel provided using the given dimension
+    object. 
+*/
+    public static void limitComponent(JComponent component, Dimension size){
+        component.setMinimumSize(size);
+        component.setPreferredSize(size);
+    }
 
     /*
         Functions for checking if image selected exists in images directory

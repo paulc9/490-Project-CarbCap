@@ -26,6 +26,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.border.*;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartFactory;
@@ -44,7 +45,7 @@ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 
 public class GUIResults extends JPanel implements ActionListener{
 
-    JPanel thePanel, thePanel2, thePanel3, thePanel4, container, imgPanel, innerImgPanel;
+    JPanel mainContainer, topContainer, pageImagePanel, infoPanel, graphPanel, container, imgPanel;
     ChartPanel chartPanel;
     // Data name labels
     JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
@@ -53,15 +54,16 @@ public class GUIResults extends JPanel implements ActionListener{
     JButton buttonDelBeer, buttonEnter, buttonBack;
     ImageIcon graphImg;
     JTextField psiInput;
-    Font font;
     TrackingPage tracking;
     CardLayout pages;
-    Box topBox, theBox;
+    Box buttonContainer;
     Calendar dateCounter;
     Beer currentBeer;
     ArrayList<Beer> trackedBeers;
     int trackedBeersIndex;
     double low, high;
+    Color lightRow = CarbCap.background.brighter();
+    Color darkRow = CarbCap.background;
 
 
     public static void main(String[] args) {
@@ -71,37 +73,258 @@ public class GUIResults extends JPanel implements ActionListener{
 
 
     public GUIResults() {
-        thePanel = new JPanel();
-        thePanel2 = new JPanel();
-        thePanel3 = new JPanel();
-        thePanel4 = new JPanel();
+        mainContainer = new JPanel();
+        pageImagePanel = new JPanel();
+        infoPanel = new JPanel();
+        graphPanel = new JPanel();
         imgPanel = new JPanel();
-        innerImgPanel = new JPanel();
-
-        topBox = Box.createHorizontalBox();
-        theBox = Box.createHorizontalBox();
+        topContainer = new JPanel();
+        buttonContainer = Box.createHorizontalBox();
 
         this.setLayout(new BorderLayout());         // Needed to make graph display properly
-        thePanel.setLayout(new BoxLayout(thePanel, BoxLayout.PAGE_AXIS));
-        thePanel2.setLayout(new GridLayout(8, 2));
-        thePanel4.setLayout(new BorderLayout());
+        mainContainer.setLayout(new GridBagLayout());
+        topContainer.setLayout(new GridBagLayout());
+        pageImagePanel.setLayout(new BoxLayout(pageImagePanel, BoxLayout.PAGE_AXIS));
+        infoPanel.setLayout(new GridBagLayout());
+        imgPanel.setLayout(new BorderLayout());
+        graphPanel.setLayout(new BorderLayout());
 
-        innerImgPanel.setBorder(CarbCap.raised);
+        pageImagePanel.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
+        mainContainer.setBorder(CarbCap.padding);
+        infoPanel.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
+        imgPanel.setBorder(CarbCap.raised);
 
-        font = new Font("Helvetica", Font.PLAIN, 17);
+        pageImagePanel.setBackground(CarbCap.altBackground);
+        infoPanel.setBackground(CarbCap.altBackground);
+        imgPanel.setBackground(CarbCap.altBackground);
+/*
+        addComp(infoPanel, labelName, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, valName, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelBottleDate, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelCurrentPSI, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelCurrentVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelVolPerDay, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelDesiredVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelReadyDate, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelGraph, 0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
 
-        labelName = new JLabel("Name", SwingConstants.CENTER);
+        addComp(infoPanel, labelName, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelBeerType, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelBottleDate, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelCurrentPSI, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelCurrentVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelVolPerDay, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelDesiredVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelReadyDate, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+        addComp(infoPanel, labelGraph, 0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
+*/
+        //graphPanel.add(graphImgLabel);
+
+        makePageImagePanel();
+        makeInfoPanel();
+        makeButtonBox();
+
+        GridBagConstraints inner = new GridBagConstraints();
+        inner.gridx = 0;
+        inner.gridy = 0;
+        inner.weightx = 0;
+        inner.weighty = 1;
+        inner.fill = GridBagConstraints.BOTH;
+        topContainer.add(pageImagePanel, inner);
+
+        inner.gridx++;
+        inner.weightx = 0;
+        topContainer.add(infoPanel, inner);
+
+        inner.gridx++;
+        inner.weightx = 1;
+        topContainer.add(imgPanel, inner);
+
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.gridy = 0;
+        c.gridx = 0;
+        c.weightx = 1;
+        c.weighty = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        mainContainer.add(topContainer, c);
+
+        c.gridy++;
+        c.insets = new Insets(10, 0, 0, 0);
+        c.fill = GridBagConstraints.BOTH;
+        c.weighty = 1;
+        mainContainer.add(graphPanel, c);
+
+        c.gridy++;
+        c.weighty = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        mainContainer.add(buttonContainer, c);
+
+        this.add(mainContainer);
+    }
+
+    public void makePageImagePanel(){
+    	ImageIcon img = new ImageIcon("images/beerInfo.png");
+		img.setImage(img.getImage().getScaledInstance(-1, (int)(CarbCap.height * 0.15), Image.SCALE_SMOOTH));
+		JLabel imgLabel = new JLabel(img);
+
+		JLabel text = new JLabel("Beer Info");
+
+		imgLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		text.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		text.setFont(new Font("Helvetica", Font.BOLD, 20));
+		//text.setBackground(CarbCap.panelTitle);
+		//text.setOpaque(true);
+
+		pageImagePanel.add(text);
+		pageImagePanel.add(imgLabel);
+    }
+
+    public void makeInfoPanel(){
+    	labelName = new JLabel("Name", SwingConstants.CENTER);
         labelCurrentPSI = new JLabel("Current PSI", SwingConstants.CENTER);
         labelReadyDate = new JLabel("Estimated Ready Date", SwingConstants.CENTER);
-        labelGraph = new JLabel("", SwingConstants.CENTER);
         labelBeerType = new JLabel("Beer Type", SwingConstants.CENTER);
         labelBottleDate = new JLabel("Bottled on", SwingConstants.CENTER);
-        labelManualPSI = new JLabel("Manual PSI Input:", SwingConstants.CENTER);
         labelCurrentVol = new JLabel("Current CO2 Volume", SwingConstants.CENTER);
-        labelVolPerDay = new JLabel("Average CO2 Volume Rate (from past 4 days)", SwingConstants.CENTER);
+        labelVolPerDay = new JLabel("Average CO2 Volume Rate (past 4 days)", SwingConstants.CENTER);
         labelDesiredVol = new JLabel("Desired CO2 Volume", SwingConstants.CENTER);
 
-        psiInput = new JTextField(10);
+        valName = new JLabel();
+        valCurrentPSI = new JLabel();
+        valReadyDate = new JLabel();
+        valManualPSI = new JLabel();
+        valBeerType = new JLabel();
+        valBottleDate = new JLabel();
+        valCurrentVol = new JLabel();
+        valDesiredVol = new JLabel();
+        valVolPerDay = new JLabel();
+
+        labelName.setFont(CarbCap.infoFont);
+        labelCurrentPSI.setFont(CarbCap.infoFont);
+        labelReadyDate.setFont(CarbCap.infoFont);
+        labelBeerType.setFont(CarbCap.infoFont);
+        labelBottleDate.setFont(CarbCap.infoFont);
+        labelCurrentVol.setFont(CarbCap.infoFont);
+        labelVolPerDay.setFont(CarbCap.infoFont);
+        labelDesiredVol.setFont(CarbCap.infoFont);
+
+        valName.setFont(CarbCap.infoFont);
+        valCurrentPSI.setFont(CarbCap.infoFont);
+        valReadyDate.setFont(CarbCap.infoFont);
+        valBeerType.setFont(CarbCap.infoFont);
+        valBottleDate.setFont(CarbCap.infoFont);
+        valCurrentVol.setFont(CarbCap.infoFont);
+        valDesiredVol.setFont(CarbCap.infoFont);
+        valVolPerDay.setFont(CarbCap.infoFont);
+
+        labelName.setBackground(lightRow);
+        labelBeerType.setBackground(darkRow);
+        labelBottleDate.setBackground(lightRow);
+        labelReadyDate.setBackground(darkRow);
+        labelCurrentVol.setBackground(lightRow);        
+        labelDesiredVol.setBackground(darkRow);
+        labelVolPerDay.setBackground(lightRow);    
+        labelCurrentPSI.setBackground(darkRow);
+
+        valName.setBackground(lightRow);
+        valBeerType.setBackground(darkRow);
+        valBottleDate.setBackground(lightRow);
+        valReadyDate.setBackground(darkRow);
+        valCurrentVol.setBackground(lightRow);        
+        valDesiredVol.setBackground(darkRow);
+        valVolPerDay.setBackground(lightRow);    
+        valCurrentPSI.setBackground(darkRow);
+
+        labelName.setOpaque(true);
+        labelBeerType.setOpaque(true);
+        labelBottleDate.setOpaque(true);
+        labelReadyDate.setOpaque(true);
+        labelCurrentVol.setOpaque(true);        
+        labelDesiredVol.setOpaque(true);
+        labelVolPerDay.setOpaque(true);    
+        labelCurrentPSI.setOpaque(true);
+
+        valName.setOpaque(true);
+        valBeerType.setOpaque(true);
+        valBottleDate.setOpaque(true);
+        valReadyDate.setOpaque(true);
+        valCurrentVol.setOpaque(true);        
+        valDesiredVol.setOpaque(true);
+        valVolPerDay.setOpaque(true);    
+        valCurrentPSI.setOpaque(true);
+
+        valName.setForeground(Color.WHITE);
+        valCurrentPSI.setForeground(Color.WHITE);
+        valReadyDate.setForeground(Color.WHITE);
+        valBeerType.setForeground(Color.WHITE);
+        valBottleDate.setForeground(Color.WHITE);
+        valCurrentVol.setForeground(Color.WHITE);
+        valDesiredVol.setForeground(Color.WHITE);
+        valVolPerDay.setForeground(Color.WHITE);
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        //c.insets = new Insets(10, 0, 0, 0);
+        c.ipadx = 100;
+        c.ipady = 5;
+        c.fill = GridBagConstraints.BOTH;
+        c.weighty = 0.5;
+        infoPanel.add(labelName, c);
+        c.gridx++;
+        infoPanel.add(valName, c);
+
+        c.gridy++;
+        c.gridx = 0;
+        infoPanel.add(labelBeerType, c);
+        c.gridx++;
+        infoPanel.add(valBeerType, c);
+
+        c.gridy++;
+        c.gridx = 0;
+        infoPanel.add(labelBottleDate, c);
+        c.gridx++;
+        infoPanel.add(valBottleDate, c);
+
+        c.gridy++;
+        c.gridx = 0;
+        infoPanel.add(labelReadyDate, c);
+        c.gridx++;
+        infoPanel.add(valReadyDate, c);
+
+        c.gridy++;
+        c.gridx = 0;
+        infoPanel.add(labelCurrentVol, c);
+        c.gridx++;
+        infoPanel.add(valCurrentVol, c);
+
+        c.gridy++;
+        c.gridx = 0;
+        infoPanel.add(labelDesiredVol, c);
+        c.gridx++;
+        infoPanel.add(valDesiredVol, c);
+
+        c.gridy++;
+        c.gridx = 0;
+        infoPanel.add(labelVolPerDay, c);
+        c.gridx++;
+        infoPanel.add(valVolPerDay, c);
+
+        c.gridy++;
+        c.gridx = 0;
+        infoPanel.add(labelCurrentPSI, c);
+        c.gridx++;
+        infoPanel.add(valCurrentPSI, c);
+    }
+
+    public void makeButtonBox(){
+    	labelManualPSI = new JLabel("Manual PSI Input:  ", SwingConstants.CENTER);
+    	labelManualPSI.setFont(CarbCap.font);
+    	valManualPSI.setFont(CarbCap.font);
+        valManualPSI.setForeground(Color.BLACK);    	
+
+    	psiInput = new JTextField(10);
         psiInput.setMaximumSize( psiInput.getPreferredSize() );
 
         buttonDelBeer = new JButton("Delete Beer");
@@ -116,136 +339,19 @@ public class GUIResults extends JPanel implements ActionListener{
         buttonBack.setToolTipText("Go back to tracking beers page");
         buttonBack.addActionListener(this);
 
-        valName = new JLabel();
-        valCurrentPSI = new JLabel();
-        valReadyDate = new JLabel();
-        valManualPSI = new JLabel();
-        valBeerType = new JLabel();
-        valBottleDate = new JLabel();
-        valCurrentVol = new JLabel();
-        valDesiredVol = new JLabel();
-        valVolPerDay = new JLabel();
+        //buttonDelBeer.setFont(CarbCap.font);
+        //buttonEnter.setFont(CarbCap.font);
 
-
-        labelName.setFont(font);
-        labelCurrentPSI.setFont(font);
-        labelReadyDate.setFont(font);
-        labelGraph.setFont(font);
-        buttonDelBeer.setFont(font);
-        labelBeerType.setFont(font);
-        labelManualPSI.setFont(font);
-        labelBottleDate.setFont(font);
-        labelCurrentVol.setFont(font);
-        labelVolPerDay.setFont(font);
-        labelDesiredVol.setFont(font);
-        buttonEnter.setFont(font);
-
-        valName.setFont(font);
-        valCurrentPSI.setFont(font);
-        valReadyDate.setFont(font);
-        valManualPSI.setFont(font);
-        valBeerType.setFont(font);
-        valBottleDate.setFont(font);
-        valCurrentVol.setFont(font);
-        valDesiredVol.setFont(font);
-        valVolPerDay.setFont(font);
-
-        valName.setForeground(Color.BLACK);
-        valCurrentPSI.setForeground(Color.BLACK);
-        valReadyDate.setForeground(Color.BLACK);
-        valManualPSI.setForeground(Color.BLACK);
-        valBeerType.setForeground(Color.BLACK);
-        valBottleDate.setForeground(Color.BLACK);
-        valCurrentVol.setForeground(Color.BLACK);
-        valDesiredVol.setForeground(Color.BLACK);
-        valVolPerDay.setForeground(Color.BLACK);
-
-        thePanel2.add(labelName);
-        thePanel2.add(valName);
-        thePanel2.add(labelBeerType);
-        thePanel2.add(valBeerType);
-        thePanel2.add(labelBottleDate);
-        thePanel2.add(valBottleDate);
-        thePanel2.add(labelReadyDate);
-        thePanel2.add(valReadyDate);
-        thePanel2.add(labelDesiredVol);
-        thePanel2.add(valDesiredVol);
-        thePanel2.add(labelCurrentVol);
-        thePanel2.add(valCurrentVol);
-        thePanel2.add(labelVolPerDay);
-        thePanel2.add(valVolPerDay);
-        thePanel2.add(labelCurrentPSI);
-        thePanel2.add(valCurrentPSI);
-/*
-        addComp(thePanel2, labelName, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, valName, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelBottleDate, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelCurrentPSI, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelCurrentVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelVolPerDay, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelDesiredVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelReadyDate, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelGraph, 0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-
-        addComp(thePanel2, labelName, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelBeerType, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelBottleDate, 0, 0, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelCurrentPSI, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelCurrentVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelVolPerDay, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelDesiredVol, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelReadyDate, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-        addComp(thePanel2, labelGraph, 0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE);
-*/
-        //thePanel4.add(graphImgLabel);
-
-        theBox.add(buttonBack);
-        theBox.add(Box.createRigidArea(new Dimension(100,0)));
-        theBox.add(labelManualPSI);
-        theBox.add(psiInput);
-        theBox.add(buttonEnter);
-
-        theBox.add(Box.createRigidArea(new Dimension(150,0)));
-        theBox.add(buttonDelBeer);
-
-        topBox.add(thePanel2);
-        topBox.add(imgPanel);
-
-        thePanel.add(topBox);
-        thePanel.add(thePanel4);
-        thePanel.add(theBox);
-
-        this.add(thePanel);
-    }
-
-    public Beer loadBeer(){
-        Beer inBeer = null;
-        try
-        {
-            // Reading the object from a file
-            FileInputStream file = new FileInputStream("savedCurrentBeer.ser");
-            ObjectInputStream in = new ObjectInputStream(file);
-
-            // Method for deserialization of object
-            inBeer = (Beer)in.readObject();
-
-            in.close();
-            file.close();
-
-            System.out.println("Object has been deserialized ");
-
-        }
-
-        catch(IOException ex)
-        {
-            System.out.println("IOException is caught");
-        }
-
-        catch(ClassNotFoundException ex)
-        {
-            System.out.println("ClassNotFoundException is caught");
-        }
-        return inBeer;
+        buttonContainer.add(Box.createRigidArea(CarbCap.edgeSpace));
+        buttonContainer.add(buttonBack);
+        buttonContainer.add(Box.createHorizontalGlue());
+        buttonContainer.add(labelManualPSI);
+        buttonContainer.add(psiInput);
+        buttonContainer.add(Box.createRigidArea(CarbCap.space));
+        buttonContainer.add(buttonEnter);
+        buttonContainer.add(Box.createHorizontalGlue());
+        buttonContainer.add(buttonDelBeer);
+        buttonContainer.add(Box.createRigidArea(CarbCap.edgeSpace));
     }
 
     public void setPage(Beer beer, ArrayList<Beer> tracked, int index){
@@ -255,12 +361,13 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
     public void setPage(Beer beer){
-        innerImgPanel.removeAll();
+    	//labelGraph = new JLabel("Graph:", SwingConstants.CENTER);
+    	//labelGraph.setFont(CarbCap.font);
+        imgPanel.removeAll();
         currentBeer = beer;
 
-        JLabel showImg = Util.showBeerImage(currentBeer, 200, 200);
-        innerImgPanel.add(showImg);
-        imgPanel.add(innerImgPanel);
+        JLabel showImg = Util.showBeerImage(currentBeer, -1, imgPanel.getHeight() * 9 / 10);
+        imgPanel.add(showImg);
 
         valName.setText(currentBeer.getName());
         valCurrentPSI.setText("" + currentBeer.getCurrentPSI());
@@ -268,15 +375,14 @@ public class GUIResults extends JPanel implements ActionListener{
         valVolPerDay.setText("" + currentBeer.getAvgVolRateString());
         valDesiredVol.setText("" + currentBeer.getDesiredVolume());
         valReadyDate.setText("" + currentBeer.getReadyDateString() );
-        labelGraph.setText("Graph: ");
         valBeerType.setText(currentBeer.getType());
         valBottleDate.setText(currentBeer.getBottleDateString());
         dateCounter = Calendar.getInstance();
 
         psiInput.setText("");
 
-        thePanel.revalidate();
-        thePanel.repaint();
+        mainContainer.revalidate();
+        mainContainer.repaint();
         drawGraph();
     }
 
@@ -286,7 +392,7 @@ public class GUIResults extends JPanel implements ActionListener{
         if ((JButton) action == buttonDelBeer){
             final ImageIcon BeerIcon = new ImageIcon("images/Beer Icon.png");
             int n = JOptionPane.showConfirmDialog(
-                    thePanel,
+                    mainContainer,
                     "Are you sure you want to delete your beer?",
                     "Delete Confirmation",
                     JOptionPane.YES_NO_OPTION, 2,
@@ -468,10 +574,10 @@ public class GUIResults extends JPanel implements ActionListener{
 
 
     private void drawGraph(){
-        thePanel4.removeAll();
-        thePanel4.revalidate();
+        graphPanel.removeAll();
+        graphPanel.revalidate();
         JFreeChart lineChart = ChartFactory.createLineChart(
-            "CO2 Volumes in Beer",
+            "Beer CO2 Volume",
             "Date", "Volumes CO2",
             createDataset(),
             PlotOrientation.VERTICAL,
@@ -490,11 +596,12 @@ public class GUIResults extends JPanel implements ActionListener{
 
         chart.addRangeMarker(danger);
         chart.addRangeMarker(finish);
+        lineChart.removeLegend();
 
         chartPanel = new ChartPanel(lineChart);
         //chartPanel.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
         //chartPanel.setVisible(true);
-        thePanel4.add(chartPanel, BorderLayout.CENTER);
+        graphPanel.add(chartPanel, BorderLayout.CENTER);
     }
 
     private ValueMarker createMarker(double value, Color color, String message){
@@ -617,7 +724,7 @@ public class GUIResults extends JPanel implements ActionListener{
         // Sets the rules for a component destined for a GridBagLayout
         // and then adds it
 
-    private void addComp(JPanel thePanel, JComponent comp, int xPos, int yPos, int compWidth, int compHeight, int place, int stretch) {
+    private void addComp(JPanel mainContainer, JComponent comp, int xPos, int yPos, int compWidth, int compHeight, int place, int stretch) {
 
         GridBagConstraints gridConstraints = new GridBagConstraints();
 
@@ -631,7 +738,7 @@ public class GUIResults extends JPanel implements ActionListener{
         gridConstraints.anchor = place;
         gridConstraints.fill = stretch;
 
-        thePanel.add(comp, gridConstraints);
+        mainContainer.add(comp, gridConstraints);
 
     }
 

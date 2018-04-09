@@ -60,10 +60,10 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 		notifyTabPane = new JTabbedPane();
 		ImageIcon twitterIcon = new ImageIcon(TWITTER_ICON);
-		Image image = twitterIcon.getImage().getScaledInstance(36, -1, Image.SCALE_DEFAULT);
+		Image image = twitterIcon.getImage().getScaledInstance(36, -1, Image.SCALE_SMOOTH);
 		twitterIcon = new ImageIcon(image);
 		ImageIcon emailIcon = new ImageIcon(EMAIL_ICON);
-		image = emailIcon.getImage().getScaledInstance(40, -1, Image.SCALE_DEFAULT);
+		image = emailIcon.getImage().getScaledInstance(40, -1, Image.SCALE_SMOOTH);
 		emailIcon = new ImageIcon(image);
 
 		emailPanel = createEmailPanel();
