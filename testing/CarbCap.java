@@ -32,7 +32,7 @@ import java.io.*;
 public class CarbCap extends JFrame implements Serializable{
 
 	CardLayout pages;
-	static Font titleFont, labelFont, font, errorFont;
+	static Font titleFont, labelFont, font, infoFont, errorFont;
 	static Border border, raised, lowered, padding;
 	static Dimension space, boxSpace, edgeSpace, buttonSize;
 	static int width, height;								// width and height of JFrame window
@@ -41,6 +41,7 @@ public class CarbCap extends JFrame implements Serializable{
 	static double DANGER_LEVEL = 4.1;						// CO2 Danger level for bottle bursting
 	static Color text = new Color(242, 191, 37);
 	static Color background = new Color(75, 87, 97);
+	static Color altBackground = Color.gray.darker().darker();
 	static Color panelTitle = new Color(16, 156, 147);
 	static Color errorColor = new Color(247, 108, 108);
 	JPanel container;
@@ -80,6 +81,7 @@ public class CarbCap extends JFrame implements Serializable{
 		titleFont = new Font("Helvetica", Font.BOLD, 26);
 		labelFont = new Font("Helvetica", Font.PLAIN, 22);
 		font = new Font("Helvetica", Font.PLAIN, 17);
+		infoFont = new Font("Helvetica", Font.PLAIN, 16);
 		errorFont = new Font("Helvetica", Font.BOLD, 18);
 
 		getContentPane().setBackground(Color.gray);

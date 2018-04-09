@@ -40,7 +40,7 @@ public class InputPage extends JPanel implements ActionListener{
 	JButton savePresetButton, backButton, okButton, imageButton;
 	JRadioButton presetButton, customButton;
 	ButtonGroup group;
-	JPanel mainPanel, imagePanel, startPanel, presetCustomContainer, presetPanel, presetImage, customPanel, customImage, buttonPanel, container;
+	JPanel mainContainer, imagePanel, startPanel, presetCustomContainer, presetPanel, presetImage, customPanel, customImage, buttonPanel, container;
 	Box box1, box1_2, box2, box4, box4_2;
 	org.jdatepicker.impl.UtilDateModel model;
 	Properties p;
@@ -58,7 +58,7 @@ public class InputPage extends JPanel implements ActionListener{
 	Dimension errorSize;
 
 	public InputPage(){
-		mainPanel = new JPanel();
+		mainContainer = new JPanel();
 		imagePanel = new JPanel();
 		startPanel = new JPanel();
 		presetCustomContainer = new JPanel();
@@ -71,12 +71,12 @@ public class InputPage extends JPanel implements ActionListener{
 		box4_2 = Box.createHorizontalBox();
 
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		mainPanel.setLayout(new GridBagLayout());
+		mainContainer.setLayout(new GridBagLayout());
 		imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.PAGE_AXIS));
 		startPanel.setLayout(new GridBagLayout());
 		buttonPanel.setLayout(new GridLayout(1, 3, CarbCap.width/12, 0));
 
-		mainPanel.setBorder(CarbCap.padding);
+		mainContainer.setBorder(CarbCap.padding);
 		imagePanel.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 		startPanel.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 		presetCustomContainer.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
@@ -85,7 +85,7 @@ public class InputPage extends JPanel implements ActionListener{
 		//startPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		presetCustomContainer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		imagePanel.setBackground(Color.gray.darker().darker());
+		imagePanel.setBackground(CarbCap.altBackground);
 		startPanel.setBackground(Color.gray.darker().darker());
 		buttonPanel.setBackground(Color.gray.darker().darker());
 		presetCustomContainer.setBackground(Color.gray.darker().darker());
@@ -102,29 +102,29 @@ public class InputPage extends JPanel implements ActionListener{
 		c.weightx = 0.1;
 		c.weighty = 0;
 		c.fill = GridBagConstraints.BOTH;
-		mainPanel.add(imagePanel, c);
+		mainContainer.add(imagePanel, c);
 
 		c.gridx++;
 		c.weightx = 0.9;
 		//c.insets = new Insets(0, 10, 0, 0);
-		mainPanel.add(startPanel, c);
+		mainContainer.add(startPanel, c);
 
 		c.weighty = 1;
 		c.gridwidth = 2;
 		c.gridx = 0;
 		//c.insets = new Insets(20, 0, 0, 0);
 		c.gridy++;
-		mainPanel.add(presetCustomContainer, c);
+		mainContainer.add(presetCustomContainer, c);
 
 		c.gridy++;
 		c.weighty = 0;
 		c.insets = new Insets(10, 0, 0, 0);
-		mainPanel.add(new JLabel("Fields marked with * are required", SwingConstants.CENTER), c);
+		mainContainer.add(new JLabel("Fields marked with * are required", SwingConstants.CENTER), c);
 
 		c.gridy++;
-		mainPanel.add(buttonPanel, c);
+		mainContainer.add(buttonPanel, c);
 
-		this.add(mainPanel);
+		this.add(mainContainer);
 	}
 
 	public void makeImagePanel(){

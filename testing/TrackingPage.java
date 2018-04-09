@@ -56,7 +56,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		this.setLayout(new BorderLayout());
 		mainPanel.setLayout(new GridBagLayout());
 		panel1.setLayout(new GridLayout(1, 1));
-		titlePanel.setLayout(new GridLayout(1, 1));
+		titlePanel.setLayout(new GridBagLayout());
 		panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
 		panel3.setLayout(new GridBagLayout());
 		panel1.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -115,10 +115,17 @@ public class TrackingPage extends JPanel implements ActionListener{
 	}
 
 	public void makeTitlePanel(){
+		JPanel inner = new JPanel();
+		inner.setLayout(new BoxLayout(inner, BoxLayout.PAGE_AXIS));
+		inner.setBackground(CarbCap.background.brighter());
+		Border border = BorderFactory.createCompoundBorder(CarbCap.raised, CarbCap.lowered);
+		inner.setBorder(new CompoundBorder(border, CarbCap.padding));
+
 		JLabel title = new JLabel("List of Tracked Beers");
 		title.setFont(title.getFont().deriveFont(Font.BOLD | Font.ITALIC, 50f));
 		title.setHorizontalAlignment(JLabel.CENTER);
-		titlePanel.add(title);
+		inner.add(title);
+		titlePanel.add(inner);
 	}
 
 	public void makePanel2(){
@@ -274,7 +281,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		mc.gridx = 0;
 		mc.gridy = 0;
 		mc.weightx = 0.15;
-        JLabel showImg = Util.showBeerImage(beer, 100, -1);
+        JLabel showImg = Util.showBeerImage(beer, 100, -1, Image.SCALE_DEFAULT);
         middleBox.add(showImg, mc);
 
         JPanel detailsPanel = new JPanel();

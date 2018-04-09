@@ -41,11 +41,11 @@ public class Util{
     in the showImage function, else a string saying the beer 
     is null will be returned.
 */
-	public static JLabel showBeerImage(Beer beer, int width, int height){
+	public static JLabel showBeerImage(Beer beer, int width, int height, int scaleType){
 		JLabel showImg = new JLabel();
 
 		if (beer != null){
-			showImg = showImage(beer.getBeerImage(), width, height);
+			showImg = showImage(beer.getBeerImage(), width, height, scaleType);
 		}
 	    else{
 	    	showImg = new JLabel("Beer null");
@@ -54,6 +54,10 @@ public class Util{
 	    return showImg;
 	}
 
+    public static JLabel showBeerImage(Beer beer, int width, int height){
+        return showBeerImage(beer, width, height, Image.SCALE_SMOOTH);
+    }
+
 /*
     Returns a JLabel with the image of the path string given to it.
     If the string is empty, a label with "no image set" will
@@ -61,7 +65,7 @@ public class Util{
     picture (if the path doesn't exist) or the picture specified by
     the path.
 */
-    public static JLabel showImage(String path, int width, int height){
+    public static JLabel showImage(String path, int width, int height, int scaleType){
         JLabel showImg = new JLabel();
         if (path.isEmpty() || path == null){
             showImg = new JLabel("No image set");
@@ -74,11 +78,15 @@ public class Util{
                 img = new ImageIcon("images/no_image.png");
             else
                 img = new ImageIcon(path);
-            img.setImage(img.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
+            img.setImage(img.getImage().getScaledInstance(width, height, scaleType));
             showImg = new JLabel(img);
         }
 
         return showImg;
+    }
+
+    public static JLabel showImage(String path, int width, int height){
+        return showImage(path, width, height, Image.SCALE_SMOOTH);
     }
 
 /*
