@@ -49,12 +49,12 @@ public class InputPage extends JPanel implements ActionListener{
 	TrackingPage tracking;
 	//Newpage confirm;
 	GUIResults results;
-	CardLayout pages;
+	CardLayout pages;	// reference to switch pages
 	Beer currentBeer;
 	int beerIndex;
 	BeerArray presetBeers;
 	DefaultComboBoxModel CBmodel;
-	CardLayout panelSwitch;
+	CardLayout panelSwitch;		// reference to change preset/custom beer panel
 	Dimension errorSize;
 
 	public InputPage(){

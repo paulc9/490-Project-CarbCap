@@ -43,7 +43,7 @@ public class SplashPage extends JPanel{
 
     JPanel mainPanel, panel1, container;
     JLabel letsBrewLable, carbCapLable, img;
-    final ImageIcon LargeBeer;
+    final ImageIcon largeBeer;
     Box box1, box2, box3;
     TrackingPage tracking;
     CardLayout pages;
@@ -57,7 +57,7 @@ public class SplashPage extends JPanel{
         carbCapLable = new JLabel("CarbCap", SwingConstants.CENTER);
         letsBrewLable = new JLabel("Let's Get Brewin'", SwingConstants.CENTER);
         img = new JLabel();
-        LargeBeer = new ImageIcon("images/splash.gif");
+        largeBeer = new ImageIcon("images/splash.gif");
         box1 = box2 = box3 = Box.createVerticalBox();
 
         this.setLayout(new BorderLayout());
@@ -74,8 +74,8 @@ public class SplashPage extends JPanel{
         letsBrewLable.setFont(CarbCap.labelFont);
         img.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
-        LargeBeer.setImage(LargeBeer.getImage().getScaledInstance(CarbCap.width * 3/5, CarbCap.height * 4/5, Image.SCALE_DEFAULT));
-        img.setIcon(LargeBeer);
+        largeBeer.setImage(largeBeer.getImage().getScaledInstance(-1, CarbCap.height * 4/5, Image.SCALE_DEFAULT));
+        img.setIcon(largeBeer);
         box1.add(img);
         box2.add(carbCapLable);
         box3.add(letsBrewLable);

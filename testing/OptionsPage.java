@@ -52,8 +52,8 @@ public class OptionsPage extends JPanel implements ActionListener{
 		this.add(notifyPanel);
 		this.add(Box.createVerticalGlue());
 		this.add(presetPanel);
-		this.add(Box.createVerticalGlue());
-		this.add(creditsPanel);
+		//this.add(Box.createVerticalGlue());
+		//this.add(creditsPanel);
 	}
 
 	public void makeNotifyPanel(){
@@ -224,7 +224,7 @@ public class OptionsPage extends JPanel implements ActionListener{
 		presetButtonsBox.add(edit);
 		presetButtonsBox.add(Box.createRigidArea(new Dimension(0, 10)));
 		presetButtonsBox.add(delete);
-		presetButtonsBox.add(test);
+		//presetButtonsBox.add(test);
 
 		presetBox.add(imageBox);
 		presetBox.add(Box.createHorizontalGlue());

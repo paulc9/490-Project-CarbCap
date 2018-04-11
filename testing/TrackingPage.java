@@ -116,7 +116,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 	public void makeTitlePanel(){
 		JPanel inner = new JPanel();
-		inner.setLayout(new BoxLayout(inner, BoxLayout.PAGE_AXIS));
+		inner.setLayout(new BorderLayout());
 		inner.setBackground(CarbCap.background.brighter());
 		Border border = BorderFactory.createCompoundBorder(CarbCap.raised, CarbCap.lowered);
 		inner.setBorder(new CompoundBorder(border, CarbCap.padding));
@@ -132,7 +132,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		scrollPane = new JScrollPane();
 		insideScrollPane = new JPanel();
 		scrollPane.setPreferredSize(new Dimension(this.getWidth(), (int)(CarbCap.height * 0.6)));
-		insideScrollPane.setLayout(new BoxLayout(insideScrollPane, BoxLayout.PAGE_AXIS));
+		insideScrollPane.setLayout(new GridBagLayout());
 		insideScrollPane.setBackground(Color.gray.brighter());
 		scrollPane.setViewportView(insideScrollPane);
 		scrollPane.getViewport().setBackground(insideScrollPane.getBackground());
@@ -222,34 +222,50 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 	public void displayTrackedBeers(){
 		insideScrollPane.removeAll();
+
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weightx = 1;
+
         if(trackedBeers == null || trackedBeers.size() == 0)
         	displayNoBeersMessage();
         else{
         	int index = 0;
         	for(Beer beer: trackedBeers){
-				addBeerPanel(beer, index);
+				addBeerPanel(beer, index, c);
 				index++;
+				c.gridy++;
         	}
         }
 	}
 
 	public void displayNoBeersMessage(){
+		JPanel panel = new JPanel();
+		panel.setBackground(CarbCap.altBackground);
+		panel.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.black.brighter(), 3), CarbCap.padding));
+
 		noBeersText = new JLabel("No tracked beers found");
 		noBeersText.setFont(CarbCap.labelFont);
 		noBeersText.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		insideScrollPane.add(noBeersText);
+		panel.add(noBeersText);
+		insideScrollPane.add(panel);
 		insideScrollPane.revalidate();
 		insideScrollPane.repaint();
 	}
 
-	public void addBeerPanel(Beer beer, int index){
+	public void addBeerPanel(Beer beer, int index, GridBagConstraints gbc){
 		JPanel panel = new JPanel();
 		JPanel titleBox = new JPanel();
 		JPanel middleBox = new JPanel();
 
+		System.out.println(insideScrollPane.getWidth());
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		panel.setMinimumSize(new Dimension(scrollPane.getViewport().getSize().width, 200));
+		panel.setMaximumSize(new Dimension(1, 200));
+		panel.setPreferredSize(new Dimension(1, 200));
 		panel.setBorder(new CompoundBorder(CarbCap.padding, BorderFactory.createLineBorder(Color.black.brighter(), 3)));
 		panel.setBackground(Color.gray.brighter());
 
@@ -392,7 +408,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 		panel.add(progress);
 		
-		insideScrollPane.add(panel);
+		insideScrollPane.add(panel, gbc);
 		insideScrollPane.revalidate();
 		insideScrollPane.repaint();
 	}
