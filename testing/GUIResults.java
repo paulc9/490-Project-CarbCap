@@ -200,122 +200,61 @@ public class GUIResults extends JPanel implements ActionListener{
         valDesiredVol = new JLabel();
         valVolPerDay = new JLabel();
 
-        labelName.setFont(CarbCap.infoFont);
-        labelCurrentPSI.setFont(CarbCap.infoFont);
-        labelReadyDate.setFont(CarbCap.infoFont);
-        labelBeerType.setFont(CarbCap.infoFont);
-        labelBottleDate.setFont(CarbCap.infoFont);
-        labelCurrentVol.setFont(CarbCap.infoFont);
-        labelVolPerDay.setFont(CarbCap.infoFont);
-        labelDesiredVol.setFont(CarbCap.infoFont);
+        ArrayList<JLabel> labels = new ArrayList<JLabel>();
+        ArrayList<JLabel> vals = new ArrayList<JLabel>();
 
-        valName.setFont(CarbCap.infoFont);
-        valCurrentPSI.setFont(CarbCap.infoFont);
-        valReadyDate.setFont(CarbCap.infoFont);
-        valBeerType.setFont(CarbCap.infoFont);
-        valBottleDate.setFont(CarbCap.infoFont);
-        valCurrentVol.setFont(CarbCap.infoFont);
-        valDesiredVol.setFont(CarbCap.infoFont);
-        valVolPerDay.setFont(CarbCap.infoFont);
+        labels.add(labelName);
+        labels.add(labelBeerType);
+        labels.add(labelBottleDate);
+        labels.add(labelReadyDate);  
+        labels.add(labelCurrentVol);
+        labels.add(labelDesiredVol);
+        labels.add(labelVolPerDay);
+        labels.add(labelCurrentPSI);
 
-        labelName.setBackground(lightRow);
-        labelBeerType.setBackground(darkRow);
-        labelBottleDate.setBackground(lightRow);
-        labelReadyDate.setBackground(darkRow);
-        labelCurrentVol.setBackground(lightRow);        
-        labelDesiredVol.setBackground(darkRow);
-        labelVolPerDay.setBackground(lightRow);    
-        labelCurrentPSI.setBackground(darkRow);
-
-        valName.setBackground(lightRow);
-        valBeerType.setBackground(darkRow);
-        valBottleDate.setBackground(lightRow);
-        valReadyDate.setBackground(darkRow);
-        valCurrentVol.setBackground(lightRow);        
-        valDesiredVol.setBackground(darkRow);
-        valVolPerDay.setBackground(lightRow);    
-        valCurrentPSI.setBackground(darkRow);
-
-        labelName.setOpaque(true);
-        labelBeerType.setOpaque(true);
-        labelBottleDate.setOpaque(true);
-        labelReadyDate.setOpaque(true);
-        labelCurrentVol.setOpaque(true);        
-        labelDesiredVol.setOpaque(true);
-        labelVolPerDay.setOpaque(true);    
-        labelCurrentPSI.setOpaque(true);
-
-        valName.setOpaque(true);
-        valBeerType.setOpaque(true);
-        valBottleDate.setOpaque(true);
-        valReadyDate.setOpaque(true);
-        valCurrentVol.setOpaque(true);        
-        valDesiredVol.setOpaque(true);
-        valVolPerDay.setOpaque(true);    
-        valCurrentPSI.setOpaque(true);
-
-        valName.setForeground(Color.WHITE);
-        valCurrentPSI.setForeground(Color.WHITE);
-        valReadyDate.setForeground(Color.WHITE);
-        valBeerType.setForeground(Color.WHITE);
-        valBottleDate.setForeground(Color.WHITE);
-        valCurrentVol.setForeground(Color.WHITE);
-        valDesiredVol.setForeground(Color.WHITE);
-        valVolPerDay.setForeground(Color.WHITE);
+        vals.add(valName);
+        vals.add(valBeerType);
+        vals.add(valBottleDate);
+        vals.add(valReadyDate);
+        vals.add(valCurrentVol);
+        vals.add(valDesiredVol);
+        vals.add(valVolPerDay);
+        vals.add(valCurrentPSI);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        //c.insets = new Insets(10, 0, 0, 0);
         c.ipadx = 100;
         c.ipady = 5;
         c.fill = GridBagConstraints.BOTH;
         c.weighty = 0.5;
-        infoPanel.add(labelName, c);
-        c.gridx++;
-        infoPanel.add(valName, c);
 
-        c.gridy++;
-        c.gridx = 0;
-        infoPanel.add(labelBeerType, c);
-        c.gridx++;
-        infoPanel.add(valBeerType, c);
+        for(int i = 0; i < labels.size(); i++){
+            JLabel label = labels.get(i);
+            JLabel val = vals.get(i);
 
-        c.gridy++;
-        c.gridx = 0;
-        infoPanel.add(labelBottleDate, c);
-        c.gridx++;
-        infoPanel.add(valBottleDate, c);
+            label.setFont(CarbCap.infoFont);
+            label.setOpaque(true);
+            val.setFont(CarbCap.infoFont);
+            val.setOpaque(true);
+            val.setForeground(Color.WHITE);
 
-        c.gridy++;
-        c.gridx = 0;
-        infoPanel.add(labelReadyDate, c);
-        c.gridx++;
-        infoPanel.add(valReadyDate, c);
+            if(i % 2 == 0){
+                label.setBackground(lightRow);
+                val.setBackground(lightRow);
+            }
+            else{
+                label.setBackground(darkRow);
+                val.setBackground(darkRow);
+            }
 
-        c.gridy++;
-        c.gridx = 0;
-        infoPanel.add(labelCurrentVol, c);
-        c.gridx++;
-        infoPanel.add(valCurrentVol, c);
+            infoPanel.add(label, c);
+            c.gridx++;
+            infoPanel.add(val, c);
 
-        c.gridy++;
-        c.gridx = 0;
-        infoPanel.add(labelDesiredVol, c);
-        c.gridx++;
-        infoPanel.add(valDesiredVol, c);
-
-        c.gridy++;
-        c.gridx = 0;
-        infoPanel.add(labelVolPerDay, c);
-        c.gridx++;
-        infoPanel.add(valVolPerDay, c);
-
-        c.gridy++;
-        c.gridx = 0;
-        infoPanel.add(labelCurrentPSI, c);
-        c.gridx++;
-        infoPanel.add(valCurrentPSI, c);
+            c.gridx = 0;
+            c.gridy++;
+        }
     }
 
     public void makeButtonBox(){
@@ -414,7 +353,7 @@ public class GUIResults extends JPanel implements ActionListener{
                 }
                 */
                 trackedBeers.remove(trackedBeersIndex);
-                saveTrackedBeers();
+                Util.saveTrackedBeers(trackedBeers);
                 tracking.setBeerArray(trackedBeers);
                 tracking.displayTrackedBeers();
                 pages.show(container, "Tracking");
@@ -655,71 +594,22 @@ public class GUIResults extends JPanel implements ActionListener{
     public void saveNewBeer(){
         File beerFile = new File("savedBeers.ser");
         if (beerFile.exists()){
-            loadTrackedBeers();
+            trackedBeers = Util.loadTrackedBeers();
             trackedBeers.add(currentBeer);
-            saveTrackedBeers();
+            Util.saveTrackedBeers(trackedBeers);
             trackedBeersIndex = trackedBeers.size() - 1;
         } else {
             trackedBeers = new ArrayList<Beer>();
             trackedBeers.add(currentBeer);
-            saveTrackedBeers();
+            Util.saveTrackedBeers(trackedBeers);
             trackedBeersIndex = 0;            
         }
     }
 
     public void saveUpdatedBeer(){
         trackedBeers.set(trackedBeersIndex, currentBeer);
-        saveTrackedBeers();
+        Util.saveTrackedBeers(trackedBeers);
     }
-
-    public void saveTrackedBeers(){
-        try{
-            //Saving of object in a file
-            FileOutputStream file = new FileOutputStream("savedBeers.ser");
-            ObjectOutputStream out = new ObjectOutputStream(file);
-
-            // Method for serialization of object
-            out.writeObject(trackedBeers);
-
-            out.close();
-            file.close();
-
-            System.out.println("savedBeers.ser has been serialized");
-        }
-        catch(IOException ex)
-        {
-            System.out.println("Error while saving savedBeers.ser");
-        }
-    }
-
-    public void loadTrackedBeers(){
-        try
-        {
-            // Reading the object from a file
-            FileInputStream file = new FileInputStream("savedBeers.ser");
-            ObjectInputStream in = new ObjectInputStream(file);
-
-            // Method for deserialization of object
-            trackedBeers = (ArrayList<Beer>)in.readObject();
-
-            in.close();
-            file.close();
-
-            System.out.println("savedBeers.ser has been deserialized");
-
-        }
-
-        catch(IOException ex)
-        {
-            System.out.println("Error while loading savedBeers.ser");
-        }
-
-        catch(ClassNotFoundException ex)
-        {
-            System.out.println("ClassNotFoundException is caught");
-        }
-    }
-
 
         // Sets the rules for a component destined for a GridBagLayout
         // and then adds it
@@ -741,8 +631,4 @@ public class GUIResults extends JPanel implements ActionListener{
         mainContainer.add(comp, gridConstraints);
 
     }
-
-
-
-
 }

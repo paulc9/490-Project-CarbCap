@@ -47,7 +47,6 @@ public class InputPage extends JPanel implements ActionListener{
 	JDatePanelImpl datePanel;
 	JDatePickerImpl bottleDateIn;
 	TrackingPage tracking;
-	//Newpage confirm;
 	GUIResults results;
 	CardLayout pages;	// reference to switch pages
 	Beer currentBeer;
@@ -86,9 +85,9 @@ public class InputPage extends JPanel implements ActionListener{
 		presetCustomContainer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		imagePanel.setBackground(CarbCap.altBackground);
-		startPanel.setBackground(Color.gray.darker().darker());
-		buttonPanel.setBackground(Color.gray.darker().darker());
-		presetCustomContainer.setBackground(Color.gray.darker().darker());
+		startPanel.setBackground(CarbCap.altBackground);
+		buttonPanel.setBackground(CarbCap.altBackground);
+		presetCustomContainer.setBackground(CarbCap.altBackground);
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -187,8 +186,8 @@ public class InputPage extends JPanel implements ActionListener{
 		customButton = new JRadioButton("Custom");
 		presetButton.setFont(CarbCap.font);
 		customButton.setFont(CarbCap.font);
-		presetButton.setBackground(Color.gray.darker().darker());
-		customButton.setBackground(Color.gray.darker().darker());
+		presetButton.setBackground(CarbCap.altBackground);
+		customButton.setBackground(CarbCap.altBackground);
 		group = new ButtonGroup();
 		group.add(presetButton);
 		group.add(customButton);
@@ -264,7 +263,7 @@ public class InputPage extends JPanel implements ActionListener{
 		presetCustomContainer.setLayout(panelSwitch);
 		JPanel noSelectionPanel = new JPanel();
 		noSelectionPanel.add(new JLabel("No input type selected"));
-		noSelectionPanel.setBackground(Color.gray.darker().darker());
+		noSelectionPanel.setBackground(CarbCap.altBackground);
 
 		makeCustomPanel();
 		makePresetPanel();
@@ -277,7 +276,7 @@ public class InputPage extends JPanel implements ActionListener{
 	public void makePresetPanel(){
 		presetPanel = new JPanel();
 		presetPanel.setLayout(new GridBagLayout());
-		presetPanel.setBackground(Color.gray.darker().darker());
+		presetPanel.setBackground(CarbCap.altBackground);
 
 		presetTitle = new JLabel("Select a beer type from the drop-down menu below for a preset beer", SwingConstants.CENTER);
 		beerTypePresetLabel = new JLabel("Beer type*", SwingConstants.CENTER);
@@ -297,7 +296,7 @@ public class InputPage extends JPanel implements ActionListener{
 
    		JPanel infoBox = new JPanel();
    		infoBox.setLayout(new GridBagLayout());
-   		infoBox.setBackground(Color.gray.darker().darker());
+   		infoBox.setBackground(CarbCap.altBackground);
 
    		presetImage = new JPanel();
    		presetImage.setLayout(new BorderLayout());
@@ -385,7 +384,7 @@ public class InputPage extends JPanel implements ActionListener{
 	public void makeCustomPanel(){
 		customPanel = new JPanel();
 		customPanel.setLayout(new GridBagLayout());
-		customPanel.setBackground(Color.gray.darker().darker());
+		customPanel.setBackground(CarbCap.altBackground);
 
 		customTitle = new JLabel("Type in the following info for a custom beer", SwingConstants.CENTER);
 		volumeCustomLabel = new JLabel("Final CO2 volume*", SwingConstants.CENTER);
@@ -405,7 +404,7 @@ public class InputPage extends JPanel implements ActionListener{
 
    		JPanel infoBox = new JPanel();
    		infoBox.setLayout(new GridBagLayout());
-   		infoBox.setBackground(Color.gray.darker().darker());
+   		infoBox.setBackground(CarbCap.altBackground);
 
    		customImage = new JPanel();
    		customImage.setLayout(new BorderLayout());
@@ -513,10 +512,9 @@ public class InputPage extends JPanel implements ActionListener{
 		buttonPanel.add(okButton);
 	}
 
-	public void linkPages(TrackingPage back, /*Newpage*/GUIResults next, CardLayout change, JPanel main){
+	public void linkPages(TrackingPage back, GUIResults next, CardLayout change, JPanel main){
 		tracking = back;
 		results = next;
-		//confirm = next;
 		pages = change;
 		container = main;
 	}

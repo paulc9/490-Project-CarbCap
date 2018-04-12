@@ -30,8 +30,8 @@ import java.io.*;
 public class TrackingPage extends JPanel implements ActionListener{
 
 	Box box;
-	JPanel mainPanel, panel1, titlePanel, panel2, panel3, insideScrollPane, container;
-	JLabel panel1_Text, noBeersText;
+	JPanel mainPanel, logoPanel, titlePanel, trackingPanel, buttonPanel, insideScrollPane, container;
+	JLabel noBeersText;
 	JButton newBeerButton, optionsButton, helpButton;
 	Box box3;
 	JScrollPane scrollPane;
@@ -48,35 +48,35 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 	public TrackingPage(){
 		mainPanel = new JPanel();
-		panel1 = new JPanel();
+		logoPanel = new JPanel();
 		titlePanel = new JPanel();
-		panel2 = new JPanel();
-		panel3 = new JPanel();
+		trackingPanel = new JPanel();
+		buttonPanel = new JPanel();
 
 		this.setLayout(new BorderLayout());
 		mainPanel.setLayout(new GridBagLayout());
-		panel1.setLayout(new GridLayout(1, 1));
+		logoPanel.setLayout(new GridLayout(1, 1));
 		titlePanel.setLayout(new GridBagLayout());
-		panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
-		panel3.setLayout(new GridBagLayout());
-		panel1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		trackingPanel.setLayout(new BoxLayout(trackingPanel, BoxLayout.PAGE_AXIS));
+		buttonPanel.setLayout(new GridBagLayout());
+		logoPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		//titlePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panel2.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panel3.setAlignmentX(Component.CENTER_ALIGNMENT);
+		trackingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		//mainPanel.setBorder(CarbCap.padding);
-		panel1.setBorder(CarbCap.raised);
+		logoPanel.setBorder(CarbCap.raised);
 		titlePanel.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
-		panel2.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
-		panel3.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
+		trackingPanel.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
+		buttonPanel.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 
 		box = Box.createHorizontalBox();
 		box.setBorder(new CompoundBorder(CarbCap.raised, CarbCap.padding));
 
-		makePanel1();
+		makeLogoPanel();
 		makeTitlePanel();
-		makePanel2();
-		makePanel3();
+		makeTrackingPanel();
+		makeButtonPanel();
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -85,7 +85,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		c.fill = GridBagConstraints.BOTH;
 		c.weighty = 0.2;
 		c.weightx = 0.05;
-		mainPanel.add(panel1, c);
+		mainPanel.add(logoPanel, c);
 		c.gridx++;
 		c.weightx = 0.95;
 		c.anchor = GridBagConstraints.CENTER;
@@ -96,22 +96,22 @@ public class TrackingPage extends JPanel implements ActionListener{
 		c.weighty = 0.8;
 		c.weightx = 0.05;
 		//mainPanel.add(Box.createVerticalGlue());
-		mainPanel.add(panel3, c);
+		mainPanel.add(buttonPanel, c);
 		c.weightx = 0.95;
 		c.gridx++;
 		//mainPanel.add(Box.createVerticalGlue());
-		mainPanel.add(panel2, c);
+		mainPanel.add(trackingPanel, c);
 
 		trackedBeers = null;
 
 		this.add(mainPanel);
 	}
 
-	public void makePanel1(){
+	public void makeLogoPanel(){
 		ImageIcon img = new ImageIcon("images/carbcap5.png");
 		img.setImage(img.getImage().getScaledInstance(-1, (int)(CarbCap.height * 0.2), Image.SCALE_SMOOTH));
 		JLabel imgLabel = new JLabel(img);
-		panel1.add(imgLabel);
+		logoPanel.add(imgLabel);
 	}
 
 	public void makeTitlePanel(){
@@ -128,7 +128,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		titlePanel.add(inner);
 	}
 
-	public void makePanel2(){
+	public void makeTrackingPanel(){
 		scrollPane = new JScrollPane();
 		insideScrollPane = new JPanel();
 		scrollPane.setPreferredSize(new Dimension(this.getWidth(), (int)(CarbCap.height * 0.6)));
@@ -138,10 +138,10 @@ public class TrackingPage extends JPanel implements ActionListener{
 		scrollPane.getViewport().setBackground(insideScrollPane.getBackground());
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-		panel2.add(scrollPane);
+		trackingPanel.add(scrollPane);
 	}
 
-	public void makePanel3(){
+	public void makeButtonPanel(){
 		ImageIcon img = new ImageIcon("images/newBeer_3.png");
 		img.setImage(img.getImage().getScaledInstance(-1, 71, Image.SCALE_SMOOTH));
 		newBeerButton = new JButton("Create new beer", img);
@@ -172,15 +172,15 @@ public class TrackingPage extends JPanel implements ActionListener{
 		c.weightx = 1;
 		c.weighty = 1;
 		c.ipady = 0;
-		panel3.add(newBeerButton, c);
+		buttonPanel.add(newBeerButton, c);
 		//c.gridy++;
-		//panel3.add(Box.createVerticalGlue(), c);
+		//buttonPanel.add(Box.createVerticalGlue(), c);
 		c.gridy++;
-		panel3.add(helpButton, c);
+		buttonPanel.add(helpButton, c);
 		//c.gridy++;
-		//panel3.add(Box.createVerticalGlue(), c);
+		//buttonPanel.add(Box.createVerticalGlue(), c);
 		c.gridy++;
-		panel3.add(optionsButton, c);
+		buttonPanel.add(optionsButton, c);
 		//box3.add(Box.createRigidArea(CarbCap.edgeSpace));
 	}
 
@@ -193,7 +193,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		}
 		else if ((JButton) action == helpButton){
 			try{
-				File help = new File("CarbCap user guide.pdf");
+				File help = new File("CarbCap User Guide.pdf");
 				Desktop.getDesktop().open(help);
 			} catch (Exception error){
 				JOptionPane.showMessageDialog(this, "Error opening help guide.");
@@ -261,7 +261,6 @@ public class TrackingPage extends JPanel implements ActionListener{
 		JPanel titleBox = new JPanel();
 		JPanel middleBox = new JPanel();
 
-		System.out.println(insideScrollPane.getWidth());
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		panel.setMinimumSize(new Dimension(scrollPane.getViewport().getSize().width, 200));
 		panel.setMaximumSize(new Dimension(1, 200));
@@ -286,7 +285,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		titleBox.add(title, c);
 		panel.add(titleBox);
 
-		middleBox.setBackground(Color.gray.darker().darker());
+		middleBox.setBackground(CarbCap.altBackground);
 		middleBox.setBorder(CarbCap.padding);
 		panel.add(middleBox);
 
@@ -302,7 +301,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 
         JPanel detailsPanel = new JPanel();
         detailsPanel.setLayout(new GridBagLayout());
-        detailsPanel.setBackground(Color.gray.darker().darker());
+        detailsPanel.setBackground(CarbCap.altBackground);
 
         JLabel typeLabel = new JLabel("Type: ");
         JLabel currentLabel = new JLabel("Current CO2 Level: ");
@@ -350,7 +349,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridBagLayout());
-        buttonPanel.setBackground(Color.gray.darker().darker());
+        buttonPanel.setBackground(CarbCap.altBackground);
 
         JButton moreInfo = new JButton("More info");
         JButton delete = new JButton("Delete");
@@ -396,7 +395,7 @@ public class TrackingPage extends JPanel implements ActionListener{
                     BeerIcon);
             	if (n == 0){
 					trackedBeers.remove(index);
-				    saveTrackedBeers();
+				    Util.saveTrackedBeers(trackedBeers);
 				    displayTrackedBeers();
 				}
 			}
@@ -414,51 +413,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 	}
 
 	public void loadTrackedBeers(){
-        try
-        {
-            // Reading the object from a file
-            FileInputStream file = new FileInputStream("savedBeers.ser");
-            ObjectInputStream in = new ObjectInputStream(file);
-
-            // Method for deserialization of object
-            trackedBeers = (ArrayList<Beer>)in.readObject();
-
-            in.close();
-            file.close();
-
-            System.out.println("savedBeers.ser has been deserialized");
-
-        }
-
-        catch(IOException ex)
-        {
-            System.out.println("Error while loading savedBeers.ser");
-        }
-
-        catch(ClassNotFoundException ex)
-        {
-            System.out.println("ClassNotFoundException is caught");
-        }
-    }
-
-    public void saveTrackedBeers(){
-        try{
-            //Saving of object in a file
-            FileOutputStream file = new FileOutputStream("savedBeers.ser");
-            ObjectOutputStream out = new ObjectOutputStream(file);
-
-            // Method for serialization of object
-            out.writeObject(trackedBeers);
-
-            out.close();
-            file.close();
-
-            System.out.println("savedBeers.ser has been serialized");
-        }
-        catch(IOException ex)
-        {
-            System.out.println("Error while saving savedBeers.ser");
-        }
+        trackedBeers = Util.loadTrackedBeers();
     }
 
 	public void linkPages(InputPage in, GUIResults res, CardLayout change, JPanel main){

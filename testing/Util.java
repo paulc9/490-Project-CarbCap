@@ -240,4 +240,57 @@ public class Util{
         twitter.updateStatus(statusMessage);  
     }        
 
+    /*
+        Functions for saving/loading tracked beers
+    */
+    public static void saveTrackedBeers(ArrayList<Beer> trackedBeers){
+        try{
+            //Saving of object in a file
+            FileOutputStream file = new FileOutputStream("savedBeers.ser");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+
+            // Method for serialization of object
+            out.writeObject(trackedBeers);
+
+            out.close();
+            file.close();
+
+            System.out.println("savedBeers.ser has been serialized");
+        }
+        catch(IOException ex)
+        {
+            System.out.println("Error while saving savedBeers.ser");
+        }
+    }
+
+    public static ArrayList<Beer> loadTrackedBeers(){
+        ArrayList<Beer> trackedBeers = null;
+        try
+        {
+            // Reading the object from a file
+            FileInputStream file = new FileInputStream("savedBeers.ser");
+            ObjectInputStream in = new ObjectInputStream(file);
+
+            // Method for deserialization of object
+            trackedBeers = (ArrayList<Beer>)in.readObject();
+
+            in.close();
+            file.close();
+
+            System.out.println("savedBeers.ser has been deserialized");
+            return trackedBeers;
+        }
+
+        catch(IOException ex)
+        {
+            System.out.println("Error while loading savedBeers.ser");
+            return new ArrayList<Beer>();
+        }
+
+        catch(ClassNotFoundException ex)
+        {
+            System.out.println("ClassNotFoundException is caught");
+            return new ArrayList<Beer>();
+        }
+    }
 }
