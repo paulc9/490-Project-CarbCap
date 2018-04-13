@@ -197,11 +197,17 @@ public class CarbCap extends JFrame implements Serializable{
 	}
 }
 
-//JDatePicker Calendar library
-//Github link: https://github.com/JDatePicker/JDatePicker
+// JDatePicker Calendar library
+// Github link: https://github.com/JDatePicker/JDatePicker
 
-//JFreeChart Graph library
-//Website: http://www.jfree.org/jfreechart/
+// JFreeChart Graph library
+// Website: http://www.jfree.org/jfreechart/
+
+// door icon
+// https://www.flaticon.com/free-icon/open-exit-door_59801
+
+// Relative layout code written by Rob Camick
+// https://tips4java.wordpress.com/2008/11/02/relative-layout/
 
 /*
 	Copyright things to check:

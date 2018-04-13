@@ -32,7 +32,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 	Box box;
 	JPanel mainPanel, logoPanel, titlePanel, trackingPanel, buttonPanel, insideScrollPane, container;
 	JLabel noBeersText;
-	JButton newBeerButton, optionsButton, helpButton;
+	JButton newBeerButton, optionsButton, helpButton, exitButton;
 	Box box3;
 	JScrollPane scrollPane;
 	int width, height;
@@ -147,19 +147,23 @@ public class TrackingPage extends JPanel implements ActionListener{
 		newBeerButton = new JButton("Create new beer", img);
 		helpButton = new JButton("Open help guide", new ImageIcon("images/guide.png"));
 		optionsButton = new JButton("Options", new ImageIcon("images/settings.png"));
+		exitButton = new JButton("Exit program", new ImageIcon("images/open-exit-door.png"));
 
 		newBeerButton.setToolTipText("Create a new beer to keep track of");
 		helpButton.setToolTipText("Open the CarbCap help guide PDF");
 		optionsButton.setToolTipText("Adjust notification settings, change preset beers list");
+		exitButton.setToolTipText("Exit the program");
 		newBeerButton.addActionListener(this);
 		optionsButton.addActionListener(this);
 		helpButton.addActionListener(this);
+		exitButton.addActionListener(this);
 		newBeerButton.setIconTextGap(6);
 		helpButton.setIconTextGap(6);
 		optionsButton.setIconTextGap(7);
 		newBeerButton.setHorizontalAlignment(SwingConstants.LEFT);
 		helpButton.setHorizontalAlignment(SwingConstants.LEFT);
 		optionsButton.setHorizontalAlignment(SwingConstants.LEFT);
+		exitButton.setHorizontalAlignment(SwingConstants.LEFT);
 
 		//newBeerButton.setPreferredSize(CarbCap.buttonSize);
 		//optionsButton.setPreferredSize(CarbCap.buttonSize);
@@ -182,6 +186,8 @@ public class TrackingPage extends JPanel implements ActionListener{
 		c.gridy++;
 		buttonPanel.add(optionsButton, c);
 		//box3.add(Box.createRigidArea(CarbCap.edgeSpace));
+		c.gridy++;
+		buttonPanel.add(exitButton, c);
 	}
 
 	public void actionPerformed(ActionEvent e){
@@ -213,6 +219,9 @@ public class TrackingPage extends JPanel implements ActionListener{
 					optionsPage.saveSettings();
 				}
 			}
+		}
+		else if ((JButton) action == exitButton){
+			System.exit(0);
 		}
 	}
 
@@ -263,8 +272,8 @@ public class TrackingPage extends JPanel implements ActionListener{
 
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		panel.setMinimumSize(new Dimension(scrollPane.getViewport().getSize().width, 200));
-		panel.setMaximumSize(new Dimension(1, 200));
-		panel.setPreferredSize(new Dimension(1, 200));
+		panel.setMaximumSize(new Dimension(1, 210));
+		panel.setPreferredSize(new Dimension(1, 210));
 		panel.setBorder(new CompoundBorder(CarbCap.padding, BorderFactory.createLineBorder(Color.black.brighter(), 3)));
 		panel.setBackground(Color.gray.brighter());
 
@@ -289,19 +298,28 @@ public class TrackingPage extends JPanel implements ActionListener{
 		middleBox.setBorder(CarbCap.padding);
 		panel.add(middleBox);
 
-		middleBox.setLayout(new GridBagLayout());
-		GridBagConstraints mc = new GridBagConstraints();
+		RelativeLayout rl = new RelativeLayout(RelativeLayout.X_AXIS);
+		middleBox.setLayout(rl);
 
-		mc.fill = GridBagConstraints.HORIZONTAL;
-		mc.gridx = 0;
-		mc.gridy = 0;
-		mc.weightx = 0.15;
-        JLabel showImg = Util.showBeerImage(beer, 100, -1, Image.SCALE_DEFAULT);
-        middleBox.add(showImg, mc);
+		JPanel imgPanel = new JPanel();
+		imgPanel.setLayout(new BorderLayout());
+		imgPanel.setBackground(CarbCap.altBackground);
+		JLabel showImg = Util.showBeerImage(beer, -1, 100, Image.SCALE_DEFAULT);
+        imgPanel.add(showImg);
 
-        JPanel detailsPanel = new JPanel();
-        detailsPanel.setLayout(new GridBagLayout());
-        detailsPanel.setBackground(CarbCap.altBackground);
+        middleBox.add(imgPanel, new Float(1.5));
+
+        JPanel detailsContainer = new JPanel();
+        detailsContainer.setLayout(new GridLayout(0, 2));
+        detailsContainer.setBackground(CarbCap.altBackground);
+
+        JPanel detailsLabelPanel = new JPanel();
+        detailsLabelPanel.setLayout(new GridBagLayout());
+        detailsLabelPanel.setBackground(CarbCap.altBackground);
+
+        JPanel detailsValPanel = new JPanel();
+        detailsValPanel.setLayout(new GridBagLayout());
+        detailsValPanel.setBackground(CarbCap.altBackground);
 
         JLabel typeLabel = new JLabel("Type: ");
         JLabel currentLabel = new JLabel("Current CO2 Level: ");
@@ -321,31 +339,42 @@ public class TrackingPage extends JPanel implements ActionListener{
 		desiredVal.setFont(CarbCap.font);
 		estimatedVal.setFont(CarbCap.font);
 
-		c.anchor = GridBagConstraints.LINE_END;
+		typeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		currentLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		desiredLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		estimatedLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		typeLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		currentLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		desiredLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		estimatedLabel.setHorizontalAlignment(SwingConstants.LEFT);
+
+		c.anchor = GridBagConstraints.EAST;
+		c.weightx = 0.3;
 		c.gridx = 0;
 		c.gridy = 0;
-		detailsPanel.add(typeLabel, c);
+		detailsLabelPanel.add(typeLabel, c);
 		c.gridy++;
-		detailsPanel.add(currentLabel, c);
+		detailsLabelPanel.add(currentLabel, c);
 		c.gridy++;
-		detailsPanel.add(desiredLabel, c);
+		detailsLabelPanel.add(desiredLabel, c);
 		c.gridy++;
-		detailsPanel.add(estimatedLabel, c);
+		detailsLabelPanel.add(estimatedLabel, c);
 
 		c.gridy = 0;
-		c.gridx++;
-		c.anchor = GridBagConstraints.LINE_START;
-		detailsPanel.add(typeVal, c);
+		c.gridx = 0;
+		c.anchor = GridBagConstraints.WEST;
+		detailsValPanel.add(typeVal, c);
 		c.gridy++;
-		detailsPanel.add(currentVal, c);
+		detailsValPanel.add(currentVal, c);
 		c.gridy++;
-		detailsPanel.add(desiredVal, c);
+		detailsValPanel.add(desiredVal, c);
 		c.gridy++;
-		detailsPanel.add(estimatedVal, c);
+		detailsValPanel.add(estimatedVal, c);
 
-		mc.gridx++;
-		mc.weightx = 0.7;
-		middleBox.add(detailsPanel, mc);
+		detailsContainer.add(detailsLabelPanel);
+		detailsContainer.add(detailsValPanel);
+
+		middleBox.add(detailsContainer, new Float(4));
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridBagLayout());
@@ -368,9 +397,7 @@ public class TrackingPage extends JPanel implements ActionListener{
         c.weighty = 1;
         buttonPanel.add(delete, c);
 
-        mc.gridx++;
-        mc.weightx = 0.15;
-        middleBox.add(buttonPanel, mc);
+        middleBox.add(buttonPanel, new Float(1.5));
 
         // More info button action
         moreInfo.addActionListener(new ActionListener() {
