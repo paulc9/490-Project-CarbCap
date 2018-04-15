@@ -27,6 +27,8 @@ import java.nio.file.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.border.*;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartFactory;
@@ -51,7 +53,8 @@ public class GUIResults extends JPanel implements ActionListener{
     JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
     // Data value labels
     JLabel valName, valCurrentPSI, valReadyDate, valManualPSI, valBeerType, valBottleDate, valCurrentVol, valDesiredVol, valVolPerDay;
-    JButton buttonDelBeer, buttonEnter, buttonBack;
+    JButton deleteButton, enterButton, backButton, editButton;
+    JTextField nameIn, typeIn, imageIn;
     ImageIcon graphImg;
     JTextField psiInput;
     TrackingPage tracking;
@@ -266,30 +269,36 @@ public class GUIResults extends JPanel implements ActionListener{
     	psiInput = new JTextField(10);
         psiInput.setMaximumSize( psiInput.getPreferredSize() );
 
-        buttonDelBeer = new JButton("Delete Beer");
-        buttonDelBeer.setToolTipText("Delete Current Beer Data");
-        buttonDelBeer.addActionListener(this);
+        deleteButton = new JButton("Delete Beer");
+        deleteButton.setToolTipText("Delete Current Beer Data");
+        deleteButton.addActionListener(this);
 
-        buttonEnter = new JButton("Confirm");
-        buttonEnter.setToolTipText("Enter Current PSI (assume temperature is at 50 deg F)");
-        buttonEnter.addActionListener(this);
+        enterButton = new JButton("Confirm");
+        enterButton.setToolTipText("Enter Current PSI (assume temperature is at 50 deg F)");
+        enterButton.addActionListener(this);
 
-        buttonBack = new JButton("Back");
-        buttonBack.setToolTipText("Go back to tracking beers page");
-        buttonBack.addActionListener(this);
+        backButton = new JButton("Back");
+        backButton.setToolTipText("Go back to tracking beers page");
+        backButton.addActionListener(this);
 
-        //buttonDelBeer.setFont(CarbCap.font);
-        //buttonEnter.setFont(CarbCap.font);
+        editButton = new JButton("Edit beer");
+        editButton.setToolTipText("Change beer name, type, and/or image");
+        editButton.addActionListener(this);
+
+        //deleteButton.setFont(CarbCap.font);
+        //enterButton.setFont(CarbCap.font);
 
         buttonContainer.add(Box.createRigidArea(CarbCap.edgeSpace));
-        buttonContainer.add(buttonBack);
+        buttonContainer.add(backButton);
         buttonContainer.add(Box.createHorizontalGlue());
         buttonContainer.add(labelManualPSI);
         buttonContainer.add(psiInput);
         buttonContainer.add(Box.createRigidArea(CarbCap.space));
-        buttonContainer.add(buttonEnter);
+        buttonContainer.add(enterButton);
         buttonContainer.add(Box.createHorizontalGlue());
-        buttonContainer.add(buttonDelBeer);
+        buttonContainer.add(editButton);
+        buttonContainer.add(Box.createHorizontalGlue());
+        buttonContainer.add(deleteButton);
         buttonContainer.add(Box.createRigidArea(CarbCap.edgeSpace));
     }
 
@@ -328,7 +337,7 @@ public class GUIResults extends JPanel implements ActionListener{
 
     public void actionPerformed(ActionEvent e){
         Object action = e.getSource();
-        if ((JButton) action == buttonDelBeer){
+        if ((JButton) action == deleteButton){
             final ImageIcon BeerIcon = new ImageIcon("images/Beer Icon.png");
             int n = JOptionPane.showConfirmDialog(
                     mainContainer,
@@ -359,22 +368,52 @@ public class GUIResults extends JPanel implements ActionListener{
                 pages.show(container, "Tracking");
             }
         }
-        else if ((JButton) action == buttonEnter && psiInput.getText().isEmpty() )
-            JOptionPane.showMessageDialog(this, "Please enter PSI.");
-        else if ((JButton) action == buttonEnter && !psiInput.getText().isEmpty() ){
-            try {
-                currentBeer.setCurrentTracking(Integer.parseInt(psiInput.getText()));
-                currentBeer.adjustAvgVolRate();
-                currentBeer.adjustReadyDate();
-                //currentBeer.saveCurrentBeerStateToFile();
-                notifyCheck();
-                updatePage();
+        else if ((JButton) action == enterButton){
+        	if (psiInput.getText().isEmpty())
+        		JOptionPane.showMessageDialog(this, "Please enter PSI.");
+        	else{
+	            try {
+	                currentBeer.setCurrentTracking(Integer.parseInt(psiInput.getText()));
+	                currentBeer.adjustAvgVolRate();
+	                currentBeer.adjustReadyDate();
+	                //currentBeer.saveCurrentBeerStateToFile();
+	                notifyCheck();
+	                updatePage();
+	                saveUpdatedBeer();
+	            } catch(NumberFormatException exx) {
+	                JOptionPane.showMessageDialog(this, "Input error. Please enter a whole integer for PSI."); 
+	            }
+        	}
+        }
+        else if ((JButton) action == editButton){
+        	int result = JOptionPane.showConfirmDialog(null, makeDialogPanel(), "Edit beer", JOptionPane.OK_CANCEL_OPTION, 2, new ImageIcon("images/Beer Icon.png"));
+            if(result == JOptionPane.OK_OPTION){
+                if(!currentBeer.getName().equals(nameIn.getText())){
+                    currentBeer.setName(nameIn.getText());
+                    valName.setText(currentBeer.getName());
+                }
+                if(!currentBeer.getType().equals(typeIn.getText())){
+                    currentBeer.setType(typeIn.getText());
+                    valBeerType.setText(currentBeer.getType());
+                }
+                if(!currentBeer.getBeerImage().equals(imageIn.getText())){
+                    currentBeer.setBeerImage(imageIn.getText());
+                    if(Util.checkImageDirectory(currentBeer) == false){
+                        currentBeer.setBeerImage(Util.copyToImageDir(currentBeer));
+                    }
+
+                    imgPanel.removeAll();
+                    JLabel showImg = Util.showBeerImage(currentBeer, -1, imgPanel.getHeight() * 9 / 10);
+                    imgPanel.add(showImg);
+                }
+
+                mainContainer.revalidate();
+                mainContainer.repaint();
+
                 saveUpdatedBeer();
-            } catch(NumberFormatException exx) {
-                JOptionPane.showMessageDialog(this, "Input error. Please enter a whole integer for PSI."); 
             }
         }
-        else if ((JButton) action == buttonBack){
+        else if ((JButton) action == backButton){
             tracking.setBeerArray(trackedBeers);
             tracking.displayTrackedBeers();
             pages.show(container, "Tracking");
@@ -499,6 +538,71 @@ public class GUIResults extends JPanel implements ActionListener{
         else
             valReadyDate.setText("" + currentBeer.getReadyDateString() );
         drawGraph();
+    }
+
+    public JPanel makeDialogPanel(){
+        JPanel ret = new JPanel();
+        ret.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        JButton imageChoose = new JButton("Choose image");
+
+        nameIn = new JTextField(15);
+        typeIn = new JTextField(15);
+        imageIn = new JTextField(15);
+
+        //typeIn.setMaximumSize(typeIn.getPreferredSize());
+        //volumeIn.setMaximumSize(volumeIn.getPreferredSize());
+        //imageIn.setMaximumSize(imageIn.getPreferredSize());
+
+        imageChoose.setPreferredSize(new Dimension(120, imageIn.getPreferredSize().height));
+
+        nameIn.setText(currentBeer.getName());
+        typeIn.setText(currentBeer.getType());
+        imageIn.setText(currentBeer.getBeerImage());
+
+        imageChoose.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+                final JFileChooser fc = new JFileChooser("images/");
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg");
+                fc.setFileFilter(filter);
+                fc.setAccessory(new FileChooserThumbnail(fc));
+
+                int ret = fc.showOpenDialog(GUIResults.this);
+
+                if (ret == JFileChooser.APPROVE_OPTION){
+                    File file = fc.getSelectedFile();
+
+                    imageIn.setText(file.getPath());
+                }
+            }
+        });
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(0, 0, 0, 10);
+        c.gridx = 0;
+        c.gridy = 0;
+
+        ret.add(new JLabel("Beer name  "), c);
+        c.gridx++;
+        ret.add(nameIn, c);
+
+        c.gridx = 0;
+        c.gridy++;
+        ret.add(new JLabel("Beer type  "), c);
+        c.gridx++;
+        ret.add(typeIn, c);
+
+        c.gridx = 0;
+        c.gridy++;
+        ret.add(new JLabel("Beer image  "), c);
+        c.gridx++;
+        ret.add(imageIn, c);
+        c.gridx = 4;
+        ret.add(imageChoose, c);
+
+        return ret;
     }
 
 

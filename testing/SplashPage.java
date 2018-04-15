@@ -95,7 +95,6 @@ public class SplashPage extends JPanel{
         mainPanel.add(box3);
 
         this.add(mainPanel); 
-        this.changePage();
     }
 
     public void linkPages(TrackingPage track, CardLayout change, JPanel main){

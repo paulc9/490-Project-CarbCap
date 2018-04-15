@@ -132,6 +132,9 @@ public class CarbCap extends JFrame implements Serializable{
 	public void frameLayout(){
 		this.setTitle("CarbCap");
 
+		ImageIcon img = new ImageIcon("images/Beer Icon.png");
+		this.setIconImage(img.getImage());
+
 		Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension dim = tk.getScreenSize();
 
