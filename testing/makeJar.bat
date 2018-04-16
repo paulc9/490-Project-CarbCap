@@ -1,0 +1,3 @@
+@echo off
+title Creating CarbCap jar from manifest...
+jar cvmf manifest.mf CarbCap.jar *.class
