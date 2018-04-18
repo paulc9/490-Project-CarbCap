@@ -212,6 +212,9 @@ public class CarbCap extends JFrame implements Serializable{
 // Relative layout code written by Rob Camick
 // https://tips4java.wordpress.com/2008/11/02/relative-layout/
 
+// beer bottle pic for simulator
+// https://cliparts.zone/clipart/1785546
+
 /*
 	Copyright things to check:
 	Notification images used on options page (Twitter, Email, etc.)

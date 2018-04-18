@@ -53,7 +53,7 @@ public class GUIResults extends JPanel implements ActionListener{
     JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
     // Data value labels
     JLabel valName, valCurrentPSI, valReadyDate, valManualPSI, valBeerType, valBottleDate, valCurrentVol, valDesiredVol, valVolPerDay;
-    JButton deleteButton, enterButton, backButton, editButton;
+    JButton deleteButton, enterButton, backButton, editButton, simulateButton;
     JTextField nameIn, typeIn, imageIn;
     ImageIcon graphImg;
     JTextField psiInput;
@@ -68,6 +68,14 @@ public class GUIResults extends JPanel implements ActionListener{
     Color lightRow = CarbCap.background.brighter();
     Color darkRow = CarbCap.background;
 
+    static int pressure, temp;
+    static Boolean done;
+    javax.swing.Timer timer = new javax.swing.Timer(5000, null);
+    JDialog simFrame;
+    JPanel simContainer, simImagePanel, simLabelPanel;
+    JButton simOkButton;
+    JLabel simStatusLabel, simImgLabel, simPressureLabel, simTempLabel, simVolLabel;
+    ImageIcon simImg;
 
     public static void main(String[] args) {
         new GUIResults();
@@ -285,6 +293,10 @@ public class GUIResults extends JPanel implements ActionListener{
         editButton.setToolTipText("Change beer name, type, and/or image");
         editButton.addActionListener(this);
 
+        simulateButton = new JButton("Start simulation");
+        simulateButton.setToolTipText("Simulate beer tracking");
+        simulateButton.addActionListener(this);
+
         //deleteButton.setFont(CarbCap.font);
         //enterButton.setFont(CarbCap.font);
 
@@ -297,6 +309,8 @@ public class GUIResults extends JPanel implements ActionListener{
         buttonContainer.add(enterButton);
         buttonContainer.add(Box.createHorizontalGlue());
         buttonContainer.add(editButton);
+        buttonContainer.add(Box.createHorizontalGlue());
+        buttonContainer.add(simulateButton);
         buttonContainer.add(Box.createHorizontalGlue());
         buttonContainer.add(deleteButton);
         buttonContainer.add(Box.createRigidArea(CarbCap.edgeSpace));
@@ -413,14 +427,146 @@ public class GUIResults extends JPanel implements ActionListener{
                 saveUpdatedBeer();
             }
         }
+        else if ((JButton) action == simulateButton){
+        	if(timer.isRunning()){
+        		simulatorDone("Simulation stopped", "images/simStop.png");
+        	}
+        	else
+        		simulator();
+        }
         else if ((JButton) action == backButton){
             tracking.setBeerArray(trackedBeers);
             tracking.displayTrackedBeers();
+            if(simFrame != null && simFrame.isVisible())
+            	simFrame.dispose();
             pages.show(container, "Tracking");
+        }
+        else if ((JButton) action == simOkButton){
+	        if(timer.isRunning())
+	        	simulatorDone("Simulation stopped", "images/simStop.png");
+	        else
+	        	simFrame.dispose();
         }
     }
 
-    public void notifyCheck(){
+    public void simulator(){
+ 		pressure = 1;
+ 		temp = 70;
+		done = false;
+
+    	deleteButton.setEnabled(false);
+    	enterButton.setEnabled(false);
+    	editButton.setEnabled(false);
+    	backButton.setEnabled(false);
+    	simulateButton.setText("Stop simulation");
+
+    	mainContainer.revalidate();
+    	mainContainer.repaint();
+
+    	makeSimFrame();
+
+    	timer = new javax.swing.Timer(5000, null);
+    	timer.setRepeats(true);
+    	timer.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent evt) {
+                Random ran = new Random();
+                int ranPressure = ran.nextInt(5);	// random pressure added between 0 and 4, inclusive
+                int ranTemp = ran.nextInt(11) - 5;	// random temp change between -5 and 5, inclusive
+
+                pressure = pressure + ranPressure;
+                temp = temp + ranTemp;
+
+                simPressureLabel.setText("Current pressure: " + pressure + " psi");
+                simTempLabel.setText("Current temperature: " + temp + " deg F");
+                currentBeer.setCurrentTracking(pressure, temp);
+                currentBeer.adjustAvgVolRate();
+	            currentBeer.adjustReadyDate();
+	            done = notifyCheck();
+	            updatePage();
+	            saveUpdatedBeer();
+	            if(done){
+	            	simulatorDone("Carbonation finished!", "images/simDone.png");
+	            }
+            }
+        });
+    	timer.start();
+    }
+
+    public void makeSimFrame(){
+    	JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+    	simFrame = new JDialog(new JFrame(), "Simulation");
+        simFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+            	if(timer.isRunning())
+            		simulatorDone("", "");
+                simFrame.dispose();
+            }
+        });
+    	simFrame.setLocation(mainFrame.getX() + mainFrame.getWidth(), mainFrame.getY());
+    	simFrame.setSize(300, 450);
+
+    	simContainer = new JPanel();
+    	simContainer.setLayout(new BoxLayout(simContainer, BoxLayout.PAGE_AXIS));
+    	simImagePanel = new JPanel();
+    	simImagePanel.setLayout(new BorderLayout());
+    	simLabelPanel = new JPanel();
+    	simLabelPanel.setLayout(new BoxLayout(simLabelPanel, BoxLayout.PAGE_AXIS));
+
+    	simImgLabel = new JLabel("", SwingConstants.CENTER);
+    	simImg = new ImageIcon("images/simulator.gif");
+    	simImgLabel.setIcon(simImg);
+
+    	simStatusLabel = new JLabel("Carbonating...");
+    	simPressureLabel = new JLabel("Current pressure: 0 psi");
+    	simTempLabel = new JLabel("Current temperature: 70 deg F");
+    	simOkButton = new JButton("Stop simulation");
+
+    	simStatusLabel.setFont(CarbCap.titleFont);
+    	simPressureLabel.setFont(CarbCap.font);
+    	simTempLabel.setFont(CarbCap.font);
+    	simStatusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    	simPressureLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    	simTempLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    	simOkButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    	simOkButton.addActionListener(this);
+
+    	simImagePanel.add(simImgLabel);
+    	simLabelPanel.add(simStatusLabel);
+    	simLabelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+    	simLabelPanel.add(simPressureLabel);
+    	simLabelPanel.add(simTempLabel);
+    	simLabelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+    	simLabelPanel.add(simOkButton);
+
+    	simContainer.add(simImagePanel);
+    	simContainer.add(Box.createRigidArea(new Dimension(0, 10)));
+    	simContainer.add(simLabelPanel);
+    	simContainer.add(Box.createRigidArea(new Dimension(0, 10)));
+    	simFrame.add(simContainer);
+    	simFrame.setVisible(true);
+    }
+
+    public void simulatorDone(String message, String image){
+    	timer.stop();
+    	simImagePanel.removeAll();
+    	simImg = new ImageIcon(image);
+    	simImgLabel.setIcon(simImg);
+    	simImagePanel.add(simImgLabel);
+
+    	simStatusLabel.setText(message);
+   	    deleteButton.setEnabled(true);
+    	enterButton.setEnabled(true);
+    	editButton.setEnabled(true);
+    	backButton.setEnabled(true);
+    	simOkButton.setText("Close this window");
+
+    	simContainer.revalidate();
+    	simContainer.repaint();
+
+    	simulateButton.setText("Start simulation");
+    }
+
+    public Boolean notifyCheck(){
         String imageName = currentBeer.getBeerImage();
         String email = CarbCap.properties.getProperty("email");
         String error = "Error sending email. Check to make sure you are connected online and the email in the options page is correct.";
@@ -434,6 +580,8 @@ public class GUIResults extends JPanel implements ActionListener{
         Boolean twitterDirectNotify = false;
         Boolean sendTwitterStatus = false;
         Boolean twitterStatusNotify = false;
+
+        Boolean notification = false;
 
         if(CarbCap.properties.getProperty("emailNotify", "").equals("true"))
             emailNotify = true;
@@ -458,6 +606,7 @@ public class GUIResults extends JPanel implements ActionListener{
                     sendTwitterStatus = true;
             }
             currentBeer.readyLogged();
+            notification = true;
         }
 
         // Warning notification
@@ -525,6 +674,7 @@ public class GUIResults extends JPanel implements ActionListener{
                 }
             }
         }
+        return notification;
     }
 
     public void updatePage(){
