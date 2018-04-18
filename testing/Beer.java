@@ -67,12 +67,15 @@ public class Beer implements Serializable{
     public void setBeerID(int id){this.beerID = id;}
     public int getBeerID(){return this.beerID;}
 
-    public void setCurrentTracking(int psi){
+    public void setCurrentTracking(int psi, int temp){
         this.currentPSI = psi;
-        this.currentTemp = 50;                                             //In Fahrenheit, assuming at 50 degrees for now
+        this.currentTemp = temp;                       
         setCurrentVolume(currentPSI, currentTemp);
         trackingArray.add(new TrackingObject(trackingDate));            //sets psi, then creats tracking object and adds it to the tracking array
         addToTrackingDate(1);                                              //this is used to simulate a day's passage after every manual psi input
+    }
+    public void setCurrentTracking(int psi){
+        setCurrentTracking(psi, 50);                            //In Fahrenheit, assuming at 50 degrees for now
     }
     public int getCurrentPSI(){return this.currentPSI;}
 
