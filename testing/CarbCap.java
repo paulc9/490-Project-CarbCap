@@ -27,6 +27,8 @@ import java.net.URLClassLoader;
 import java.lang.StringBuilder;
 import java.lang.String;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 //Hey!
 
 public class CarbCap extends JFrame implements Serializable{
@@ -124,9 +126,22 @@ public class CarbCap extends JFrame implements Serializable{
 		properties = new Properties();
 		try{
 			properties.load(new FileInputStream(PROPERTIES_PATH));
-		} catch (IOException e){
-			
+			System.out.println(properties.getProperty("lastExecution"));
+		} catch (IOException e1){
+			System.out.println("Creating new options.properties file...");
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+			LocalDateTime now = LocalDateTime.now();
+			properties.setProperty("lastExecution", dtf.format(now));
+			try{
+				properties.store(new FileOutputStream(PROPERTIES_PATH), null);
+			} catch (IOException e2){
+				System.out.println("There's been an error with storing the properties file in the options page!");
+			}
 		}
+	}
+
+	public void updateBeers(){
+		//if (lastExecution )
 	}
 
 	public void frameLayout(){
@@ -172,6 +187,7 @@ public class CarbCap extends JFrame implements Serializable{
 		}
 		File tmpFile = new File("savedBeers.ser");
 		if(tmpFile.exists()){
+			updateBeers();
 			tracking.loadTrackedBeers();
 		}
 		tracking.displayTrackedBeers();

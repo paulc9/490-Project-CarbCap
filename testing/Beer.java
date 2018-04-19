@@ -6,7 +6,7 @@ import java.io.*;
 import java.lang.Math;
 
 public class Beer implements Serializable{
-    private int desiredPSI, beerID, currentPSI, desiredTemp, currentTemp;
+    private int desiredPSI, beerId, currentPSI, desiredTemp, currentTemp;
     private double desiredVolume, currentVolume, avgVolRate;
     private String beerType, beerName, beerImage, email;
     private Calendar bottleDate, trackingDate, readyDate;
@@ -31,6 +31,17 @@ public class Beer implements Serializable{
 
     public Beer(String name, String bDate){
         this.beerName = name;
+        setBottleDate(bDate);
+        this.ready = false;
+        this.warning = false;
+        this.plateaued = false;
+        this.avgRateExists = false;
+        this.imageCopy = false;
+    }
+
+    public Beer(String name, String bDate, int id){
+        this.beerName = name;
+        this.beerId = id;
         setBottleDate(bDate);
         this.ready = false;
         this.warning = false;
@@ -64,8 +75,8 @@ public class Beer implements Serializable{
     public void setDesiredTemp(int temp){this.desiredTemp = temp;}
     public int getDesiredTemp(){return this.desiredTemp;}
 
-    public void setBeerID(int id){this.beerID = id;}
-    public int getBeerID(){return this.beerID;}
+    public void setBeerId(int id){this.beerId = id;}
+    public int getBeerId(){return this.beerId;}
 
     public void setCurrentTracking(int psi, int temp){
         this.currentPSI = psi;

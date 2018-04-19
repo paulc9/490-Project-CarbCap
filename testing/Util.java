@@ -36,6 +36,14 @@ public class Util{
     static String twitterSecret = "V0jIU93gwpQmMX3X18PDeak4HfP7xz8awTBIuIws69VcB";
 
 /*
+    Converts a Celsuis temperature to Fahrenheit.
+*/
+    public static Double cToF(double cTemp){
+        double fTemp = (cTemp * 1.8) + 32;
+        return fTemp;
+    }
+
+/*
 	Returns a JLabel with the image of the beer given to it.
     If the beer isn't null, the beer's image path will be used
     in the showImage function, else a string saying the beer 
