@@ -29,6 +29,10 @@ import java.lang.String;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.LocalTime;
+import java.time.Duration;
+import java.util.ArrayList;
 //Hey!
 
 public class CarbCap extends JFrame implements Serializable{
@@ -126,22 +130,84 @@ public class CarbCap extends JFrame implements Serializable{
 		properties = new Properties();
 		try{
 			properties.load(new FileInputStream(PROPERTIES_PATH));
-			System.out.println(properties.getProperty("lastExecution"));
 		} catch (IOException e1){
-			System.out.println("Creating new options.properties file...");
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-			LocalDateTime now = LocalDateTime.now();
-			properties.setProperty("lastExecution", dtf.format(now));
-			try{
-				properties.store(new FileOutputStream(PROPERTIES_PATH), null);
-			} catch (IOException e2){
-				System.out.println("There's been an error with storing the properties file in the options page!");
-			}
+
 		}
 	}
 
 	public void updateBeers(){
-		//if (lastExecution )
+		ArrayList<Beer> trackedBeers = Util.loadTrackedBeers();
+		SensorData sensor = new SensorData();
+		LocalDateTime now = LocalDateTime.now();
+		Boolean updateLogged = false;
+
+		try{
+			sensor.renewSensorData();
+		} catch (Exception e){
+			System.out.println("Error renewing sensor data");
+			System.out.println(e.getMessage());
+		}
+
+		for(int i = 0; i < 3; i++){
+			int beerIndex = 0;
+			for(Beer beer: trackedBeers){
+				if(beer.getBeerId() == i && updateCheck(beer.getLastUpdate(), now)){
+					Beer updatedBeer = beer;
+					double press = sensor.getPress(i);
+					double temp = Util.cToF(sensor.getTemp(i));
+
+					updatedBeer.setCurrentTracking(press, temp, now);
+					updatedBeer.adjustAvgVolRate();
+					updatedBeer.adjustReadyDate();
+
+					trackedBeers.set(beerIndex, updatedBeer);
+					updateLogged = true;
+					break;
+				}
+				beerIndex++;
+			}
+		}
+
+		if(updateLogged == true)
+			Util.saveTrackedBeers(trackedBeers);
+	}
+
+/*
+	Returns true if it is time to update:
+		Update on new day - true if it is a new day after last update and it is past the specified set time.
+		Update after time duration - true if the specified amount of time has passed since the last update.
+	Returns false otherwise.
+*/
+	public static Boolean updateCheck(LocalDateTime lastUpdate, LocalDateTime now){
+
+		/*
+			Used for updating on new day after set time specified - Ex. update if
+			after 6:00 AM on a new day after last update.
+		*/
+/*
+		int hour = 6;
+		int min = 0;
+		int sec = 0;
+
+		if (now.toLocalDate().isAfter(lastUpdate.toLocalDate()) && now.toLocalTime().isAfter(LocalTime.of(hour, min, sec)))
+			return true;
+
+		return false;
+*/
+		/*
+			Used for updating when specified time difference has passed - Ex. update if
+			10 seconds have passed since last update.
+		*/
+
+		Duration duration = Duration.between(lastUpdate, now);
+		int hourDiff = 0;
+		int minDiff = 0;
+		int totalSecDiff = secDiff + (minDiff * 60) + (hourDiff * 60 * 60);
+
+		if (duration.getSeconds() >= totalSecDiff)
+			return true;
+
+		return false;
 	}
 
 	public void frameLayout(){

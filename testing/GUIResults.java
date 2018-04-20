@@ -387,7 +387,7 @@ public class GUIResults extends JPanel implements ActionListener{
         		JOptionPane.showMessageDialog(this, "Please enter PSI.");
         	else{
 	            try {
-	                currentBeer.setCurrentTracking(Integer.parseInt(psiInput.getText()));
+	                currentBeer.setCurrentTracking(Double.parseDouble(psiInput.getText()));
 	                currentBeer.adjustAvgVolRate();
 	                currentBeer.adjustReadyDate();
 	                //currentBeer.saveCurrentBeerStateToFile();
@@ -395,7 +395,7 @@ public class GUIResults extends JPanel implements ActionListener{
 	                updatePage();
 	                saveUpdatedBeer();
 	            } catch(NumberFormatException exx) {
-	                JOptionPane.showMessageDialog(this, "Input error. Please enter a whole integer for PSI."); 
+	                JOptionPane.showMessageDialog(this, "Input error. Please enter a number for PSI"); 
 	            }
         	}
         }

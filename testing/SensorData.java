@@ -5,7 +5,7 @@ import java.net.*;
 import java.io.*;
 
 public class SensorData{
-    private SensorData(){}
+    public SensorData(){}
     private double[] temp = new double[3];
     private double[] press = new double[3];
     public void renewSensorData() throws Exception {
