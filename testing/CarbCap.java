@@ -202,6 +202,7 @@ public class CarbCap extends JFrame implements Serializable{
 		Duration duration = Duration.between(lastUpdate, now);
 		int hourDiff = 0;
 		int minDiff = 0;
+		int secDiff = 30;
 		int totalSecDiff = secDiff + (minDiff * 60) + (hourDiff * 60 * 60);
 
 		if (duration.getSeconds() >= totalSecDiff)
