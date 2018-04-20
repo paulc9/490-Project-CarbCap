@@ -4,15 +4,17 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.io.*;
 import java.lang.Math;
+import java.time.LocalDateTime;
 
 public class Beer implements Serializable{
-    private int desiredPSI, beerID, currentPSI, desiredTemp, currentTemp;
-    private double desiredVolume, currentVolume, avgVolRate;
+    private int beerId;
+    private double desiredPSI, currentPSI, desiredTemp, currentTemp, desiredVolume, currentVolume, avgVolRate;
     private String beerType, beerName, beerImage, email;
     private Calendar bottleDate, trackingDate, readyDate;
     private Boolean ready, warning, plateaued, avgRateExists, imageCopy;
     SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
     private ArrayList<TrackingObject>  trackingArray = new ArrayList<TrackingObject>();
+    private LocalDateTime lastUpdate;
     //color
 /*
     Unused now that mail is in options page - may remove after further testing
@@ -37,6 +39,19 @@ public class Beer implements Serializable{
         this.plateaued = false;
         this.avgRateExists = false;
         this.imageCopy = false;
+        this.lastUpdate = LocalDateTime.now();
+    }
+
+    public Beer(String name, String bDate, int id){
+        this.beerName = name;
+        this.beerId = id;
+        setBottleDate(bDate);
+        this.ready = false;
+        this.warning = false;
+        this.plateaued = false;
+        this.avgRateExists = false;
+        this.imageCopy = false;
+        this.lastUpdate = LocalDateTime.now();
     }
 
     public Beer(String type, double volume){
@@ -58,29 +73,36 @@ public class Beer implements Serializable{
     public void setBeerImage(String i){this.beerImage=i;}
     public String getBeerImage(){return this.beerImage;}
 
-    public void setDesiredPSI(int dPSI){this.desiredPSI = dPSI;}
-    public int getDesiredPSI(){return this.desiredPSI;}
+    public void setDesiredPSI(double dPSI){this.desiredPSI = dPSI;}
+    public double getDesiredPSI(){return this.desiredPSI;}
 
-    public void setDesiredTemp(int temp){this.desiredTemp = temp;}
-    public int getDesiredTemp(){return this.desiredTemp;}
+    public void setDesiredTemp(double temp){this.desiredTemp = temp;}
+    public double getDesiredTemp(){return this.desiredTemp;}
 
-    public void setBeerID(int id){this.beerID = id;}
-    public int getBeerID(){return this.beerID;}
+    public void setBeerId(int id){this.beerId = id;}
+    public int getBeerId(){return this.beerId;}
 
-    public void setCurrentTracking(int psi, int temp){
+    // Used when scheduled update of beers happens, using specified update time
+    public void setCurrentTracking(double psi, double temp, LocalDateTime update){
         this.currentPSI = psi;
-        this.currentTemp = temp;                       
+        this.currentTemp = temp;
+        this.lastUpdate = update;
         setCurrentVolume(currentPSI, currentTemp);
         trackingArray.add(new TrackingObject(trackingDate));            //sets psi, then creats tracking object and adds it to the tracking array
         addToTrackingDate(1);                                              //this is used to simulate a day's passage after every manual psi input
     }
-    public void setCurrentTracking(int psi){
-        setCurrentTracking(psi, 50);                            //In Fahrenheit, assuming at 50 degrees for now
+    // Used for simulator, assumes the update happens when method runs
+    public void setCurrentTracking(double psi, double temp){
+        setCurrentTracking(psi, temp, LocalDateTime.now());
     }
-    public int getCurrentPSI(){return this.currentPSI;}
+    // Used for manual input assuming the temp specified below
+    public void setCurrentTracking(double psi){
+        setCurrentTracking(psi, 50, LocalDateTime.now());                            //In Fahrenheit, assuming at 50 degrees for now
+    }
+    public double getCurrentPSI(){return this.currentPSI;}
 
-    public void setCurrentTemp(int temp){this.currentTemp = temp;}
-    public int getCurrentTemp(){return this.currentTemp;}
+    public void setCurrentTemp(double temp){this.currentTemp = temp;}
+    public double getCurrentTemp(){return this.currentTemp;}
 
     public void setType(String type){this.beerType = type;}
     public String getType(){return this.beerType;}
@@ -94,6 +116,9 @@ public class Beer implements Serializable{
     public void setDesiredVolume(double vol){this.desiredVolume = vol;}
     public double getDesiredVolume(){return this.desiredVolume;}
 
+    public void setLastUpdate(LocalDateTime update){this.lastUpdate = update;}
+    public LocalDateTime getLastUpdate(){return this.lastUpdate;}
+
     /*
         imageCopy is used for preset beers, to flag which images are not
         in the images folder and thus need to be copied there
@@ -106,7 +131,7 @@ public class Beer implements Serializable{
         Result is very close to numbers on beer chart from: 
         http://www.kegerators.com/carbonation-table.php
     */
-    public void setCurrentVolume(int psi, int Ftemp){
+    public void setCurrentVolume(double psi, double Ftemp){
         double c = (-16.6999 - 0.0101059 * Ftemp + 0.00116512 * Math.pow(Ftemp, 2)) - (double)psi;
         double b = 0.173354 * (double)Ftemp + 4.24267;
         double a = -0.0684226;
@@ -253,7 +278,7 @@ public class Beer implements Serializable{
 
 
     public class TrackingObject implements Serializable{
-        private int trackedPSI, trackedTemp; //temp in F
+        private double trackedPSI, trackedTemp; //temp in F
         private double trackedVol;
         private Calendar trackedDate;
 
@@ -272,9 +297,9 @@ public class Beer implements Serializable{
             trackedVol = getCurrentVolume();
         }
 
-        public int getPSI(){return trackedPSI;}
+        public double getPSI(){return trackedPSI;}
         public String getDateString(){return sdf.format(trackedDate.getTime());}
-		public int getTemp(){return trackedTemp;}
+		public double getTemp(){return trackedTemp;}
         public double getVolume(){return trackedVol;}
     }
 

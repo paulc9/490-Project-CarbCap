@@ -32,10 +32,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class InputPage extends JPanel implements ActionListener{
 
-	JLabel startTitle, beerNameLabel, beerNameError, bottleDateLabel, bottleDateError, inputTypeLabel, inputTypeError, 
+	JLabel startTitle, beerNameLabel, beerNameError, beerIdLabel, beerIdError, bottleDateLabel, bottleDateError, inputTypeLabel, inputTypeError, 
 		   presetTitle, beerTypePresetLabel, volumePresetLabel,
 		   customTitle, beerTypeCustomLabel, volumeCustomLabel, volumeCustomError, imageLabel;
-	JTextField beerNameIn, volumePresetIn, volumeCustomIn, beerTypeIn, imagePathIn;
+	JTextField beerNameIn, beerIdIn, volumePresetIn, volumeCustomIn, beerTypeIn, imagePathIn;
 	JComboBox beerList;
 	JButton savePresetButton, backButton, okButton, imageButton;
 	JRadioButton presetButton, customButton;
@@ -146,14 +146,17 @@ public class InputPage extends JPanel implements ActionListener{
 	public void makeStartPanel(){
 		startTitle = new JLabel("<html><b>Please input beer information</b></html>");
 		beerNameLabel = new JLabel("Beer Name*", SwingConstants.CENTER);
+		beerIdLabel = new JLabel("Beer ID*", SwingConstants.CENTER);
 		bottleDateLabel = new JLabel("Bottle Date*", SwingConstants.CENTER);
 		inputTypeLabel = new JLabel("Select input type*", SwingConstants.CENTER);
 
 		beerNameError = new JLabel(" ", SwingConstants.CENTER);
 		bottleDateError = new JLabel(" ", SwingConstants.CENTER);
 		inputTypeError = new JLabel(" ", SwingConstants.CENTER);
+		beerIdError = new JLabel(" ", SwingConstants.CENTER);
 
 		beerNameIn = new JTextField(15);
+		beerIdIn = new JTextField(15);
 		model = new UtilDateModel();
 		p = new Properties();
         datePanel = new JDatePanelImpl(model, p);
@@ -166,21 +169,25 @@ public class InputPage extends JPanel implements ActionListener{
 
 		//startTitle.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         startTitle.setFont(CarbCap.titleFont);
-		beerNameLabel.setFont(CarbCap.labelFont);
-		bottleDateLabel.setFont(CarbCap.labelFont);
-		inputTypeLabel.setFont(CarbCap.labelFont);
+		beerNameLabel.setFont(CarbCap.font);
+		beerIdLabel.setFont(CarbCap.font);
+		bottleDateLabel.setFont(CarbCap.font);
+		inputTypeLabel.setFont(CarbCap.font);
 		beerNameError.setFont(CarbCap.errorFont);
 		bottleDateError.setFont(CarbCap.errorFont);
 		inputTypeError.setFont(CarbCap.errorFont);
+		beerIdError.setFont(CarbCap.errorFont);
 
 		beerNameError.setForeground(CarbCap.errorColor);
 		bottleDateError.setForeground(CarbCap.errorColor);
 		inputTypeError.setForeground(CarbCap.errorColor);
+		beerIdError.setForeground(CarbCap.errorColor);
 
 		Dimension size = Util.limitComponentDimensions(inputTypeError, "Input type selection required", 0);
 	    Util.limitComponent(beerNameError, size);
 		Util.limitComponent(bottleDateError, size);
 	    Util.limitComponent(inputTypeError, size);
+	    Util.limitComponent(beerIdError, size);
 
 		presetButton = new JRadioButton("Preset");
 		customButton = new JRadioButton("Custom");
@@ -223,6 +230,9 @@ public class InputPage extends JPanel implements ActionListener{
 		startPanel.add(beerNameLabel, c);
 
 		c.gridy++;
+		startPanel.add(beerIdLabel, c);
+
+		c.gridy++;
 		startPanel.add(bottleDateLabel, c);
 
 		c.gridy++;
@@ -234,6 +244,9 @@ public class InputPage extends JPanel implements ActionListener{
 		c.gridwidth = 2;
 		c.weightx = 0.2;
 		startPanel.add(beerNameIn, c);
+
+		c.gridy++;
+		startPanel.add(beerIdIn, c);
 
 		c.gridy++;
 		startPanel.add(bottleDateIn, c);
@@ -250,6 +263,9 @@ public class InputPage extends JPanel implements ActionListener{
 		c.gridx++;
 		c.weightx = 0.1;
 		startPanel.add(beerNameError, c);
+
+		c.gridy++;
+		startPanel.add(beerIdError, c);
 
 		c.gridy++;
 		startPanel.add(bottleDateError, c);
@@ -585,7 +601,7 @@ public class InputPage extends JPanel implements ActionListener{
 		}
 		*/
 		else if (!errorCheck()){
-			currentBeer = new Beer(beerNameIn.getText(), bottleDateIn.getJFormattedTextField().getText());
+			currentBeer = new Beer(beerNameIn.getText(), bottleDateIn.getJFormattedTextField().getText(), Integer.parseInt(beerIdIn.getText()));
 			if (presetButton.isSelected() == true){
 				Beer selectedBeer = (Beer)beerList.getSelectedItem();
 				currentBeer.setType(selectedBeer.getType());
@@ -619,6 +635,7 @@ public class InputPage extends JPanel implements ActionListener{
 				InputPage.this,
 				"<html>Is this the beer you want to track?<br>" +
 					"- Beer name: " + currentBeer.getName() + "<br>" +
+					"- Beer ID: " + currentBeer.getBeerId() + "<br>" +
 					"- Beer type: " + currentBeer.getType() + "<br>" +
 					"- Final CO2 volume: " + currentBeer.getDesiredVolume() + "<br>" +
 					"- Bottle date: " + currentBeer.getBottleDateString() + "</html>",
@@ -646,6 +663,14 @@ public class InputPage extends JPanel implements ActionListener{
 		}
 		else
 			beerNameError.setText(" ");
+
+		try{
+			int i = Integer.parseInt(beerIdIn.getText());
+			beerIdError.setText(" ");
+		} catch (NumberFormatException e){
+			beerIdError.setText("Need an integer");
+			error = true;
+		}
 
 		if (bottleDateIn.getJFormattedTextField().getText().isEmpty() == true){
 			bottleDateError.setText("Invalid start date");
@@ -682,6 +707,7 @@ public class InputPage extends JPanel implements ActionListener{
 
 	public void clearFields(){
 		beerNameIn.setText("");
+		beerIdError.setText("");
 		Calendar today = Calendar.getInstance();
 		DateLabelFormatter df = new DateLabelFormatter();
 		try {
@@ -691,6 +717,7 @@ public class InputPage extends JPanel implements ActionListener{
 		}
 		group.clearSelection();
 		beerNameError.setText(" ");
+		beerIdError.setText(" ");
 		bottleDateError.setText(" ");
 		inputTypeError.setText(" ");
 
