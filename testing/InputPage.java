@@ -707,7 +707,7 @@ public class InputPage extends JPanel implements ActionListener{
 
 	public void clearFields(){
 		beerNameIn.setText("");
-		beerIdError.setText("");
+		beerIdIn.setText("");
 		Calendar today = Calendar.getInstance();
 		DateLabelFormatter df = new DateLabelFormatter();
 		try {
