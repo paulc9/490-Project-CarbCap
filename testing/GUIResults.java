@@ -343,6 +343,13 @@ public class GUIResults extends JPanel implements ActionListener{
 
         psiInput.setText("");
 
+        //disable simulator for sensor beers
+        int id = currentBeer.getBeerId();
+        if(id >= 0 && id < 3)
+            simulateButton.setEnabled(false);
+        else
+            simulateButton.setEnabled(true);
+
         mainContainer.revalidate();
         mainContainer.repaint();
         drawGraph();
@@ -431,8 +438,11 @@ public class GUIResults extends JPanel implements ActionListener{
         	if(timer.isRunning()){
         		simulatorDone("Simulation stopped", "images/simStop.png");
         	}
-        	else
+        	else{
+                if(simFrame != null && simFrame.isVisible())
+                    simFrame.dispose();
         		simulator();
+            }
         }
         else if ((JButton) action == backButton){
             tracking.setBeerArray(trackedBeers);

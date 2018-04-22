@@ -29,9 +29,7 @@ import java.lang.String;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.time.LocalTime;
-import java.time.Duration;
 import java.util.ArrayList;
 //Hey!
 
@@ -50,12 +48,16 @@ public class CarbCap extends JFrame implements Serializable{
 	static Color altBackground = Color.gray.darker().darker();
 	static Color panelTitle = new Color(16, 156, 147);
 	static Color errorColor = new Color(247, 108, 108);
+
+	static SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+	static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss a");
+	static DecimalFormat df = new DecimalFormat("#.0000");	// number of decimal places shown
+
 	JPanel container;
 	InputPage input;
 	GUIResults results;
 	TrackingPage tracking;
 	SplashPage splash;
-	static DecimalFormat df;								// number of decimal places shown
 
 
 	public CarbCap(){
@@ -93,8 +95,6 @@ public class CarbCap extends JFrame implements Serializable{
 		boxSpace = new Dimension(0, 30);
 		edgeSpace = new Dimension(40, 0);
 		buttonSize = new Dimension(100, 40);
-
-		df = new DecimalFormat("#.0000");
 	}
 
 	// setting up default colors for component backgrounds, text, etc.
@@ -140,31 +140,37 @@ public class CarbCap extends JFrame implements Serializable{
 		SensorData sensor = new SensorData();
 		LocalDateTime now = LocalDateTime.now();
 		Boolean updateLogged = false;
+		Boolean sensorBeerFound = false;
 
-		try{
-			sensor.renewSensorData();
-		} catch (Exception e){
-			System.out.println("Error renewing sensor data");
-			System.out.println(e.getMessage());
+		for(Beer beer: trackedBeers){
+			int id = beer.getBeerId();
+			if(id >= 0 && id < 3){
+				sensorBeerFound = true;
+				break;
+			}
+		}
+
+		if(sensorBeerFound){
+			try{
+				sensor.renewSensorData();
+			} catch (Exception e){
+				System.out.println(e.getMessage());
+				System.out.println("Error with sensor data, sensor update process halted.");
+				return;
+			}
 		}
 
 		for(int i = 0; i < 3; i++){
-			int beerIndex = 0;
+			int beerIndex = -1;
 			for(Beer beer: trackedBeers){
-				if(beer.getBeerId() == i && updateCheck(beer.getLastUpdate(), now)){
-					Beer updatedBeer = beer;
-					double press = sensor.getPress(i);
-					double temp = Util.cToF(sensor.getTemp(i));
-
-					updatedBeer.setCurrentTracking(press, temp, now);
-					updatedBeer.adjustAvgVolRate();
-					updatedBeer.adjustReadyDate();
+				beerIndex++;
+				if(beer.getBeerId() == i && Util.updateCheck(beer.getLastUpdate(), now)){
+					Beer updatedBeer = Util.update(beer, sensor, i, now);
 
 					trackedBeers.set(beerIndex, updatedBeer);
 					updateLogged = true;
 					break;
 				}
-				beerIndex++;
 			}
 		}
 
@@ -172,44 +178,6 @@ public class CarbCap extends JFrame implements Serializable{
 			Util.saveTrackedBeers(trackedBeers);
 	}
 
-/*
-	Returns true if it is time to update:
-		Update on new day - true if it is a new day after last update and it is past the specified set time.
-		Update after time duration - true if the specified amount of time has passed since the last update.
-	Returns false otherwise.
-*/
-	public static Boolean updateCheck(LocalDateTime lastUpdate, LocalDateTime now){
-
-		/*
-			Used for updating on new day after set time specified - Ex. update if
-			after 6:00 AM on a new day after last update.
-		*/
-/*
-		int hour = 6;
-		int min = 0;
-		int sec = 0;
-
-		if (now.toLocalDate().isAfter(lastUpdate.toLocalDate()) && now.toLocalTime().isAfter(LocalTime.of(hour, min, sec)))
-			return true;
-
-		return false;
-*/
-		/*
-			Used for updating when specified time difference has passed - Ex. update if
-			10 seconds have passed since last update.
-		*/
-
-		Duration duration = Duration.between(lastUpdate, now);
-		int hourDiff = 0;
-		int minDiff = 0;
-		int secDiff = 30;
-		int totalSecDiff = secDiff + (minDiff * 60) + (hourDiff * 60 * 60);
-
-		if (duration.getSeconds() >= totalSecDiff)
-			return true;
-
-		return false;
-	}
 
 	public void frameLayout(){
 		this.setTitle("CarbCap");

@@ -29,6 +29,7 @@ import java.util.*;
 import java.io.*;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.time.LocalDateTime;
 
 public class InputPage extends JPanel implements ActionListener{
 
@@ -645,6 +646,19 @@ public class InputPage extends JPanel implements ActionListener{
 			if (n == 0){
 				if(Util.checkImageDirectory(currentBeer) == false){
                 	currentBeer.setBeerImage(Util.copyToImageDir(currentBeer));
+            	}
+            	int id = currentBeer.getBeerId();
+            	if(id >= 0 && id < 3){
+            		LocalDateTime now = LocalDateTime.now();
+            		SensorData sensor = new SensorData();
+
+            		try{
+						sensor.renewSensorData();
+						currentBeer = Util.update(currentBeer, sensor, id, now);
+					} catch (Exception ex){
+						System.out.println(ex.getMessage());
+						System.out.println("Error with sensor data, sensor update process halted. Continuing without updating beer with sensor.");
+					}
             	}
             	results.setPage(currentBeer);
 				results.saveNewBeer();

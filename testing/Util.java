@@ -6,6 +6,10 @@ import javax.swing.BorderFactory;
 import javax.swing.border.*;
 import javax.swing.UIManager;
 import java.util.*;
+import java.time.LocalTime;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.nio.file.*;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -15,15 +19,11 @@ import javax.mail.internet.MimeMultipart;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 
-import java.nio.file.*;
-
 import twitter4j.DirectMessage;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-
 import twitter4j.auth.AccessToken;
-
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
@@ -41,6 +41,58 @@ public class Util{
     public static Double cToF(double cTemp){
         double fTemp = (cTemp * 1.8) + 32;
         return fTemp;
+    }
+
+/*
+    Checks if it is time to update.
+    Returns true if it is time to update:
+        Update on new day - true if it is a new day after last update and it is past the specified set time.
+        Update after time duration - true if the specified amount of time has passed since the last update.
+    Returns false otherwise.
+*/
+    public static Boolean updateCheck(LocalDateTime lastUpdate, LocalDateTime now){
+
+        /*
+            Used for updating on new day after set time specified - Ex. update if
+            after 6:00 AM on a new day after last update.
+        */
+/*
+        int hour = 6;
+        int min = 0;
+        int sec = 0;
+
+        if (now.toLocalDate().isAfter(lastUpdate.toLocalDate()) && now.toLocalTime().isAfter(LocalTime.of(hour, min, sec)))
+            return true;
+
+        return false;
+*/
+        /*
+            Used for updating when specified time difference has passed - Ex. update if
+            10 seconds have passed since last update.
+        */
+
+        Duration duration = Duration.between(lastUpdate, now);
+        int hourDiff = 24;
+        int minDiff = 0;
+        int secDiff = 0;
+        int totalSecDiff = secDiff + (minDiff * 60) + (hourDiff * 60 * 60);
+
+        if (duration.getSeconds() >= totalSecDiff)
+            return true;
+
+        return false;
+    }
+
+    public static Beer update(Beer beer, SensorData sensor, int sensorIndex, LocalDateTime updateTime){
+        double press = sensor.getPress(sensorIndex);
+        double temp = Util.cToF(sensor.getTemp(sensorIndex));
+        Beer updatedBeer = beer;
+
+        updatedBeer.setCurrentTracking(press, temp, updateTime);
+        updatedBeer.adjustAvgVolRate();
+        updatedBeer.adjustReadyDate();
+
+        return updatedBeer;
     }
 
 /*
@@ -125,10 +177,10 @@ public class Util{
         component.setPreferredSize(size);
     }
 
-    /*
-        Functions for checking if image selected exists in images directory
-        and copying image to images directory if the above is false.
-    */
+/*
+    Functions for checking if image selected exists in images directory
+    and copying image to images directory if the above is false.
+*/
     public static Boolean checkImageDirectory(Beer beer){
         Path imagesDir = Paths.get("images");
         File f = new File(beer.getBeerImage());
@@ -168,9 +220,9 @@ public class Util{
     }
 
 
-	/*
-		Functions for sending email.
-	*/
+/*
+	Functions for sending email.
+*/
 	public static void sendMail(String subject, String content, String image, String email) throws MessagingException, Exception
     {
         Properties props = new Properties();                    
@@ -214,9 +266,9 @@ public class Util{
     }
 
 
-    /*
-        Functions for sending messages direct messages/posting status via Twitter.
-    */
+/*
+    Functions for sending messages direct messages/posting status via Twitter.
+*/
 
     public static void sendTwitterDirectMessage(String directMessage) throws TwitterException
     {
@@ -248,9 +300,9 @@ public class Util{
         twitter.updateStatus(statusMessage);  
     }        
 
-    /*
-        Functions for saving/loading tracked beers
-    */
+/*
+    Functions for saving/loading tracked beers
+*/
     public static void saveTrackedBeers(ArrayList<Beer> trackedBeers){
         try{
             //Saving of object in a file

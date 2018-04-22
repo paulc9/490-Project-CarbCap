@@ -243,7 +243,6 @@ public class TrackingPage extends JPanel implements ActionListener{
         else{
         	int index = 0;
         	for(Beer beer: trackedBeers){
-        		System.out.println(beer.getBeerId());
 				addBeerPanel(beer, index, c);
 				index++;
 				c.gridy++;

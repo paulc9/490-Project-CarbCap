@@ -5,31 +5,16 @@ import java.util.*;
 import java.io.*;
 import java.lang.Math;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Beer implements Serializable{
     private int beerId;
-    private double desiredPSI, currentPSI, desiredTemp, currentTemp, desiredVolume, currentVolume, avgVolRate;
-    private String beerType, beerName, beerImage, email;
+    private double currentPSI, currentTemp, desiredVolume, currentVolume, avgVolRate;
+    private String beerType, beerName, beerImage;
     private Calendar bottleDate, trackingDate, readyDate;
     private Boolean ready, warning, plateaued, avgRateExists, imageCopy;
-    SimpleDateFormat sdf  =   new  SimpleDateFormat("MM-dd-yyyy");
     private ArrayList<TrackingObject>  trackingArray = new ArrayList<TrackingObject>();
     private LocalDateTime lastUpdate;
-    //color
-/*
-    Unused now that mail is in options page - may remove after further testing
-
-    public Beer(String name, String bDate, String mail){
-        this.beerName = name;
-        setBottleDate(bDate);
-        this.email = mail;
-        this.ready = false;
-        this.warning = false;
-        this.plateaued = false;
-        this.avgRateExists = false;
-        this.imageChanged = false;
-    }
-*/
 
     public Beer(String name, String bDate){
         this.beerName = name;
@@ -73,12 +58,6 @@ public class Beer implements Serializable{
     public void setBeerImage(String i){this.beerImage=i;}
     public String getBeerImage(){return this.beerImage;}
 
-    public void setDesiredPSI(double dPSI){this.desiredPSI = dPSI;}
-    public double getDesiredPSI(){return this.desiredPSI;}
-
-    public void setDesiredTemp(double temp){this.desiredTemp = temp;}
-    public double getDesiredTemp(){return this.desiredTemp;}
-
     public void setBeerId(int id){this.beerId = id;}
     public int getBeerId(){return this.beerId;}
 
@@ -110,14 +89,12 @@ public class Beer implements Serializable{
     public void setName(String name){this.beerName = name;}
     public String getName(){return this.beerName;}
 
-    public void setEmail(String mail){this.email = mail;}
-    public String getEmail(){return this.email;}
-
     public void setDesiredVolume(double vol){this.desiredVolume = vol;}
     public double getDesiredVolume(){return this.desiredVolume;}
 
     public void setLastUpdate(LocalDateTime update){this.lastUpdate = update;}
     public LocalDateTime getLastUpdate(){return this.lastUpdate;}
+    public String getLastUpdateString(){return this.lastUpdate.format(CarbCap.dtf);}
 
     /*
         imageCopy is used for preset beers, to flag which images are not
@@ -132,10 +109,14 @@ public class Beer implements Serializable{
         http://www.kegerators.com/carbonation-table.php
     */
     public void setCurrentVolume(double psi, double Ftemp){
+/*
+    // Secondary formula - less accurate than the other?
         double c = (-16.6999 - 0.0101059 * Ftemp + 0.00116512 * Math.pow(Ftemp, 2)) - (double)psi;
         double b = 0.173354 * (double)Ftemp + 4.24267;
         double a = -0.0684226;
         double result = solveQuadEq(a, b, c);
+*/
+        double result = (psi + 14.695)*(0.01821 + 0.090115 * Math.pow( Math.E, -(Ftemp-32)/43.11) ) - 0.003342;
         this.currentVolume = result;
     }
     public double getCurrentVolume(){return this.currentVolume;}
@@ -144,8 +125,8 @@ public class Beer implements Serializable{
         double result1, result2, root;
         root = Math.pow(b, 2) - 4 * a * c;
         result1 = ( -b + Math.sqrt(root) ) / ( 2 * a );
-        result2 = ( -b + Math.sqrt(root) ) / ( 2 * a );
-        if(result1 >= 0)
+        result2 = ( -b - Math.sqrt(root) ) / ( 2 * a );
+        if(result1 >= 0 && result1 < Math.abs(result2))
             return result1;
         else
             return result2;
@@ -176,23 +157,24 @@ public class Beer implements Serializable{
 */
 
     public ArrayList<TrackingObject> getTrackingArrayList(){return this.trackingArray;}
+    public void setTrackingArrayList(ArrayList<TrackingObject> array){this.trackingArray = array;}
 
     public void setBottleDate(String bDate){
         bottleDate = Calendar.getInstance();
         try{
-            bottleDate.setTime(sdf.parse(bDate));
+            bottleDate.setTime(CarbCap.sdf.parse(bDate));
         } catch (Exception e){
         }
         setTrackingDate();
     }
-    public String getBottleDateString(){return sdf.format(bottleDate.getTime());}
+    public String getBottleDateString(){return CarbCap.sdf.format(bottleDate.getTime());}
 
     public void setTrackingDate(){
         Date bDate = bottleDate.getTime();
         trackingDate = Calendar.getInstance();
         trackingDate.setTime(bDate);
     }
-    public String getTrackingDateString(){return sdf.format(trackingDate.getTime());}
+    public String getTrackingDateString(){return CarbCap.sdf.format(trackingDate.getTime());}
 
     public void addToTrackingDate(int days){
         trackingDate.add(Calendar.DATE, days);
@@ -204,7 +186,7 @@ public class Beer implements Serializable{
     	readyDate.setTime(bDate);
     	readyDate.add(Calendar.DATE, days);
     }
-    public String getReadyDateString(){return sdf.format(readyDate.getTime());}
+    public String getReadyDateString(){return CarbCap.sdf.format(readyDate.getTime());}
 
     /* 
         Adjusts estimated ready date based on average rate of last 4 CO2 volumes
@@ -298,7 +280,7 @@ public class Beer implements Serializable{
         }
 
         public double getPSI(){return trackedPSI;}
-        public String getDateString(){return sdf.format(trackedDate.getTime());}
+        public String getDateString(){return CarbCap.sdf.format(trackedDate.getTime());}
 		public double getTemp(){return trackedTemp;}
         public double getVolume(){return trackedVol;}
     }
