@@ -285,27 +285,6 @@ public class Beer implements Serializable{
         public double getVolume(){return trackedVol;}
     }
 
-    public void saveCurrentBeerStateToFile(){
-        try{
-            //Saving of object in a file
-            FileOutputStream file = new FileOutputStream("savedCurrentBeer.ser");
-            ObjectOutputStream out = new ObjectOutputStream(file);
-
-            // Method for serialization of object
-            out.writeObject(this);
-
-            out.close();
-            file.close();
-
-            System.out.println("Current beer has been serialized");
-        }
-        catch(IOException ex)
-        {
-            System.out.println("IOException is caught /n save error");
-        }
-
-    }
-
 }
 
 

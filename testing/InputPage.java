@@ -660,6 +660,8 @@ public class InputPage extends JPanel implements ActionListener{
 						System.out.println("Error with sensor data, sensor update process halted. Continuing without updating beer with sensor.");
 					}
             	}
+
+            	currentBeer = Util.notifyCheck(currentBeer);
             	results.setPage(currentBeer);
 				results.saveNewBeer();
 				pages.show(container, "Results");

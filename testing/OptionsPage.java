@@ -467,7 +467,7 @@ public class OptionsPage extends JPanel implements ActionListener{
 		try{
 			CarbCap.properties.store(new FileOutputStream(CarbCap.PROPERTIES_PATH), null);
 		} catch (IOException e){
-			System.out.println("There's been an error with storing the properties file in the options page!");
+			System.out.println("Error storing properties file - halted");
 		}
 	}
 

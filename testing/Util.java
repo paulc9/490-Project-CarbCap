@@ -221,6 +221,121 @@ public class Util{
 
 
 /*
+    Function for checking if a notification message needs to be sent.
+    Returns the beer object with the updated Boolean variables for ready, warning, or plateaued messages logged.
+*/
+    public static Beer notifyCheck(Beer beer){
+        Beer currentBeer = beer;
+        String imageName = currentBeer.getBeerImage();
+        String email = CarbCap.properties.getProperty("email");
+        String error = "Error sending email. Check to make sure you are connected online and the email in the options page is correct.";
+        String subject = null;
+        String content = null;
+        String twitterMsg = null;
+
+        Boolean sendMail = false;
+        Boolean emailNotify = false;
+        Boolean sendTwitterDirect = false;
+        Boolean twitterDirectNotify = false;
+        Boolean sendTwitterStatus = false;
+        Boolean twitterStatusNotify = false;
+
+        Boolean notification = false;
+
+        if(CarbCap.properties.getProperty("emailNotify", "").equals("true"))
+            emailNotify = true;
+        if(CarbCap.properties.getProperty("twitterDirectNotify", "").equals("true"))
+            twitterDirectNotify = true;
+        if(CarbCap.properties.getProperty("twitterStatusNotify", "").equals("true"))
+            twitterStatusNotify = true;
+
+        // Ready notification
+        if(currentBeer.getCurrentVolume() >= currentBeer.getDesiredVolume() && currentBeer.readyCheck() == false)
+        {
+            if (emailNotify == true){
+               subject = "Your Beer is Ready";
+               content = "Hello there, your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is ready!!!";
+               sendMail = true;
+            }
+            if (twitterDirectNotify == true || twitterStatusNotify == true){
+                twitterMsg = "Your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is ready!";
+                if (twitterDirectNotify == true)
+                    sendTwitterDirect = true;
+                if (twitterStatusNotify == true)
+                    sendTwitterStatus = true;
+            }
+            currentBeer.readyLogged();
+        }
+
+        // Warning notification
+        else if(currentBeer.getCurrentVolume() > CarbCap.DANGER_LEVEL && currentBeer.warningCheck() == false)
+        {
+            if (emailNotify == true){
+                subject = "Beer Warning";
+                content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" is at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and is in danger of bursting!";
+                sendMail = true;
+            }
+            if (twitterDirectNotify == true || twitterStatusNotify == true){
+                twitterMsg = "Danger! Your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" may burst soon!";
+                if (twitterDirectNotify == true)
+                    sendTwitterDirect = true;
+                if (twitterStatusNotify == true)
+                    sendTwitterStatus = true;
+            }
+            currentBeer.warningLogged();
+        }
+
+        // Plateaued notification
+        else if(currentBeer.plateauedCheck() == false && currentBeer.weekPlateaued() == true)
+        {
+            if (emailNotify == true){
+                subject = "Beer Plateaued";
+                content = "Your "  + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level " + CarbCap.df.format(currentBeer.getCurrentVolume()) + " and will likely not carbonate much more.";
+                sendMail = true;
+            }
+            if (twitterDirectNotify == true || twitterStatusNotify == true){
+                twitterMsg = "Your " + currentBeer.getType() + " beer \"" + currentBeer.getName() + "\" has plateaued at CO2 level" + CarbCap.df.format(currentBeer.getCurrentVolume()) + ".";
+                if (twitterDirectNotify == true)
+                    sendTwitterDirect = true;
+                if (twitterStatusNotify == true)
+                    sendTwitterStatus = true;
+            }
+            currentBeer.plateauedLogged();
+        }
+
+        // Email notification
+        if (sendMail == true){
+            try {  
+                Util.sendMail(subject, content, imageName, email);
+            } catch (Exception ex) {
+                System.out.println("Error sending email - halted");
+            }
+        }
+
+        // Twitter notifications
+        if (sendTwitterDirect == true || sendTwitterStatus == true){
+            if (sendTwitterDirect == true){
+                try{
+                    Util.sendTwitterDirectMessage(twitterMsg);
+                } catch (Exception ex){
+                    System.out.println("Error sending Twitter direct - halted");
+                }
+            }
+
+            if (sendTwitterStatus == true){
+                twitterMsg = twitterMsg.concat(" @" + CarbCap.properties.getProperty("twitterUsername"));
+                try{
+                    Util.postStatus(twitterMsg);
+                } catch (Exception ex){
+                    System.out.println("Error posting Twitter status message - halted");
+                }
+            }
+        }
+        return currentBeer;
+    }
+
+
+/*
 	Functions for sending email.
 */
 	public static void sendMail(String subject, String content, String image, String email) throws MessagingException, Exception
