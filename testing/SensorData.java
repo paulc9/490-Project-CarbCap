@@ -10,7 +10,7 @@ public class SensorData{
     private double[] press = new double[3];
     public void renewSensorData() throws Exception {
         int i = 0;
-        URL input = new URL ("http://192.168.2.8/");
+        URL input = new URL ("http://192.168.2.4/");
         BufferedReader in = new BufferedReader(new InputStreamReader(input.openStream()));
         String inputLine;
         while ((inputLine = in.readLine()) != null){
