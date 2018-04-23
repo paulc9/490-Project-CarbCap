@@ -166,9 +166,6 @@ public class CarbCap extends JFrame implements Serializable{
 				beerIndex++;
 				if(beer.getBeerId() == i && Util.updateCheck(beer.getLastUpdate(), now)){
 					Beer updatedBeer = Util.update(beer, sensor, i, now);
-
-					updatedBeer.adjustAvgVolRate();
-	            	updatedBeer.adjustReadyDate();
 					updatedBeer = Util.notifyCheck(updatedBeer);
 					
 					trackedBeers.set(beerIndex, updatedBeer);

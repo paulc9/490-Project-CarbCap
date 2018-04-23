@@ -661,12 +661,8 @@ public class InputPage extends JPanel implements ActionListener{
 					}
             	}
 
-            	currentBeer.adjustAvgVolRate();
-	            currentBeer.adjustReadyDate();
             	currentBeer = Util.notifyCheck(currentBeer);
-
             	results.setPage(currentBeer);
-            	results.updatePage();
 				results.saveNewBeer();
 				pages.show(container, "Results");
 			}
