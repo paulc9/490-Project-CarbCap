@@ -655,13 +655,13 @@ public class InputPage extends JPanel implements ActionListener{
             		try{
 						sensor.renewSensorData();
 						currentBeer = Util.update(currentBeer, sensor, id, now);
+						currentBeer = Util.notifyCheck(currentBeer);
 					} catch (Exception ex){
 						System.out.println(ex.getMessage());
 						System.out.println("Error with sensor data, sensor update process halted. Continuing without updating beer with sensor.");
 					}
             	}
 
-            	currentBeer = Util.notifyCheck(currentBeer);
             	results.setPage(currentBeer);
 				results.saveNewBeer();
 				pages.show(container, "Results");
