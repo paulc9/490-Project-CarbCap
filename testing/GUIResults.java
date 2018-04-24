@@ -461,7 +461,7 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
     public void simulator(){
- 		pressure = 1;
+ 		pressure = 0;
  		temp = 70;
 		done = false;
 

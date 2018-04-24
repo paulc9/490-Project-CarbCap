@@ -448,7 +448,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 			}
 		});
 
-		JProgressBar progress = new JProgressBar(0, (int)(beer.getDesiredVolume() * 10000));
+		JProgressBar progress = new JProgressBar((int)(0.6 * 10000), (int)(beer.getDesiredVolume() * 10000));
 		progress.setValue((int)(beer.getCurrentVolume() * 10000));
 		progress.setStringPainted(true);
 
