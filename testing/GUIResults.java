@@ -248,7 +248,7 @@ public class GUIResults extends JPanel implements ActionListener{
             label.setOpaque(true);
             val.setFont(CarbCap.infoFont);
             val.setOpaque(true);
-            val.setForeground(Color.WHITE);
+            val.setForeground(CarbCap.valueColor);
 
             if(i % 2 == 0){
                 label.setBackground(lightRow);
@@ -331,6 +331,7 @@ public class GUIResults extends JPanel implements ActionListener{
         JLabel showImg = Util.showBeerImage(currentBeer, -1, imgPanel.getHeight() * 9 / 10);
         imgPanel.add(showImg);
 
+        valReadyDate.setForeground(CarbCap.valueColor);
         valName.setText(currentBeer.getName());
         valCurrentPSI.setText("" + currentBeer.getCurrentPSI());
         valCurrentVol.setText("" + CarbCap.df.format(currentBeer.getCurrentVolume()));
@@ -580,12 +581,22 @@ public class GUIResults extends JPanel implements ActionListener{
         valCurrentPSI.setText("" + currentBeer.getCurrentPSI());
         valCurrentVol.setText("" + CarbCap.df.format(currentBeer.getCurrentVolume()));
         valVolPerDay.setText("" + currentBeer.getAvgVolRateString());
-        if(currentBeer.readyCheck() == true)
-            valReadyDate.setText("Now ready!");
-        else if(currentBeer.getAvgVolRate() < 0.005 && currentBeer.rateExistsCheck() == true)
-        	valReadyDate.setText("Too slow...");
-        else
+        if(currentBeer.warningCheck() == true){
+            valReadyDate.setForeground(CarbCap.errorColor);
+            valReadyDate.setText("<html><b>Burst danger!</b><html>");
+        }
+        else if(currentBeer.readyCheck() == true){
+            valReadyDate.setForeground(CarbCap.readyColor);
+            valReadyDate.setText("<html><b>Now ready!</b><html>");
+        }
+        else if(currentBeer.getAvgVolRate() < 0.005 && currentBeer.rateExistsCheck() == true){
+            valReadyDate.setForeground(CarbCap.plateauedColor);
+        	valReadyDate.setText("<html><b>Rate plateaued</b><html>");
+        }
+        else{
+            valReadyDate.setForeground(CarbCap.valueColor);
             valReadyDate.setText("" + currentBeer.getReadyDateString() );
+        }
         drawGraph();
     }
 

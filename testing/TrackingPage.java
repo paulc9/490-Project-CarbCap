@@ -329,6 +329,22 @@ public class TrackingPage extends JPanel implements ActionListener{
         JLabel currentVal = new JLabel(CarbCap.df.format(beer.getCurrentVolume()));
         JLabel desiredVal = new JLabel(CarbCap.df.format(beer.getDesiredVolume()));
         JLabel estimatedVal = new JLabel(beer.getReadyDateString());
+        if(beer.warningCheck() == true){
+            estimatedVal.setForeground(CarbCap.errorColor);
+            estimatedVal.setText("<html><b>Burst danger!</b><html>");
+        }
+        else if(beer.readyCheck() == true){
+        	estimatedVal.setForeground(CarbCap.readyColor);
+        	estimatedVal.setText("<html><b>Now ready!</b><html>");
+        }
+        else if(beer.getAvgVolRate() < 0.005 && beer.rateExistsCheck() == true){
+        	estimatedVal.setForeground(CarbCap.plateauedColor);
+        	estimatedVal.setText("<html><b>Rate plateaued</b><html>");
+        }
+        else{
+        	estimatedVal.setForeground(CarbCap.valueColor);
+        	estimatedVal.setText(beer.getReadyDateString());
+        }
 
         typeLabel.setFont(CarbCap.font);
         currentLabel.setFont(CarbCap.font);
@@ -338,6 +354,10 @@ public class TrackingPage extends JPanel implements ActionListener{
 		currentVal.setFont(CarbCap.font);
 		desiredVal.setFont(CarbCap.font);
 		estimatedVal.setFont(CarbCap.font);
+
+		typeVal.setForeground(CarbCap.valueColor);
+		currentVal.setForeground(CarbCap.valueColor);
+		desiredVal.setForeground(CarbCap.valueColor);
 
 		typeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		currentLabel.setHorizontalAlignment(SwingConstants.RIGHT);

@@ -48,6 +48,9 @@ public class CarbCap extends JFrame implements Serializable{
 	static Color altBackground = Color.gray.darker().darker();
 	static Color panelTitle = new Color(16, 156, 147);
 	static Color errorColor = new Color(247, 108, 108);
+	static Color readyColor = Color.GREEN;
+	static Color valueColor = Color.WHITE;
+	static Color plateauedColor = Color.YELLOW;
 
 	static SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
 	static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss a");
