@@ -663,6 +663,7 @@ public class InputPage extends JPanel implements ActionListener{
             	}
 
             	results.setPage(currentBeer);
+            	results.updatePage();
 				results.saveNewBeer();
 				pages.show(container, "Results");
 			}

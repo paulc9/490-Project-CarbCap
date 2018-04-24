@@ -53,11 +53,11 @@ public class Util{
     public static Boolean updateCheck(LocalDateTime lastUpdate, LocalDateTime now){
 
         /*
-            Used for updating on new day after set time specified - Ex. update if
+            Used for updating once on new day after set time specified - Ex. update if
             after 6:00 AM on a new day after last update.
         */
-/*
-        int hour = 6;
+
+        int hour = 0;
         int min = 0;
         int sec = 0;
 
@@ -65,12 +65,12 @@ public class Util{
             return true;
 
         return false;
-*/
+
         /*
             Used for updating when specified time difference has passed - Ex. update if
             10 seconds have passed since last update.
         */
-
+/*
         Duration duration = Duration.between(lastUpdate, now);
         int hourDiff = 24;
         int minDiff = 0;
@@ -81,6 +81,7 @@ public class Util{
             return true;
 
         return false;
+*/
     }
 
     public static Beer update(Beer beer, SensorData sensor, int sensorIndex, LocalDateTime updateTime){
