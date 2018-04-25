@@ -36,7 +36,7 @@ import java.util.ArrayList;
 public class CarbCap extends JFrame implements Serializable{
 
 	CardLayout pages;
-	static Font titleFont, labelFont, font, infoFont, errorFont;
+	static Font titleFont, labelFont, font, infoFont, errorFont, dialogTitleFont, dialogBodyFont;
 	static Border border, raised, lowered, padding;
 	static Dimension space, boxSpace, edgeSpace, buttonSize;
 	static int width, height;								// width and height of JFrame window
@@ -91,6 +91,8 @@ public class CarbCap extends JFrame implements Serializable{
 		font = new Font("Helvetica", Font.PLAIN, 17);
 		infoFont = new Font("Helvetica", Font.PLAIN, 16);
 		errorFont = new Font("Helvetica", Font.BOLD, 18);
+		dialogTitleFont = new Font("Helvetica", Font.BOLD, 16);
+		dialogBodyFont = new Font("Helvetica", Font.BOLD, 14);
 
 		getContentPane().setBackground(Color.gray);
 

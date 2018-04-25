@@ -342,7 +342,8 @@ public class OptionsPage extends JPanel implements ActionListener{
 			final ImageIcon BeerIcon = new ImageIcon("images/Beer Icon.png");
         	int n = JOptionPane.showConfirmDialog(
                 this,
-                "Are you sure you want to delete preset beer \"" + presetBeers.beerArray.get(index).getType() + "\" with desired CO2 level " + presetBeers.beerArray.get(index).getDesiredVolume() + "?",
+                "<html><font size=\"4\">Are you sure you want to delete preset beer \"" + presetBeers.beerArray.get(index).getType() +
+                	"\" with desired CO2 level " + presetBeers.beerArray.get(index).getDesiredVolume() + "?</font></html>",
                 "Delete Confirmation",
                 JOptionPane.YES_NO_OPTION, 2,
                 BeerIcon);
@@ -373,9 +374,13 @@ public class OptionsPage extends JPanel implements ActionListener{
 		volumeIn = new JTextField(15);
 		imageIn = new JTextField(15);
 
-		//typeIn.setMaximumSize(typeIn.getPreferredSize());
-		//volumeIn.setMaximumSize(volumeIn.getPreferredSize());
-		//imageIn.setMaximumSize(imageIn.getPreferredSize());
+		JLabel type = new JLabel("Beer type name  ");
+		JLabel vol = new JLabel("Desired CO2 volume  ");
+		JLabel image = new JLabel("Beer image  ");
+
+		type.setFont(CarbCap.dialogBodyFont);
+		vol.setFont(CarbCap.dialogBodyFont);
+		image.setFont(CarbCap.dialogBodyFont);
 
 		imageChoose.setPreferredSize(new Dimension(120, imageIn.getPreferredSize().height));
 
@@ -408,19 +413,19 @@ public class OptionsPage extends JPanel implements ActionListener{
 		c.gridx = 0;
 		c.gridy = 0;
 
-		ret.add(new JLabel("Beer type name  "), c);
+		ret.add(type, c);
 		c.gridx++;
 		ret.add(typeIn, c);
 
 		c.gridx = 0;
 		c.gridy++;
-		ret.add(new JLabel("Desired CO2 volume  "), c);
+		ret.add(vol, c);
 		c.gridx++;
 		ret.add(volumeIn, c);
 
 		c.gridx = 0;
 		c.gridy++;
-		ret.add(new JLabel("Beer image  "), c);
+		ret.add(image, c);
 		c.gridx++;
 		ret.add(imageIn, c);
 		c.gridx = 4;

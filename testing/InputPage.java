@@ -634,12 +634,12 @@ public class InputPage extends JPanel implements ActionListener{
             img.setImage(img.getImage().getScaledInstance(-1, 200, Image.SCALE_SMOOTH));
 			int n = JOptionPane.showConfirmDialog(
 				InputPage.this,
-				"<html>Is this the beer you want to track?<br>" +
-					"- Beer name: " + currentBeer.getName() + "<br>" +
-					"- Beer ID: " + currentBeer.getBeerId() + "<br>" +
-					"- Beer type: " + currentBeer.getType() + "<br>" +
-					"- Final CO2 volume: " + currentBeer.getDesiredVolume() + "<br>" +
-					"- Bottle date: " + currentBeer.getBottleDateString() + "</html>",
+				"<html><font size=\"4\">Is this the beer you want to track?<br/>" +
+					" -- Beer name: " + currentBeer.getName() + "<br/>" +
+					" -- Beer ID: " + currentBeer.getBeerId() + "<br/>" +
+					" -- Beer type: " + currentBeer.getType() + "<br/>" +
+					" -- Final CO2 volume: " + currentBeer.getDesiredVolume() + "<br/>" +
+					" -- Bottle date: " + currentBeer.getBottleDateString() + "</font></html>",
 				"Beer Confirmation",
 				JOptionPane.YES_NO_OPTION, 2,
 				img);

@@ -53,10 +53,9 @@ public class GUIResults extends JPanel implements ActionListener{
     JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
     // Data value labels
     JLabel valName, valCurrentPSI, valReadyDate, valManualPSI, valBeerType, valBottleDate, valCurrentVol, valDesiredVol, valVolPerDay;
-    JButton deleteButton, enterButton, backButton, editButton, simulateButton;
-    JTextField nameIn, typeIn, imageIn;
+    JButton deleteButton, manualButton, backButton, editButton, simulateButton;
+    JTextField nameIn, typeIn, psiIn, tempIn, imageIn;
     ImageIcon graphImg;
-    JTextField psiInput;
     TrackingPage tracking;
     CardLayout pages;
     Box buttonContainer;
@@ -269,21 +268,13 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
     public void makeButtonBox(){
-    	labelManualPSI = new JLabel("Manual PSI Input:  ", SwingConstants.CENTER);
-    	labelManualPSI.setFont(CarbCap.font);
-    	valManualPSI.setFont(CarbCap.font);
-        valManualPSI.setForeground(Color.BLACK);    	
-
-    	psiInput = new JTextField(10);
-        psiInput.setMaximumSize( psiInput.getPreferredSize() );
-
         deleteButton = new JButton("Delete Beer");
         deleteButton.setToolTipText("Delete Current Beer Data");
         deleteButton.addActionListener(this);
 
-        enterButton = new JButton("Confirm");
-        enterButton.setToolTipText("Enter Current PSI (assume temperature is at 50 deg F)");
-        enterButton.addActionListener(this);
+        manualButton = new JButton("Manual volume input");
+        manualButton.setToolTipText("Type in pressure and temperature to input volume");
+        manualButton.addActionListener(this);
 
         backButton = new JButton("Back");
         backButton.setToolTipText("Go back to tracking beers page");
@@ -303,10 +294,7 @@ public class GUIResults extends JPanel implements ActionListener{
         buttonContainer.add(Box.createRigidArea(CarbCap.edgeSpace));
         buttonContainer.add(backButton);
         buttonContainer.add(Box.createHorizontalGlue());
-        buttonContainer.add(labelManualPSI);
-        buttonContainer.add(psiInput);
-        buttonContainer.add(Box.createRigidArea(CarbCap.space));
-        buttonContainer.add(enterButton);
+        buttonContainer.add(manualButton);
         buttonContainer.add(Box.createHorizontalGlue());
         buttonContainer.add(editButton);
         buttonContainer.add(Box.createHorizontalGlue());
@@ -341,8 +329,6 @@ public class GUIResults extends JPanel implements ActionListener{
         valBeerType.setText(currentBeer.getType());
         valBottleDate.setText(currentBeer.getBottleDateString());
         dateCounter = Calendar.getInstance();
-
-        psiInput.setText("");
 
         //disable simulator for sensor beers
         int id = currentBeer.getBeerId();
@@ -390,25 +376,27 @@ public class GUIResults extends JPanel implements ActionListener{
                 pages.show(container, "Tracking");
             }
         }
-        else if ((JButton) action == enterButton){
-        	if (psiInput.getText().isEmpty())
-        		JOptionPane.showMessageDialog(this, "Please enter PSI.");
-        	else{
+        else if ((JButton) action == manualButton){
+        	int result = JOptionPane.showConfirmDialog(null, makeInputPanel(currentBeer), "Manual input", JOptionPane.OK_CANCEL_OPTION, 2, new ImageIcon("images/Beer Icon.png"));
+        	if (result == JOptionPane.OK_OPTION){
 	            try {
-	                currentBeer.setCurrentTracking(Double.parseDouble(psiInput.getText()));
+	            	Double psi = Double.parseDouble(psiIn.getText());
+	            	Double temp = Double.parseDouble(tempIn.getText());
+
+	                currentBeer.setCurrentTracking(psi, temp);
 	                currentBeer.adjustAvgVolRate();
 	                currentBeer.adjustReadyDate();
-	                //currentBeer.saveCurrentBeerStateToFile();
 	                currentBeer = Util.notifyCheck(currentBeer);
+
 	                updatePage();
 	                saveUpdatedBeer();
 	            } catch(NumberFormatException exx) {
-	                JOptionPane.showMessageDialog(this, "Input error. Please enter a number for PSI"); 
+	                JOptionPane.showMessageDialog(this, "Input error. Please enter decimal or non-decimal numbers for pressure and temperature."); 
 	            }
         	}
         }
         else if ((JButton) action == editButton){
-        	int result = JOptionPane.showConfirmDialog(null, makeDialogPanel(), "Edit beer", JOptionPane.OK_CANCEL_OPTION, 2, new ImageIcon("images/Beer Icon.png"));
+        	int result = JOptionPane.showConfirmDialog(null, makeEditPanel(currentBeer), "Edit beer", JOptionPane.OK_CANCEL_OPTION, 2, new ImageIcon("images/Beer Icon.png"));
             if(result == JOptionPane.OK_OPTION){
                 if(!currentBeer.getName().equals(nameIn.getText())){
                     currentBeer.setName(nameIn.getText());
@@ -466,7 +454,7 @@ public class GUIResults extends JPanel implements ActionListener{
 		done = false;
 
     	deleteButton.setEnabled(false);
-    	enterButton.setEnabled(false);
+    	manualButton.setEnabled(false);
     	editButton.setEnabled(false);
     	backButton.setEnabled(false);
     	simulateButton.setText("Stop simulation");
@@ -566,7 +554,7 @@ public class GUIResults extends JPanel implements ActionListener{
 
     	simStatusLabel.setText(message);
    	    deleteButton.setEnabled(true);
-    	enterButton.setEnabled(true);
+    	manualButton.setEnabled(true);
     	editButton.setEnabled(true);
     	backButton.setEnabled(true);
     	simOkButton.setText("Close this window");
@@ -583,15 +571,15 @@ public class GUIResults extends JPanel implements ActionListener{
         valVolPerDay.setText("" + currentBeer.getAvgVolRateString());
         if(currentBeer.warningCheck() == true){
             valReadyDate.setForeground(CarbCap.errorColor);
-            valReadyDate.setText("<html><b>Burst danger!</b><html>");
+            valReadyDate.setText("<html><b>Burst danger!</b></html>");
         }
         else if(currentBeer.readyCheck() == true){
             valReadyDate.setForeground(CarbCap.readyColor);
-            valReadyDate.setText("<html><b>Now ready!</b><html>");
+            valReadyDate.setText("<html><b>Now ready!</b></html>");
         }
         else if(currentBeer.getAvgVolRate() < 0.005 && currentBeer.rateExistsCheck() == true){
             valReadyDate.setForeground(CarbCap.plateauedColor);
-        	valReadyDate.setText("<html><b>Rate plateaued</b><html>");
+        	valReadyDate.setText("<html><b>Rate plateaued</b></html>");
         }
         else{
             valReadyDate.setForeground(CarbCap.valueColor);
@@ -600,7 +588,50 @@ public class GUIResults extends JPanel implements ActionListener{
         drawGraph();
     }
 
-    public JPanel makeDialogPanel(){
+    public JPanel makeInputPanel(Beer beer){
+    	JPanel ret = new JPanel();
+        ret.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        psiIn = new JTextField(10);
+        tempIn = new JTextField(10);
+
+        JLabel header = new JLabel("<html><div style='text-align: center;'>Type in the beer's pressure and <br/>temperature for " + beer.getTrackingDateString() + ".</html>", SwingConstants.RIGHT);
+        JLabel psi = new JLabel("Pressure (PSI)");
+        JLabel temp = new JLabel("Temperature (\u00B0F)");
+        
+        header.setFont(CarbCap.dialogTitleFont);
+        psi.setFont(CarbCap.dialogBodyFont);
+        temp.setFont(CarbCap.dialogBodyFont);
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        c.insets = new Insets(0, 0, 10, 10);
+
+        ret.add(header, c);
+
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridwidth = 1;
+        c.gridy++;
+        ret.add(psi, c);
+
+        c.gridy++;
+        ret.add(temp, c);
+
+        c.gridy = 1;
+        c.gridx++;
+        c.insets = new Insets(0, 10, 0, 10);
+        ret.add(psiIn, c);
+
+        c.gridy++;
+        ret.add(tempIn, c);
+
+        return ret;
+    }
+
+    public JPanel makeEditPanel(Beer beer){
         JPanel ret = new JPanel();
         ret.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -611,15 +642,23 @@ public class GUIResults extends JPanel implements ActionListener{
         typeIn = new JTextField(15);
         imageIn = new JTextField(15);
 
+        JLabel name = new JLabel("Beer name  ");
+        JLabel type = new JLabel("Beer type  ");
+        JLabel image = new JLabel("Beer image  ");
+
+        name.setFont(CarbCap.dialogBodyFont);
+        type.setFont(CarbCap.dialogBodyFont);
+        image.setFont(CarbCap.dialogBodyFont);
+
         //typeIn.setMaximumSize(typeIn.getPreferredSize());
         //volumeIn.setMaximumSize(volumeIn.getPreferredSize());
         //imageIn.setMaximumSize(imageIn.getPreferredSize());
 
         imageChoose.setPreferredSize(new Dimension(120, imageIn.getPreferredSize().height));
 
-        nameIn.setText(currentBeer.getName());
-        typeIn.setText(currentBeer.getType());
-        imageIn.setText(currentBeer.getBeerImage());
+        nameIn.setText(beer.getName());
+        typeIn.setText(beer.getType());
+        imageIn.setText(beer.getBeerImage());
 
         imageChoose.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
@@ -644,19 +683,19 @@ public class GUIResults extends JPanel implements ActionListener{
         c.gridx = 0;
         c.gridy = 0;
 
-        ret.add(new JLabel("Beer name  "), c);
+        ret.add(name, c);
         c.gridx++;
         ret.add(nameIn, c);
 
         c.gridx = 0;
         c.gridy++;
-        ret.add(new JLabel("Beer type  "), c);
+        ret.add(type, c);
         c.gridx++;
         ret.add(typeIn, c);
 
         c.gridx = 0;
         c.gridy++;
-        ret.add(new JLabel("Beer image  "), c);
+        ret.add(image, c);
         c.gridx++;
         ret.add(imageIn, c);
         c.gridx = 4;
