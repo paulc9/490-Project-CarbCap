@@ -238,12 +238,12 @@ public class CarbCap extends JFrame implements Serializable{
 		c.createAndShowGUI();
 		/**/
 
-		/* Show splash page *//*
+		/* Show splash page */
 		pages.show(container, "Splash");
 		splash.changePage();
 		/* */
 
-		/* Skip splash page */
+		/* Skip splash page *//*
 		pages.show(container, "Tracking");
 		/* */
 
