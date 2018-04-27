@@ -52,8 +52,8 @@ public class OptionsPage extends JPanel implements ActionListener{
 		this.add(notifyPanel);
 		this.add(Box.createVerticalGlue());
 		this.add(presetPanel);
-		this.add(Box.createVerticalGlue());
-		this.add(creditsPanel);
+		//this.add(Box.createVerticalGlue());
+		//this.add(creditsPanel);
 	}
 
 	public void makeNotifyPanel(){
