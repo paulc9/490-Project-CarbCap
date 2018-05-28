@@ -464,7 +464,7 @@ public class GUIResults extends JPanel implements ActionListener{
 
     	makeSimFrame();
 
-    	timer = new javax.swing.Timer(5000, null);
+    	timer = new javax.swing.Timer(2500, null);
     	timer.setRepeats(true);
     	timer.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent evt) {
