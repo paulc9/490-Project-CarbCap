@@ -31,6 +31,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import org.jfree.chart.StandardChartTheme;
 //Hey!
 
 public class CarbCap extends JFrame implements Serializable{
@@ -51,6 +52,7 @@ public class CarbCap extends JFrame implements Serializable{
 	static Color readyColor = Color.GREEN;
 	static Color valueColor = Color.WHITE;
 	static Color plateauedColor = Color.YELLOW;
+	static StandardChartTheme chartTheme;
 
 	static SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
 	static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss a");
@@ -89,7 +91,7 @@ public class CarbCap extends JFrame implements Serializable{
 		titleFont = new Font("Helvetica", Font.BOLD, 26);
 		labelFont = new Font("Helvetica", Font.PLAIN, 22);
 		font = new Font("Helvetica", Font.PLAIN, 17);
-		infoFont = new Font("Helvetica", Font.PLAIN, 16);
+		infoFont = new Font("Helvetica", Font.BOLD, 16);
 		errorFont = new Font("Helvetica", Font.BOLD, 18);
 		dialogTitleFont = new Font("Helvetica", Font.BOLD, 16);
 		dialogBodyFont = new Font("Helvetica", Font.BOLD, 14);
@@ -100,6 +102,15 @@ public class CarbCap extends JFrame implements Serializable{
 		boxSpace = new Dimension(0, 30);
 		edgeSpace = new Dimension(40, 0);
 		buttonSize = new Dimension(100, 40);
+
+		chartTheme = (StandardChartTheme)StandardChartTheme.createJFreeTheme();
+		chartTheme.setChartBackgroundPaint(altBackground);
+		chartTheme.setAxisLabelPaint(text);
+		chartTheme.setTitlePaint(text);
+		chartTheme.setTickLabelPaint(text);
+		chartTheme.setPlotOutlinePaint(background);
+		chartTheme.setCrosshairPaint(Color.RED);
+		chartTheme.setRangeGridlinePaint(Color.BLACK);
 	}
 
 	// setting up default colors for component backgrounds, text, etc.

@@ -43,7 +43,7 @@ import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
 import org.jfree.util.ShapeUtilities;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
-
+import org.jfree.chart.StandardChartTheme;
 
 public class GUIResults extends JPanel implements ActionListener{
 
@@ -724,6 +724,8 @@ public class GUIResults extends JPanel implements ActionListener{
             createDataset(),
             PlotOrientation.VERTICAL,
             true,true,false);
+
+        CarbCap.chartTheme.apply(lineChart);
         //NumberAxis num = (NumberAxis)lineChart.getCategoryPlot().getRangeAxis();
         CategoryPlot chart = lineChart.getCategoryPlot();
         LineAndShapeRenderer renderer = (LineAndShapeRenderer) chart.getRenderer();
@@ -731,6 +733,8 @@ public class GUIResults extends JPanel implements ActionListener{
         renderer.setSeriesPaint(0, Color.BLUE);
         renderer.setSeriesStroke(0, new BasicStroke(2.5f));
         renderer.setSeriesShapesVisible(0, true);
+
+        //lineChart.getPlot().setBackgroundPaint(CarbCap.background);
 
         double desiredVol = currentBeer.getDesiredVolume();
         ValueMarker danger = createMarker(CarbCap.DANGER_LEVEL, Color.RED, "Danger level for bursting!");
