@@ -42,23 +42,25 @@ import javax.swing.JPanel;
 public class SplashPage extends JPanel{
 
     JPanel mainPanel, panel1, container;
-    JLabel letsBrewLable, carbCapLable, img;
+    JLabel subtitleLabel, titleLabel, img;
     final ImageIcon largeBeer;
-    Box box1, box2, box3;
+    Box box1, box2, box3, box4;
     TrackingPage tracking;
     CardLayout pages;
-
+    JProgressBar progress;
+    JButton next;
 
 
 
 
     public SplashPage() {
         mainPanel = new JPanel();
-        carbCapLable = new JLabel("CarbCap", SwingConstants.CENTER);
-        letsBrewLable = new JLabel("Let's Get Brewin'", SwingConstants.CENTER);
+        titleLabel = new JLabel("CarbCap", SwingConstants.CENTER);
+        subtitleLabel = new JLabel("Let's Get Brewin'", SwingConstants.CENTER);
         img = new JLabel();
         largeBeer = new ImageIcon("images/splash.gif");
         box1 = box2 = box3 = Box.createVerticalBox();
+        box4 = Box.createHorizontalBox();
 
         this.setLayout(new BorderLayout());
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
@@ -68,18 +70,33 @@ public class SplashPage extends JPanel{
 
         //mainPanel.add(Box.createVerticalGlue());
 
-        carbCapLable.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        carbCapLable.setFont(CarbCap.titleFont);
-        letsBrewLable.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        letsBrewLable.setFont(CarbCap.labelFont);
+        titleLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        titleLabel.setFont(CarbCap.titleFont);
+        subtitleLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        subtitleLabel.setFont(CarbCap.labelFont);
         img.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
         largeBeer.setImage(largeBeer.getImage().getScaledInstance(-1, CarbCap.height * 4/5, Image.SCALE_DEFAULT));
         img.setIcon(largeBeer);
         box1.add(img);
-        box2.add(carbCapLable);
-        box3.add(letsBrewLable);
+        box2.add(titleLabel);
+        box3.add(subtitleLabel);
 
+        progress = new JProgressBar(0, 100);
+        box4.add(progress);
+        progress.setIndeterminate(true);
+        progress.setString("Loading...");
+        progress.setStringPainted(true);
+
+        next = new JButton("Loading...");
+        box4.add(next);
+        next.setEnabled(false);
+        next.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+			    pages.show(container, "Tracking");
+			}
+		});
 
         //This centers the panel on all sizes of frame
         GridBagLayout gridbag = new GridBagLayout();
@@ -93,6 +110,7 @@ public class SplashPage extends JPanel{
         mainPanel.add(box1);
         mainPanel.add(box2);
         mainPanel.add(box3);
+        box3.add(box4);
 
         this.add(mainPanel); 
     }
@@ -112,6 +130,14 @@ public class SplashPage extends JPanel{
         Timer timer = new Timer(6000, taskPerformer);
         timer.setRepeats(false);
         timer.start();
+    }
+
+    public void finished(){
+    	progress.setIndeterminate(false);
+    	progress.setValue(100);
+    	progress.setString("Loading done!");
+    	next.setText("Click to continue");
+    	next.setEnabled(true);
     }
 
     public static void main (String[] args){

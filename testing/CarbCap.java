@@ -86,8 +86,6 @@ public class CarbCap extends JFrame implements Serializable{
 			makeAndShowSplash();
 
 		(new LoadThread()).execute();
-
-		this.setVisible(true);
 	}
 
 	// setting up default colors for component backgrounds, text, etc.
@@ -241,7 +239,8 @@ public class CarbCap extends JFrame implements Serializable{
 		input.linkPages(tracking, results, pages, container);
 		results.linkPages(tracking, pages, container);
 		tracking.linkPages(input, results, pages, container);
-		//splash.linkPages(tracking, pages, container);
+		if(show_splash)
+			splash.linkPages(tracking, pages, container);
 
 		container.add(input, "Input");
 		container.add(results, "Results");
@@ -286,7 +285,10 @@ public class CarbCap extends JFrame implements Serializable{
 		@Override
 		protected void done(){
 			try{
-				pages.show(container, "Tracking");
+				if(show_splash)
+					splash.finished();
+				else
+					finished();
 			} catch (Exception e){
 
 			}
@@ -305,6 +307,11 @@ public class CarbCap extends JFrame implements Serializable{
 			tracking.loadTrackedBeers();
 		}
 		tracking.displayTrackedBeers();
+	}
+
+	public void finished(){
+		pages.show(container, "Tracking");
+		this.setVisible(true);
 	}
 
 	public static void main(String[] args){
