@@ -341,10 +341,8 @@ public class TrackingPage extends JPanel implements ActionListener{
         	estimatedVal.setForeground(CarbCap.plateauedColor);
         	estimatedVal.setText("<html><b>Rate plateaued</b><html>");
         }
-        else{
+        else
         	estimatedVal.setForeground(CarbCap.valueColor);
-        	estimatedVal.setText(beer.getReadyDateString());
-        }
 
         typeLabel.setFont(CarbCap.font);
         currentLabel.setFont(CarbCap.font);

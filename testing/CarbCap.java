@@ -328,8 +328,13 @@ public class CarbCap extends JFrame implements Serializable{
 // door icon
 // https://www.flaticon.com/free-icon/open-exit-door_59801
 
-// Relative layout code written by Rob Camick
+// Rob Camick libraries
+//
+// Relative layout:
 // https://tips4java.wordpress.com/2008/11/02/relative-layout/
+//
+// Scrollable panel:
+// 
 
 // beer bottle pic for simulator
 // https://cliparts.zone/clipart/1785546

@@ -50,9 +50,13 @@ public class GUIResults extends JPanel implements ActionListener{
     JPanel mainContainer, topContainer, pageImagePanel, infoPanel, graphPanel, container, imgPanel;
     ChartPanel chartPanel;
     // Data name labels
-    JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph, labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, labelDesiredVol, labelVolPerDay;
+    JLabel labelName, labelCurrentPSI, labelReadyDate, labelGraph,
+        labelManualPSI, labelBeerType, labelBottleDate, labelCurrentVol, 
+        labelDesiredVol, labelVolPerDay, labelTemp;
     // Data value labels
-    JLabel valName, valCurrentPSI, valReadyDate, valManualPSI, valBeerType, valBottleDate, valCurrentVol, valDesiredVol, valVolPerDay;
+    JLabel valName, valCurrentPSI, valReadyDate, valManualPSI, 
+        valBeerType, valBottleDate, valCurrentVol, valDesiredVol, 
+        valVolPerDay, valTemp;
     JButton deleteButton, manualButton, backButton, editButton, simulateButton;
     JTextField nameIn, typeIn, psiIn, tempIn, imageIn;
     ImageIcon graphImg;
@@ -92,10 +96,18 @@ public class GUIResults extends JPanel implements ActionListener{
         buttonContainer = Box.createHorizontalBox();
 
         this.setLayout(new BorderLayout());         // Needed to make graph display properly
-        mainContainer.setLayout(new GridBagLayout());
-        topContainer.setLayout(new GridBagLayout());
+
+        RelativeLayout rlVert = new RelativeLayout(RelativeLayout.Y_AXIS);
+        rlVert.setFill(true);
+        rlVert.setGap(10);
+        mainContainer.setLayout(rlVert);
+
+        RelativeLayout rlHoriz = new RelativeLayout(RelativeLayout.X_AXIS);
+        rlHoriz.setFill(true);
+        topContainer.setLayout(rlHoriz);
+
         pageImagePanel.setLayout(new BoxLayout(pageImagePanel, BoxLayout.PAGE_AXIS));
-        infoPanel.setLayout(new GridBagLayout());
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
         imgPanel.setLayout(new BorderLayout());
         graphPanel.setLayout(new BorderLayout());
 
@@ -134,41 +146,12 @@ public class GUIResults extends JPanel implements ActionListener{
         makeInfoPanel();
         makeButtonBox();
 
-        GridBagConstraints inner = new GridBagConstraints();
-        inner.gridx = 0;
-        inner.gridy = 0;
-        inner.weightx = 0;
-        inner.weighty = 1;
-        inner.fill = GridBagConstraints.BOTH;
-        topContainer.add(pageImagePanel, inner);
-
-        inner.gridx++;
-        inner.weightx = 0;
-        topContainer.add(infoPanel, inner);
-
-        inner.gridx++;
-        inner.weightx = 1;
-        topContainer.add(imgPanel, inner);
-
-        GridBagConstraints c = new GridBagConstraints();
-
-        c.gridy = 0;
-        c.gridx = 0;
-        c.weightx = 1;
-        c.weighty = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        mainContainer.add(topContainer, c);
-
-        c.gridy++;
-        c.insets = new Insets(10, 0, 0, 0);
-        c.fill = GridBagConstraints.BOTH;
-        c.weighty = 1;
-        mainContainer.add(graphPanel, c);
-
-        c.gridy++;
-        c.weighty = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        mainContainer.add(buttonContainer, c);
+        topContainer.add(pageImagePanel, new Float(10));
+        topContainer.add(infoPanel, new Float(60));
+        topContainer.add(imgPanel, new Float(20));
+        mainContainer.add(topContainer, new Float(35));
+        mainContainer.add(graphPanel, new Float(60));
+        mainContainer.add(buttonContainer, new Float(5));
 
         this.add(mainContainer);
     }
@@ -191,6 +174,18 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
     public void makeInfoPanel(){
+        JScrollPane scroll = new JScrollPane();
+        ScrollablePanel insideScroll = new ScrollablePanel();
+        insideScroll.setLayout(new GridBagLayout());
+        insideScroll.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);
+
+        scroll.setViewportView(insideScroll);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        scroll.setPreferredSize(new Dimension(this.getWidth(), (int)(CarbCap.height * 0.3)));
+
+        infoPanel.add(scroll);
+
     	labelName = new JLabel("Name", SwingConstants.CENTER);
         labelCurrentPSI = new JLabel("Current PSI", SwingConstants.CENTER);
         labelReadyDate = new JLabel("Estimated Ready Date", SwingConstants.CENTER);
@@ -199,6 +194,7 @@ public class GUIResults extends JPanel implements ActionListener{
         labelCurrentVol = new JLabel("Current CO2 Volume", SwingConstants.CENTER);
         labelVolPerDay = new JLabel("Average CO2 Volume Rate (past 4 days)", SwingConstants.CENTER);
         labelDesiredVol = new JLabel("Desired CO2 Volume", SwingConstants.CENTER);
+        labelTemp = new JLabel("Temperature (\u00B0F)", SwingConstants.CENTER);
 
         valName = new JLabel();
         valCurrentPSI = new JLabel();
@@ -209,6 +205,7 @@ public class GUIResults extends JPanel implements ActionListener{
         valCurrentVol = new JLabel();
         valDesiredVol = new JLabel();
         valVolPerDay = new JLabel();
+        valTemp = new JLabel();
 
         ArrayList<JLabel> labels = new ArrayList<JLabel>();
         ArrayList<JLabel> vals = new ArrayList<JLabel>();
@@ -221,6 +218,7 @@ public class GUIResults extends JPanel implements ActionListener{
         labels.add(labelDesiredVol);
         labels.add(labelVolPerDay);
         labels.add(labelCurrentPSI);
+        labels.add(labelTemp);
 
         vals.add(valName);
         vals.add(valBeerType);
@@ -230,6 +228,7 @@ public class GUIResults extends JPanel implements ActionListener{
         vals.add(valDesiredVol);
         vals.add(valVolPerDay);
         vals.add(valCurrentPSI);
+        vals.add(valTemp);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -258,9 +257,9 @@ public class GUIResults extends JPanel implements ActionListener{
                 val.setBackground(darkRow);
             }
 
-            infoPanel.add(label, c);
+            insideScroll.add(label, c);
             c.gridx++;
-            infoPanel.add(val, c);
+            insideScroll.add(val, c);
 
             c.gridx = 0;
             c.gridy++;
@@ -311,14 +310,15 @@ public class GUIResults extends JPanel implements ActionListener{
     }
 
     public void setPage(Beer beer){
+
     	//labelGraph = new JLabel("Graph:", SwingConstants.CENTER);
     	//labelGraph.setFont(CarbCap.font);
+        
         imgPanel.removeAll();
         currentBeer = beer;
-
         JLabel showImg = Util.showBeerImage(currentBeer, -1, imgPanel.getHeight() * 9 / 10);
         imgPanel.add(showImg);
-
+        
         valReadyDate.setForeground(CarbCap.valueColor);
         valName.setText(currentBeer.getName());
         valCurrentPSI.setText("" + currentBeer.getCurrentPSI());
@@ -326,9 +326,11 @@ public class GUIResults extends JPanel implements ActionListener{
         valVolPerDay.setText("" + currentBeer.getAvgVolRateString());
         valDesiredVol.setText("" + currentBeer.getDesiredVolume());
         valReadyDate.setText("" + currentBeer.getReadyDateString() );
+        valTemp.setText("" + currentBeer.getCurrentTemp());
         valBeerType.setText(currentBeer.getType());
         valBottleDate.setText(currentBeer.getBottleDateString());
         dateCounter = Calendar.getInstance();
+
 
         //disable simulator for sensor beers
         int id = currentBeer.getBeerId();
@@ -336,7 +338,7 @@ public class GUIResults extends JPanel implements ActionListener{
             simulateButton.setEnabled(false);
         else
             simulateButton.setEnabled(true);
-
+  
         mainContainer.revalidate();
         mainContainer.repaint();
         drawGraph();
@@ -569,6 +571,7 @@ public class GUIResults extends JPanel implements ActionListener{
         valCurrentPSI.setText("" + currentBeer.getCurrentPSI());
         valCurrentVol.setText("" + CarbCap.df.format(currentBeer.getCurrentVolume()));
         valVolPerDay.setText("" + currentBeer.getAvgVolRateString());
+        valTemp.setText("" + currentBeer.getCurrentTemp());
         if(currentBeer.warningCheck() == true){
             valReadyDate.setForeground(CarbCap.errorColor);
             valReadyDate.setText("<html><b>Burst danger!</b></html>");
