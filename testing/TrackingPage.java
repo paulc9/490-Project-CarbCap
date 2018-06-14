@@ -270,7 +270,9 @@ public class TrackingPage extends JPanel implements ActionListener{
 		JPanel titleBox = new JPanel();
 		JPanel middleBox = new JPanel();
 
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		RelativeLayout rlMain = new RelativeLayout(RelativeLayout.Y_AXIS);
+		rlMain.setFill(true);
+		panel.setLayout(rlMain);
 		panel.setMinimumSize(new Dimension(scrollPane.getViewport().getSize().width, 200));
 		panel.setMaximumSize(new Dimension(1, 210));
 		panel.setPreferredSize(new Dimension(1, 210));
@@ -292,11 +294,11 @@ public class TrackingPage extends JPanel implements ActionListener{
 		c.gridx = 0;
 		c.gridy = 0;
 		titleBox.add(title, c);
-		panel.add(titleBox);
+		panel.add(titleBox, new Float(19));
 
 		middleBox.setBackground(CarbCap.altBackground);
 		middleBox.setBorder(CarbCap.padding);
-		panel.add(middleBox);
+		panel.add(middleBox, new Float(71));
 
 		RelativeLayout rl = new RelativeLayout(RelativeLayout.X_AXIS);
 		middleBox.setLayout(rl);
@@ -452,7 +454,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		progress.setValue((int)(beer.getCurrentVolume() * 10000));
 		progress.setStringPainted(true);
 
-		panel.add(progress);
+		panel.add(progress, new Float(10));
 		
 		insideScrollPane.add(panel, gbc);
 		insideScrollPane.revalidate();
