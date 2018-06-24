@@ -469,4 +469,51 @@ public class Util{
             return new ArrayList<Beer>();
         }
     }
+
+    // Used to load images in separate thread and allow GUI navigation in the meantime
+    // May want to add width and height fields in the future
+    public static class LoadImage extends SwingWorker<JLabel, Object>{
+
+        private Beer beer;
+        private JPanel imgPanel;
+        private Boolean smoothImg;
+        private int width, height;
+
+        public LoadImage(Beer newBeer, Boolean smooth, int widthIn, int heightIn, JPanel panel){
+            beer = newBeer;
+            smoothImg = smooth;
+            width = widthIn;
+            height = heightIn;
+            imgPanel = panel;
+        }
+
+        public LoadImage(Beer newBeer, int widthIn, int heightIn, JPanel panel){
+            beer = newBeer;
+            smoothImg = false;
+            width = widthIn;
+            height = heightIn;
+            imgPanel = panel;
+        }
+
+        @Override
+        public JLabel doInBackground(){
+            JLabel showImg;
+            if(smoothImg)
+                showImg = Util.showBeerImage(beer, width, height);
+            else
+                showImg = Util.showBeerImage(beer, width, height, Image.SCALE_DEFAULT);
+            return showImg;
+        }
+
+        @Override
+        protected void done(){
+            try{
+                imgPanel.add(get());
+                imgPanel.revalidate();
+                imgPanel.repaint();
+            } catch (Exception e){
+
+            }
+        }
+    }
 }

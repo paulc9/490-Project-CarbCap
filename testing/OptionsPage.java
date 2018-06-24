@@ -11,7 +11,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class OptionsPage extends JPanel implements ActionListener{
 
-	JPanel notifyPanel, emailPanel, twitterPanel, presetPanel, creditsPanel;
+	JPanel notifyPanel, emailPanel, twitterPanel, presetPanel, creditsPanel, imagePanel;
 	JTabbedPane notifyTabPane;
 	JLabel showImg;
 	JTextField emailIn, twitterIn, presetVolume, typeIn, volumeIn, imageIn;
@@ -30,9 +30,17 @@ public class OptionsPage extends JPanel implements ActionListener{
 		presetPanel = new JPanel();
 		creditsPanel = new JPanel();
 
-		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		notifyPanel.setLayout(new GridLayout(1, 1));
-		presetPanel.setLayout(new GridBagLayout());
+		RelativeLayout rl = new RelativeLayout(RelativeLayout.Y_AXIS);
+		rl.setFill(true);
+		rl.setGap(10);
+		this.setLayout(rl);
+
+		notifyPanel.setLayout(rl);
+
+		RelativeLayout rlPreset = new RelativeLayout(RelativeLayout.X_AXIS);
+		rlPreset.setFill(true);
+		rlPreset.setGap(10);
+		presetPanel.setLayout(rlPreset);
 		creditsPanel.setLayout(new BoxLayout(creditsPanel, BoxLayout.Y_AXIS));
 
 		this.setBorder(CarbCap.padding);
@@ -49,9 +57,9 @@ public class OptionsPage extends JPanel implements ActionListener{
 		makePresetPanel();
 		makeCreditsPanel();
 
-		this.add(notifyPanel);
-		this.add(Box.createVerticalGlue());
-		this.add(presetPanel);
+		this.add(notifyPanel, new Float(50));
+		//this.add(Box.createVerticalGlue());
+		this.add(presetPanel, new Float(50));
 		//this.add(Box.createVerticalGlue());
 		//this.add(creditsPanel);
 	}
@@ -79,16 +87,17 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 	public JPanel createEmailPanel(){
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		RelativeLayout layout = new RelativeLayout(RelativeLayout.Y_AXIS);
+		layout.setFill(true);
+		panel.setLayout(layout);
 		panel.setBorder(CarbCap.padding);
 
-		JLabel emailLabel = new JLabel("Email");
+		JLabel emailLabel = new JLabel("Email address");
 
-		emailIn = new JTextField(15);
+		emailIn = new JTextField(20);
 		emailIn.setText(CarbCap.properties.getProperty("email"));
 
-		emailNotify = new JCheckBox("Enable");
+		emailNotify = new JCheckBox("Send email");
 		String notifyCheck = "";
 
 		notifyCheck = CarbCap.properties.getProperty("emailNotify");
@@ -97,33 +106,42 @@ public class OptionsPage extends JPanel implements ActionListener{
 		else
 			emailNotify.setSelected(false);
 
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1;
-		c.gridx = 0;
-		c.gridy = 0;
-		panel.add(emailNotify, c);
-		c.gridx++;
-		panel.add(emailLabel, c);
-		c.gridx++;
-		panel.add(emailIn, c);
+		JPanel inner1 = new JPanel();
+		RelativeLayout rl = new RelativeLayout(RelativeLayout.X_AXIS);
+		
+		inner1.setLayout(rl);
+		inner1.add(Box.createHorizontalStrut(5), new Float(10));
+		inner1.add(emailLabel, new Float(35));
+		inner1.add(emailIn, new Float(45));
+		inner1.add(Box.createHorizontalStrut(5), new Float(10));
+		panel.add(inner1, new Float(10));
+
+		JPanel inner2 = new JPanel();
+		inner2.setLayout(rl);
+		inner2.add(Box.createHorizontalStrut(5), new Float(45));
+		inner2.add(emailNotify, new Float(55));
+		panel.add(inner2, new Float(10));
+
+		panel.add(Box.createHorizontalStrut(5), new Float(10));
 
 		return panel;
 	}
 
 	public JPanel createTwitterPanel(){
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		RelativeLayout layout = new RelativeLayout(RelativeLayout.Y_AXIS);
+		layout.setFill(true);
+		panel.setLayout(layout);
 		panel.setBorder(CarbCap.padding);
 
 		JLabel twitterLabel = new JLabel("Twitter username");
 		JLabel symbol = new JLabel("@");
 
-		twitterIn = new JTextField(15);
+		twitterIn = new JTextField(20);
 		twitterIn.setText(CarbCap.properties.getProperty("twitterUsername"));
 
-		twitterDirectNotify = new JCheckBox("Enable Direct Msg");
-		twitterStatusNotify = new JCheckBox("Enable Status Notify");
+		twitterDirectNotify = new JCheckBox("Direct messaging");
+		twitterStatusNotify = new JCheckBox("Status notification");
 		String notifyCheck = "";
 
 		notifyCheck = CarbCap.properties.getProperty("twitterDirectNotify");
@@ -138,31 +156,35 @@ public class OptionsPage extends JPanel implements ActionListener{
 		else
 			twitterStatusNotify.setSelected(false);
 
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.3;
-		c.gridx = 0;
-		c.gridy = 0;
-		panel.add(twitterDirectNotify, c);
-		c.gridx++;
-		c.insets = new Insets(0, 20, 0, 20);
-		panel.add(twitterLabel, c);
-		c.gridx++;
-		c.insets = new Insets(0, 0, 0, 0);
-		c.anchor = GridBagConstraints.LINE_END;
-		panel.add(symbol, c);
-		c.anchor = GridBagConstraints.CENTER;
-		c.gridx++;
-		panel.add(twitterIn, c);
-		c.gridx = 0;
-		c.gridy = 1;
-		panel.add(twitterStatusNotify, c);
+		JPanel inner1 = new JPanel();
+		RelativeLayout rl = new RelativeLayout(RelativeLayout.X_AXIS);
+		inner1.setLayout(rl);
+		inner1.add(Box.createHorizontalStrut(5), new Float(10));
+		inner1.add(twitterLabel, new Float(31));
+		inner1.add(symbol, new Float(4));
+		inner1.add(twitterIn, new Float(45));
+		inner1.add(Box.createHorizontalStrut(5), new Float(10));
+		panel.add(inner1, new Float(10));
+
+		JPanel inner2 = new JPanel();
+		inner2.setLayout(rl);
+		inner2.add(Box.createHorizontalStrut(5), new Float(45));
+		inner2.add(twitterDirectNotify, new Float(55));
+		panel.add(inner2, new Float(10));
+
+		JPanel inner3 = new JPanel();
+		inner3.setLayout(rl);
+		inner3.add(Box.createHorizontalStrut(5), new Float(45));
+		inner3.add(twitterStatusNotify, new Float(55));
+		panel.add(inner3, new Float(10));
 
 		return panel;
 	}
 
 	public void makePresetPanel(){
-		presetBox = Box.createHorizontalBox();
-		imageBox = Box.createVerticalBox();
+		//presetBox = Box.createHorizontalBox();
+		//imageBox = Box.createVerticalBox();
+		imagePanel = new JPanel();
 		listBox = Box.createVerticalBox();
 		presetButtonsBox = Box.createVerticalBox();
 
@@ -183,7 +205,8 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 		beer = (Beer) presetList.getSelectedItem();
 		showImg = Util.showBeerImage(beer, 100, -1);
-		imageBox.add(showImg);
+		//(new Util.LoadImage(beer, 100, -1, imagePanel)).execute();
+		imagePanel.add(showImg);
 
 		if (beer != null)
 			presetVolume.setText("Volume: " + beer.getDesiredVolume());
@@ -193,18 +216,16 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 		presetList.addActionListener (new ActionListener () {
 			public void actionPerformed(ActionEvent e) {
-				imageBox.removeAll();
+				imagePanel.removeAll();
 
 				beer = (Beer) presetList.getSelectedItem();
-				showImg = Util.showBeerImage(beer, 100, -1);
+				(new Util.LoadImage(beer, 100, -1, imagePanel)).execute();
 				if (beer != null)
 			    	presetVolume.setText("Volume: " + beer.getDesiredVolume());
 			    else
 			    	presetVolume.setText("No preset beers");
 
-			    imageBox.add(showImg);
-			    imageBox.revalidate();
-			    imageBox.repaint();
+			    //imageBox.add(showImg);
 			    listBox.revalidate();
 				listBox.repaint();
 			}
@@ -226,14 +247,14 @@ public class OptionsPage extends JPanel implements ActionListener{
 		presetButtonsBox.add(delete);
 		//presetButtonsBox.add(test);
 
-		presetBox.add(imageBox);
-		presetBox.add(Box.createHorizontalGlue());
-		presetBox.add(listBox);
+		presetPanel.add(imagePanel, new Float(30));
+		//presetBox.add(Box.createHorizontalGlue());
+		presetPanel.add(listBox, new Float(20));
 		//presetBox.add(Box.createRigidArea(CarbCap.space));
-		presetBox.add(Box.createHorizontalGlue());
-		presetBox.add(presetButtonsBox);
+		//presetBox.add(Box.createHorizontalGlue());
+		presetPanel.add(presetButtonsBox, new Float(50));
 
-		presetPanel.add(presetBox);
+		//presetPanel.add(presetBox);
 	}
 
 	public void makeCreditsPanel(){

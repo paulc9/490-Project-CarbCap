@@ -147,8 +147,9 @@ public class GUIResults extends JPanel implements ActionListener{
         makeButtonBox();
 
         topContainer.add(pageImagePanel, new Float(10));
-        topContainer.add(infoPanel, new Float(60));
-        topContainer.add(imgPanel, new Float(20));
+        topContainer.add(infoPanel, new Float(55));
+        topContainer.add(imgPanel, new Float(25));
+
         mainContainer.add(topContainer, new Float(35));
         mainContainer.add(graphPanel, new Float(60));
         mainContainer.add(buttonContainer, new Float(5));

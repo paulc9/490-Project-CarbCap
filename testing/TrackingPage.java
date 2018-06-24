@@ -310,7 +310,7 @@ public class TrackingPage extends JPanel implements ActionListener{
 		JLabel showImg = Util.showBeerImage(beer, -1, 100, Image.SCALE_DEFAULT);
         imgPanel.add(showImg);
 */
-        (new LoadThread(beer, imgPanel)).execute();
+        (new Util.LoadImage(beer, false, -1, 100, imgPanel)).execute();
         middleBox.add(imgPanel, new Float(1.5));
 
         JPanel detailsContainer = new JPanel();
@@ -470,32 +470,5 @@ public class TrackingPage extends JPanel implements ActionListener{
 		results = res;
 		pages = change;
 		container = main;
-	}
-
-	public class LoadThread extends SwingWorker<JLabel, Object>{
-
-		private Beer beer;
-		private JPanel imgPanel;
-		public LoadThread(Beer newBeer, JPanel panel){
-			beer = newBeer;
-			imgPanel = panel;
-		}
-
-		@Override
-		public JLabel doInBackground(){
-			JLabel showImg = Util.showBeerImage(beer, -1, 100, Image.SCALE_DEFAULT);
-        	return showImg;
-		}
-
-		@Override
-		protected void done(){
-			try{
-        		imgPanel.add(get());
-        		insideScrollPane.revalidate();
-				insideScrollPane.repaint();
-			} catch (Exception e){
-
-			}
-		}
 	}
 }
