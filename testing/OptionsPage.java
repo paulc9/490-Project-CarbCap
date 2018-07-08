@@ -98,6 +98,7 @@ public class OptionsPage extends JPanel implements ActionListener{
 		emailIn.setText(CarbCap.properties.getProperty("email"));
 
 		emailNotify = new JCheckBox("Send email");
+		emailNotify.setToolTipText("Sends a message to your email when a new beer notification occurs");
 		String notifyCheck = "";
 
 		notifyCheck = CarbCap.properties.getProperty("emailNotify");
@@ -142,6 +143,8 @@ public class OptionsPage extends JPanel implements ActionListener{
 
 		twitterDirectNotify = new JCheckBox("Direct messaging");
 		twitterStatusNotify = new JCheckBox("Status notification");
+		twitterDirectNotify.setToolTipText("Sends a direct message to your Twitter account when a new beer notification occurs");
+		twitterStatusNotify.setToolTipText("Tweets a message from the CarbCap Messaging Twitter account mentioning your Twitter account when a new beer notification occurs");
 		String notifyCheck = "";
 
 		notifyCheck = CarbCap.properties.getProperty("twitterDirectNotify");

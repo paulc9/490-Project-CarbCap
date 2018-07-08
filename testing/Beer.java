@@ -10,11 +10,12 @@ import java.time.format.DateTimeFormatter;
 public class Beer implements Serializable{
     private int beerId;
     private double currentPSI, currentTemp, desiredVolume, currentVolume, avgVolRate;
-    private String beerType, beerName, beerImage;
+    private String beerType, beerName, beerImage, notes;
     private Calendar bottleDate, trackingDate, readyDate;
     private Boolean ready, warning, plateaued, avgRateExists, imageCopy;
     private ArrayList<TrackingObject>  trackingArray = new ArrayList<TrackingObject>();
     private LocalDateTime lastUpdate;
+    private static final long serialVersionUID = -4193826637137729343L;
 
     public Beer(String name, String bDate){
         this.beerName = name;
@@ -91,6 +92,9 @@ public class Beer implements Serializable{
 
     public void setDesiredVolume(double vol){this.desiredVolume = vol;}
     public double getDesiredVolume(){return this.desiredVolume;}
+
+    public void setNotes(String note){this.notes = note;}
+    public String getNotes(){return notes;}
 
     public void setLastUpdate(LocalDateTime update){this.lastUpdate = update;}
     public LocalDateTime getLastUpdate(){return this.lastUpdate;}

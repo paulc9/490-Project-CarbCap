@@ -57,7 +57,7 @@ public class GUIResults extends JPanel implements ActionListener{
     JLabel valName, valCurrentPSI, valReadyDate, valManualPSI, 
         valBeerType, valBottleDate, valCurrentVol, valDesiredVol, 
         valVolPerDay, valTemp;
-    JButton deleteButton, manualButton, backButton, editButton, simulateButton;
+    JButton deleteButton, manualButton, backButton, editButton, simulateButton, notesButton;
     JTextField nameIn, typeIn, psiIn, tempIn, imageIn;
     ImageIcon graphImg;
     TrackingPage tracking;
@@ -288,6 +288,10 @@ public class GUIResults extends JPanel implements ActionListener{
         simulateButton.setToolTipText("Simulate beer tracking");
         simulateButton.addActionListener(this);
 
+        notesButton = new JButton("Notes");
+        notesButton.setToolTipText("View or edit your beer notes");
+        notesButton.addActionListener(this);
+
         //deleteButton.setFont(CarbCap.font);
         //enterButton.setFont(CarbCap.font);
 
@@ -295,6 +299,8 @@ public class GUIResults extends JPanel implements ActionListener{
         buttonContainer.add(backButton);
         buttonContainer.add(Box.createHorizontalGlue());
         buttonContainer.add(manualButton);
+        buttonContainer.add(Box.createHorizontalGlue());
+        buttonContainer.add(notesButton);
         buttonContainer.add(Box.createHorizontalGlue());
         buttonContainer.add(editButton);
         buttonContainer.add(Box.createHorizontalGlue());
@@ -317,8 +323,11 @@ public class GUIResults extends JPanel implements ActionListener{
         
         imgPanel.removeAll();
         currentBeer = beer;
+        /*
         JLabel showImg = Util.showBeerImage(currentBeer, -1, imgPanel.getHeight() * 9 / 10);
         imgPanel.add(showImg);
+        */
+        (new Util.LoadImage(currentBeer, false, -1, imgPanel.getHeight() * 9 / 10, imgPanel)).execute();
         
         valReadyDate.setForeground(CarbCap.valueColor);
         valName.setText(currentBeer.getName());
@@ -448,6 +457,15 @@ public class GUIResults extends JPanel implements ActionListener{
 	        	simulatorDone("Simulation stopped", "images/simStop.png");
 	        else
 	        	simFrame.dispose();
+        }
+        else if ((JButton) action == notesButton){
+            JTextArea ta = new JTextArea(20, 30);
+            ta.setText(currentBeer.getNotes());
+            int result = JOptionPane.showConfirmDialog(null, new JScrollPane(ta), "View/Edit Notes", JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION){
+                currentBeer.setNotes(ta.getText());
+                saveUpdatedBeer();
+            }
         }
     }
 
