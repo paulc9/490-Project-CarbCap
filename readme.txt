@@ -5,4 +5,4 @@ Tingrui Ming
 
 Project code can be found in the "Testing" folder.
 
-All materials used belong to their respective owners.
+All images and other materials used belong to their respective owners.
